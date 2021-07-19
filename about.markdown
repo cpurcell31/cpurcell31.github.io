@@ -11,6 +11,6 @@ I also plan to compile lists of useful commands from every writeup I complete or
 
 # Sites
 
-[<img src="/assets/GitHub_Logo_White.png">](https://github.com/cpurcell31)
+[<img src="https://github.githubassets.com/images/modules/site/icons/footer/github-logo.svg">](https://github.com/cpurcell31)
 
 [<img src="https://tryhackme-badges.s3.amazonaws.com/bigboyfriend86.png" alt="TryHackMe">](https://tryhackme.com/p/bigboyfriend86)
