@@ -4,15 +4,13 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+I'm Connor and this blog exists as a central place for me to document CTF, Vulnerable VM, boot2root, and general security writeups. 
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+I hope to catalogue everything I've learned for reference for my future self and hopefully to help others learn too. 
+I also plan to compile lists of useful commands from every writeup I complete or every random helpful book I find.
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+# Sites
 
+[<img src="/assets/GitHub_Logo_White.png">](https://github.com/cpurcell31)
 
-[jekyll-organization]: https://github.com/jekyll
+[<img src="https://tryhackme-badges.s3.amazonaws.com/bigboyfriend86.png" alt="TryHackMe">](https://tryhackme.com/p/bigboyfriend86)
