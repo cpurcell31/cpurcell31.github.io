@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Tryhackme Room: Team"
-categories: THM
+title:  "Tryhackme: Team"
+tags: THM
 ---
 
 Machine Created By: dalemazza
