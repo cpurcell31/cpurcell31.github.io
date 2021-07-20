@@ -17,7 +17,7 @@ Tags: security, forensics, wireshark, packet capture
 I love these type of rooms where you get a .pcap file and have to read into what happened. Let's jump right into the
 questions.
 
-#### Question: The attacker is trying to log into a specific service. What service is this?
+### Question: The attacker is trying to log into a specific service. What service is this?
 
 Luckily, there isn't any traffic from other hosts so we can answer this one pretty easily 
 and gain a bit of extra information
@@ -37,7 +37,7 @@ might come up later.
 
     Answer: ftp
 
-#### Question: There is a very popular tool by Van Hauser which can be used to brute force a series of services. What is the name of this tool?
+### Question: There is a very popular tool by Van Hauser which can be used to brute force a series of services. What is the name of this tool?
 	
 A quick google search or thinking about very commonly used brute force tools will find the answer to this one.
 
@@ -45,14 +45,14 @@ A quick google search or thinking about very commonly used brute force tools wil
 
 Going back to the number of established TCP sessions, this really makes sense. 
 
-#### Question The attacker is trying to log on with a specific username. What is the username?
+### Question The attacker is trying to log on with a specific username. What is the username?
 	
 We saw the answer to this one a little earlier, at packet 81 we can see the attacker requests an ftp session
 with username set to `jenny`
 
     Answer: jenny 
 
-#### Question: What is the user's password?
+### Question: What is the user's password?
 	
 This one has two possible ways to solve it:
 1. Find when hydra is successful
@@ -75,7 +75,8 @@ There we have it. The attacker attempts to log in as jenny and supplies a passwo
 
     Answer: password123
 
-#### Question: What is the current FTP working directory after the attacker logged in?
+
+### Question: What is the current FTP working directory after the attacker logged in?
 	
 ![Directory](/assets/THM-h4cked/dir-THM-h4.png)
 
@@ -83,8 +84,9 @@ Luckily, the attacker knows as little about the FTP directory as we do so they i
 The response to this request contains the answer to this question.
 
     Answer: /var/www/html
+
 	
-#### Question: The attacker uploaded a backdoor. What is the backdoor's filename?
+### Question: The attacker uploaded a backdoor. What is the backdoor's filename?
 	
 ![Shell](/assets/THM-h4cked/shell-name-THM-h4.png)
 
@@ -92,7 +94,8 @@ Later on, the attacker initiates a STOR request to FTP and puts a file titled sh
 
     Answer: shell.php
 
-#### Question: The backdoor can be downloaded from a specific URL, as it is located inside the uploaded file. What is the full URL?
+
+### Question: The backdoor can be downloaded from a specific URL, as it is located inside the uploaded file. What is the full URL?
 	
 ![Shell Location](/assets/THM-h4cked/sh-loc-THM-h4.png)
 
@@ -102,7 +105,8 @@ more information for later on.
 
     Answer: http://pentestmonkey.net/tools/php-reverse-shell
 
-#### Question: Which command did the attacker manually execute after getting a reverse shell?
+
+### Question: Which command did the attacker manually execute after getting a reverse shell?
 	
 At this point the attacker is basically done with FTP. The attacker's next step would be to activate the reverse shell.
 
@@ -118,19 +122,22 @@ Now we can see all of the session. First off we can note the answer to this ques
 
     Answer: whoami
 
-#### Question: What is the computer's hostname?
+
+### Question: What is the computer's hostname?
 	
 Next thing we see is that the victim machine is called "wir3"
 
     Answer: wir3
 
-#### Question: Which command did the attacker execute to spawn a new TTY shell?
+
+### Question: Which command did the attacker execute to spawn a new TTY shell?
 	
 The final thing we can see from this screenshot is that the attacker upgrades his shell with python.
 
     Answer: python3 -c 'import pty; pty.spawn("/bin/bash")'
 
-#### Question: Which command was executed to gain a root shell?
+
+### Question: Which command was executed to gain a root shell?
 	
 ![Root Access](/assets/THM-h4cked/root-THM-h4.png)
 
@@ -140,19 +147,22 @@ This means to escalate to root privileges all the attacker needs to do is type `
 
     Answer: sudo su
 	
-#### Question: The attacker downloaded something from GitHub. What is the name of the GitHub project?
+	
+### Question: The attacker downloaded something from GitHub. What is the name of the GitHub project?
 	
 A final thing we can notice from this screenshot is that the attacker clones the Reptile repo from git.
 
     Answer: Reptile
 
-#### Question: The project can be used to install a stealthy backdoor on the system. It can be very hard to detect. What is this type of backdoor called?
+
+### Question: The project can be used to install a stealthy backdoor on the system. It can be very hard to detect. What is this type of backdoor called?
 
 A little bit of research into Reptile reveals that it is a rootkit which will be used by the attacker to establish
 persistence.
 
     Answer: rootkit
 	
+
 ## Part 2: Gaining Access
 
 The next step in this room is try to gain access to the machine using the same techniques the attacker did previously.
@@ -172,6 +182,7 @@ a get command to FTP and editing the IP before replacing it with a put command.
 
 The next step is to setup a netcat listener and navigate to the website hosting the shell. Success! We now have
 access to the machine.
+
 
 ## Part 3: Gaining Root Privileges
 
@@ -195,6 +206,7 @@ and we are good to go.
 ![Root](/assets/THM-h4cked/sudo-jenny-THM-h4.png)
 
 And there we have it. We have root access and can grab the flag from the Reptile directory.
+
 
 ## Lessons Learned
 
