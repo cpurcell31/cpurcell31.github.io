@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Tryhackme Room: Year of the Rabbit"
+title:  "Tryhackme: Year of the Rabbit"
 categories: THM
 ---
 
