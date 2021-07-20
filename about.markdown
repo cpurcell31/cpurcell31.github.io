@@ -4,7 +4,9 @@ title: About
 permalink: /about/
 ---
 
-I'm Connor and this blog exists as a central place for me to document CTF, Vulnerable VM, boot2root, and general security writeups. 
+# About The Blog
+
+This blog exists as a central place for me to document CTF, Vulnerable VM, boot2root, and general security writeups. 
 
 I hope to catalogue everything I've learned for reference for my future self and hopefully to help others learn too. 
 I also plan to compile lists of useful commands from every writeup I complete or every random helpful book I find.
