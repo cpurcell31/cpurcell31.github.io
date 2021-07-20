@@ -53,7 +53,7 @@ Turns out burp was the way to go. We are given the name of a hidden directory. W
 Time to see if there is anything hidden in this picture. First I ran it through binwalk, the result was nothing out
 of the ordinary. Then I ran strings to get the following output:
 
-![Strings output](/assets/THM-YotR/strings-THM-YotR.png)
+![Strings output](/assets/THM-YotR/strings-THM_YotR.png)
 
 ## Gaining Initial Access
 
