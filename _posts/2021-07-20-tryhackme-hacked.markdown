@@ -23,7 +23,6 @@ Luckily, there isn't any traffic from other hosts so we can answer this one pret
 and gain a bit of extra information
 
 ![Start](/assets/THM-h4cked/start-THM-h4.png)
-<figcaption>Initial TCP Handshakes from the .pcap</figcaption>
 
     Attacker IP: 192.168.0.147
 	Victim IP: 192.168.0.115
