@@ -88,7 +88,6 @@ the desired effect.
 ![Admin Check 2](/assets/THM-Team/admin-check-fail-THM-Team.png)
 
 The next thing I tried was instead of typing "date" where the script requested it, I went for a different program "/bin/bash".
-The next thing I tried was instead of typing "date" where the script requested it, I went for a different program "/bin/bash".
 
 ![Admin Check 3](/assets/THM-Team/admin-check-success-THM-Team.png)
 
@@ -122,13 +121,11 @@ Sure enough, we have root and the final flag.
 
 ## Lessons Learned
 
-1. SSH Key Formatting - The new line at the end of a key is important. I could have saved myself at least 15 minutes if
-I had known about it beforehand.
-
-2. Careful Enumeration - I got stuck a bit early on with finding script.txt so in the future it would definitely be wise
-to enumerate file extensions within "forbidden" directories sooner rather than later.
-
-3. Don't Be Afraid to Just Try Things - Sometimes you gotta just try something. 
+1. Web Directory and File Enumeration
+2. Basic Local File Inclusion (LFI)
+3. SSH Key Formatting
+4. Simple Script Manipulation
+5. Some Linux Enumeration
 
 
 

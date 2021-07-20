@@ -111,6 +111,7 @@ become root by inputting this command into vim.
 
 ## Lessons Learned
 
-1. Try the Obvious - During this challenge, I missed a couple of easy things initially by dismissing something
-"too obvious". Most notably, I lost a good chunk of time on the rick-roll hint by not trying burpsuite right away.
-
+1. Steganography Using Strings and Binwalk
+2. Brute Forcing FTP With Hydra
+3. Sudo Permissions Vulnerability: CVE-2019-14287
+4. Try Something Even If It's "Too Obvious"
