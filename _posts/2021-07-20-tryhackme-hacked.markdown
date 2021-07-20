@@ -59,14 +59,12 @@ This one has two possible ways to solve it:
 2. Find when the attacker logs in
 
 Method 2 is by far the most straight forward but Method 1 also works.
-
 To do Method 1 you must first find the response packet where hydra successfully logs in (it's after a sequence of
 consequtive password attempts).
 
 ![Method 1](/assets/THM-h4cked/port-pass-THM-h4.png)
 
-Now from here we can check the destination port that the success response is going to and correlate it to a password.
-
+Now from here we can check the destination port of the success response and correlate it to a password.
 For Method 2 it's as simple as scrolling down to find the attacker's log in attempt.
 
 ![Method 2](/assets/THM-h4cked/pass-THM-h4.png)
@@ -172,7 +170,7 @@ The next step in this room is try to gain access to the machine using the same t
 Unlucky, for us the attacker changed jenny's password to something else so we can't use that. However, the attacker
 also changed it to a similarly weak password.
 
-![FTP] (/assets/THM-h4cked/ftp2-THM-h4.png)
+![FTP](/assets/THM-h4cked/ftp2-THM-h4.png)
 
 A quick login later and we have access to the FTP server. Now the next step is to replace shell.php with our own version
 which will call back to our local machine. For this we can use the same shell the attacker used earlier by doing inputting
