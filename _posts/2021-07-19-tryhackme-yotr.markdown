@@ -87,13 +87,13 @@ a potential password for gwendoline.
 
 Sure enough a quick su to gwendoline proved it was their password and we have our first flag.
 
-![Su Gwen](/assets/THM-YotR/gwen-su-THM-YotR.png)
+![Su Gwen](/assets/THM-YotR/user-THM-YotR.png)
 
 ## Gaining Root Privileges
 
 Since we have the password for gwendoline, there is no harm in doing a quick `sudo -l` to see what they can do.
 
-![sudo -l](/assets/THM-YotR/user-THM-YotR.png)
+![sudo -l](/assets/THM-YotR/gwen-sudo-THM-YotR.png)
 
 It looks like gwen has permissions to use vi on her file user.txt as anyone but root. Or so it seems.
 Luckily there is a vulnerability with this exact kind of sudo permissions on this version of sudo. 
