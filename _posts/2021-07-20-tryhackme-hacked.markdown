@@ -55,17 +55,17 @@ with username set to `jenny`
 ### Question: What is the user's password?
 	
 This one has two possible ways to solve it:
-1. Find when hydra is successful
+1. Find when hydra is successful and follow the tcp stream
 2. Find when the attacker logs in
 
-Method 2 is by far the most straight forward but Method 1 also works.
+Method 2 is by far the most straight forward but Method 1 also works pretty nicely.
 To do Method 1 you must first find the response packet where hydra successfully logs in (it's after a sequence of
 consequtive password attempts).
 
 ![Method 1](/assets/THM-h4cked/port-pass-THM-h4.png)
 
-Now from here we can check the destination port of the success response and correlate it to a password.
-For Method 2 it's as simple as scrolling down to find the attacker's log in attempt.
+Now from here we can right click on the packet and hit `Follow -> TCP Stream` to see which password corresponded to the attempt.
+For Method 2 it's as simple as scrolling down to find the attacker's final log in attempt.
 
 ![Method 2](/assets/THM-h4cked/pass-THM-h4.png)
 
@@ -111,8 +111,9 @@ At this point the attacker is basically done with FTP. The attacker's next step 
 ![Activate](/assets/THM-h4cked/get-sh-THM-h4.png)
 
 We can see the attacker switch to HTTP in order to get the shell off the url `http://192.168.0.115/shell.php`
-To continue easily following along with this we need to go to the first packet in which the ports "flip" (no.451 vs no. 452)
-and right-click on it and click Follow -> Tcp Stream.
+To continue, we need to go to the first packet in which the reverse shell begins communicating with the attacker machine (see no. 452)
+and right-click on it and click `Follow -> TCP Stream`. We can tell this is where to start because the victim machine is now
+communicating to port 80 on the attacker's machine (the port set by the reverse shell).
 
 ![TCP Stream](/assets/THM-h4cked/command-THM-h4.png)
 
