@@ -28,7 +28,7 @@ and gain a bit of extra information
 	Victim IP: 192.168.0.115
 	
 Since the port 21 its safe to assume that the answer is FTP but let's keep looking to see if that changes.
-Also take note of how many different TCP handshakes the attacker begins (shown by different port numbers).
+Also take note of how many different TCP handshakes the attacker begins (shown by different source port numbers).
 
 ![Jenny](/assets/THM-h4cked/user-THM-h4.png)
 
