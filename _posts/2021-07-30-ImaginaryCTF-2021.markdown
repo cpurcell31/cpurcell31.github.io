@@ -4,8 +4,8 @@ title:  "Imaginary CTF 2021 Writeup"
 categories: CTF, Competition
 ---
 
-In a sort of "spur of the moment" way, I decided to join my first CTF competition. This one was hosted by the team over
-at [Imaginary CTF](https://imaginaryctf.org/) and was a blast! I went in with very little knowledge and I ended up impressed
+This competition was hosted by the team over
+at [Imaginary CTF](https://imaginaryctf.org/) and was a ton of fun! I went in with very little knowledge and I ended up impressed
 with how much I got done. The competition page can be found [here](https://2021.imaginaryctf.org/).
 
 I learned a ton of random nonsense over the course of the event and hopefully I can explain some of my solutions in a
@@ -85,7 +85,7 @@ The comments in the code gave a little hint to what sort of vulnerability I need
 googling I found **Server Side Template Injections**(SSTI). The basic idea here is that our data is being processed by a "template engine"
 which allows user supplied data to be input into a static template and adjust it. However, if this user data is put directly
 into the template then the user could potentially supply malicious template syntax that will be processed by the engine.
-The simplest proof of concept to check for SSTI is to input {% raw %}"{{7*7}}"{% endraw %} and if the application displays 49 then it's vulnerable.
+The simplest proof of concept to check for SSTI is to input {% raw %}{{7*7}}{% endraw %} and if the application displays 49 then it's vulnerable.
 
 ![Vulnerable to SSTI](/assets/2021-ICTF/build2.png)
 
@@ -96,8 +96,8 @@ then be used in conjunction with `__subclasses__()` to find a list of all object
 
 ![Subclasses 1](/assets/2021-ICTF/subclasses1.PNG)
 
-However, back in the Python code there is a blacklist which bans 3 peculiar things: "las", "bas", and "bal". Which stops
-the use of things like class, subclasses, and global. Luckily, using some annoying concatenation this was avoidable. The
+However, back in the Python code, there is a blacklist which bans 3 peculiar things: "las", "bas", and "bal". Which stops
+the use of keywords like class, subclasses, and global. Luckily, using some annoying concatenation this was easily avoidable. The
 equivalent injection was
 
 ![Subclasses 1](/assets/2021-ICTF/subclasses.PNG)
@@ -280,7 +280,7 @@ Find the misspelled words, fix them, and find the letter that I changed. Put the
 ```
 
 This challenge is fairly simple and I chose the most straight-forward and most eye-straining way to solve this.
-First, I copied the words into a program like googledocs and then manually scanned through the list for each misspelling
+First, I copied the words into a program like google docs and then manually scanned through the list for each misspelling
 and wrote down the offending letter. The only immediate problem with this method is that the spell check would pickup
 country/city names that weren't capitalized (which was all of them) making picking out the right words a bit trickier.
 Capitalizing the first letter of every word would have solved this easily and made the job quicker.
@@ -371,7 +371,7 @@ is the blacklist. Luckily, the blacklist doesn't recurse over the input so we ca
 
     ' oorr '1'='1' --
 
-The blacklist then removes the only 'or' it sees and sends the result off to the next step. Here is the statement after
+Then the blacklist removes the only 'or' it sees and sends the result off to the next step. Here is the statement after
 the blacklist does its job
 
     ' or '1'='1' --
