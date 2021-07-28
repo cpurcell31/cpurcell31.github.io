@@ -166,16 +166,18 @@ It is important to keep in mind that the first round of decryption results in ga
 After learning this, the next step was to create a payload. Keeping in mind the blocks are 16 bytes each, I created
 this abomination.
 
-    ddddddddddddddddgimmeflaf
+    ddddddddddddddddgimmeflafddddddd
 
 With this payload, I needed to flip the bit in the first block of encrypted text at index 8. Since 'f' is 1 off from 'g',
 this was as simple as counting to the right index and adding or subtracting 1 from the value located there. For example:
 
-    {HEX VALUE HERE} -> {NEW HEX VALUE HERE}
+    9230994fb23be84d7dcc5da638b5f1ddde75d[...] - > 9230994fb23be84d7ccc5da638b5f1ddde75d9a8a[...]
+                     ^                                              ^
+              Original Index 8                                 New Index 8
 
 Then all that's left was to input the new cipher text and receive the flag.
 
-![Flip Flop Flag]()
+![Flip Flop Flag](/assets/2021-ICTF/flipflag.png)
 
 ## Formatting - Misc - 100pts
 
@@ -272,7 +274,7 @@ work since ';' is blacklisted. So the only remaining solution was wildcards. I c
 Here the question mark represents any single character to bash so it will search for an appropriate file and read it to me.
 Sure enough, the flag was printed out to by the application.
 
-![SED Flag]()
+    ictf{:roocu:roocu:roocu:roocu:roocu:roocursion:rsion:rsion:rsion:rsion:rsion:_473fc2d1}
 
 ## Spelling Test - Misc - 100pts
 
@@ -653,7 +655,7 @@ finding the inverse of s and then using it to decode c_2.
 
 Punching the values in results in the flag for this challenge.
 
-    FLAG
+    ictf{m0d_4r1th_ftw_1c963241}
 
 ## Short Story - Forensics - 150pts
 
@@ -676,7 +678,7 @@ every word in the story is no more than 16 letters long. With this being a compu
 As such, each word translated to a single hexadecimal character, which in turn, paired up and translated to an ascii character.
 Revealing the flag.
 
-    {FLAG}
+    ictf{A_sh0rt_st0ry_is_4_piece_of_pr0s3_f1ct10n_that_typ1cally_can_b3_read[...]}
 
 ## No Thoughts, Head Empty - Reversing - 200pts
 
@@ -686,7 +688,7 @@ For this challenge, I got luckier than lucky. First off, we are given some brain
 The basics idea of the code is that it prints the flag one letter at a time. However, the catch is that it prints each letter
 double as many times as the previous.
 
-    iccttttffffffff{{{{{{{{{{{{{{{{00000000000000000000000000000000nnnnnnnnnnnnnnnnnnnnnnnnnnn [...]
+    "iccttttffffffff{{{{{{{{{{{{{{{{00000000000000000000000000000000nnnnnnnnnnnnnnnnnnnnnnnnnnn [...]"
 
 My "analysis" started with just removing random bits - since I had no hope of ever understanding brainfuck. Luckily for me,
 and possibly frustratingly for people who solved this properly, deleting random bits caused the interpreter to pop out the
