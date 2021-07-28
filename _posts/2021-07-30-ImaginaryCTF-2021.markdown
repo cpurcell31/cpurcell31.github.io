@@ -688,7 +688,6 @@ For this challenge, I got luckier than lucky. First off, we are given some brain
 The basics idea of the code is that it prints the flag one letter at a time. However, the catch is that it prints each letter
 double as many times as the previous.
 
-    "iccttttffffffff{{{{{{{{{{{{{{{{00000000000000000000000000000000nnnnnnnnnnnnnnnnnnnnnnnnnnn [...]"
 
 My "analysis" started with just removing random bits - since I had no hope of ever understanding brainfuck. Luckily for me,
 and possibly frustratingly for people who solved this properly, deleting random bits caused the interpreter to pop out the
