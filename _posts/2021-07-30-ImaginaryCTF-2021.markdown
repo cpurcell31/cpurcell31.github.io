@@ -514,7 +514,7 @@ This code segment shows how authentication works for the homepage. First, the no
 Second, the cipher is created from the key and the nonce. Third, the username is decrypted and the padding is removed.
 Finally, the username is used to determine whose session it was and if it's admin's session it prints the flag.
 
-![CTR Mode](/assets/2021-ICTF/ctr-mode.PNG)
+![CTR Mode](/assets/2021-ICTF/ctr-mode.png)
 
 It's important to note how CTR Mode works. In essence, the nonce is concatenated with a counter and then black magic is used
 to combine them with a key. The result of the black magic is then XOR'd with the plaintext to get the ciphertext. For
