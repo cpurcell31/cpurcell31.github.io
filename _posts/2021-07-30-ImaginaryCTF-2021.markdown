@@ -94,13 +94,13 @@ I found a few resources which indicated I could use `__class__` to find the clas
 a string) in conjunction with `__mro__` to list all classes it resolves. One of which, is the "object" class. This can
 then be used in conjunction with `__subclasses__()` to find a list of all objects.
 
-![Subclasses 1](/assets/2021-ICTF/subclasses1.png)
+![Subclasses 1](/assets/2021-ICTF/subclasses1.PNG)
 
 However, back in the Python code there is a blacklist which bans 3 peculiar things: "las", "bas", and "bal". Which stops
 the use of things like class, subclasses, and global. Luckily, using some annoying concatenation this was avoidable. The
 equivalent injection was
 
-![Subclasses 1](/assets/2021-ICTF/subclasses.png)
+![Subclasses 1](/assets/2021-ICTF/subclasses.PNG)
 
 ![List of all objects](/assets/2021-ICTF/build-objects.png)
 
@@ -109,7 +109,7 @@ Finally, I came across `<class '_frozen_importlib_external.FileLoader'>` which l
 The syntax for this is a bit wild but [this resource](https://github.com/TheMaccabees/ctf-writeups/blob/master/HexionCTF2020/Notes/README.md)
 explained it very well for me. Injecting this final statement output the flag.
 
-![Build Flag](/assets/2021-ICTF/buildsol.png)
+![Build Flag](/assets/2021-ICTF/buildsol.PNG)
 
 ![Build Flag](/assets/2021-ICTF/build4.png)
 
@@ -154,7 +154,7 @@ print("Out of operations!")
 At a glance, this appears impossible. However, the trick is the use of CBC mode in AES. This particular mode is vulnerable to
 a "bit flipping attack". This attack is a result of how CBC operates.
 
-![CBC](/assets/2021-ICTF/cbc-mode-decrypt.jpg)
+![CBC](/assets/2021-ICTF/cbc-mode-decrpt.jpg)
 
 Since CBC uses the previous block of cipher text to help decrypt the next block of plain text, changing one of the bits in first block of
 cipher text will affect the next block. This causes the decrypted message to be slightly different in that one specific spot.
@@ -514,29 +514,33 @@ This code segment shows how authentication works for the homepage. First, the no
 Second, the cipher is created from the key and the nonce. Third, the username is decrypted and the padding is removed.
 Finally, the username is used to determine whose session it was and if it's admin's session it prints the flag.
 
-![CTR Mode](/assets/2021-ICTF/ctr-mode.png)
+![CTR Mode](/assets/2021-ICTF/ctr-mode.PNG)
 
 It's important to note how CTR Mode works. In essence, the nonce is concatenated with a counter and then black magic is used
 to combine them with a key. The result of the black magic is then XOR'd with the plaintext to get the ciphertext. For
 all the math people here it is boiled down to an equation
 
-![P XOR F](/assets/2021-ICTF/pxorf.png)
+![P XOR F](/assets/2021-ICTF/pxorf.PNG)
 
 Here **C** is the ciphertext, **P** is the plaintext and **F(k,n)** represents the black magic that AES does to combine the
 nonce, the key, and the counter. In this situation, we have values for 3 of the 4 variables, C, P, and n. Since, we don't know
 the value of the key k and the nonce is random every time, we shouldn't be able to do anything here. However due to the way the script works,
 the nonce can be forced to be a value we know. This means we can force F(k,n) to essentially be the same value every time.
 
-![P XOR Y](/assets/2021-ICTF/pxory.png)
+![P XOR Y](/assets/2021-ICTF/pxory.PNG)
 
 Our equation becomes way easier with Y being some constant value and we can even manipulate it a bit using XOR rules.
 
-![Y](/assets/2021-ICTF/y.png)
+![Y](/assets/2021-ICTF/y.PNG)
 
 With this, we can use Y to make our own brand new ciphertext and trick the cookie system into thinking we are the admin.
 First, I grabbed the cookie from earlier and did some surgery on it.
 
-![Cookie Surgery](/assets/2021-ICTF/cookie-surgery.png)
+    a23d98c011b41eab3b0e8375b7b6ecfc52af4f92105485a2
+
+    nonce : a23d98c011b41eab
+
+    remainder: 3b0e8375b7b6ecfc52af4f92105485a2
 
 I removed the nonce from the front so I can do some XORing and find Y and converted "admin" to hex.
 
@@ -614,40 +618,40 @@ looked up some equations and some explanations of the algorithm. I won't go too 
 we have two secret components **a** and **b**, a big number **p**, and a generator **g**. In the case of this code, we
 use them to get the following equation
 
-![S](/assets/2021-ICTF/s.png)
-![S](/assets/2021-ICTF/s2.png)
+![S](/assets/2021-ICTF/s.PNG)
+![S](/assets/2021-ICTF/s2.PNG)
 
 The next step the code takes is to use **s** to modify the plaintext message
 
-![C](/assets/2021-ICTF/solution2.png)
+![C](/assets/2021-ICTF/solution2.PNG)
 
 Here **c** is the resulting ciphertext. From all of this, we know the values of g, p, c, and we are given a sample message,
 ":roocursion:". The only unknown here is s. That means the goal here was to figure out s and then use it somehow to decode
 the flag. Again it boiled down to 2 equations
 
-![C1](/assets/2021-ICTF/c1.png)
-![C2](/assets/2021-ICTF/c2.png)
+![C1](/assets/2021-ICTF/c1.PNG)
+![C2](/assets/2021-ICTF/c2.PNG)
 
 From my research, I learned I could find an inverse to msg_1 such that,
 
-![Inverse](/assets/2021-ICTF/inverse.png)
+![Inverse](/assets/2021-ICTF/inverse.PNG)
 
 The hope with this, was that I could use the inverse to extract s from the ciphertext. Now after a bunch more
 searching and trial and error, I stumbled into a solution. I was looking at [ELGamal encryption](https://en.wikipedia.org/wiki/ElGamal_encryption)
 and found the equations
 
-![El Gamal](/assets/2021-ICTF/el1.png)
-![El Gamal](/assets/2021-ICTF/el2.png)
+![El Gamal](/assets/2021-ICTF/el1.PNG)
+![El Gamal](/assets/2021-ICTF/el2.PNG)
 
 At this point, I figured it was worth a shot so I punched in an adjustment to it.
 
-![Solution](/assets/2021-ICTF/solution.png)
+![Solution](/assets/2021-ICTF/solution.PNG)
 
 In the end this worked and I am not quite sure why. I assume its something to do with linear congruence but I'm
 definitely holding out for a writeup to explain the math to me. Anyway, the way I continued with my experiment was by
 finding the inverse of s and then using it to decode c_2.
 
-![Solution](/assets/2021-ICTF/solution2.png)
+![Solution](/assets/2021-ICTF/solution2.PNG)
 
 Punching the values in results in the flag for this challenge.
 
