@@ -85,7 +85,7 @@ The comments in the code gave a little hint to what sort of vulnerability I need
 googling I found **Server Side Template Injections**(SSTI). The basic idea here is that our data is being processed by a "template engine"
 which allows user supplied data to be input into a static template and adjust it. However, if this user data is put directly
 into the template then the user could potentially supply malicious template syntax that will be processed by the engine.
-The simplest proof of concept to check for SSTI is to input `{{7*7}}` and if the application displays 49 then it's vulnerable.
+The simplest proof of concept to check for SSTI is to input {% raw %}"{{7*7}}"{% endraw %} and if the application displays 49 then it's vulnerable.
 
 ![Vulnerable to SSTI](/assets/2021-ICTF/build2.png)
 
@@ -94,15 +94,13 @@ I found a few resources which indicated I could use `__class__` to find the clas
 a string) in conjunction with `__mro__` to list all classes it resolves. One of which, is the "object" class. This can
 then be used in conjunction with `__subclasses__()` to find a list of all objects.
 
-    {{""__class__.__mro__.__subclasses_()}}
+![Subclasses 1](/assets/2021-ICTF/subclasses1.png)
 
 However, back in the Python code there is a blacklist which bans 3 peculiar things: "las", "bas", and "bal". Which stops
 the use of things like class, subclasses, and global. Luckily, using some annoying concatenation this was avoidable. The
 equivalent injection was
 
-```
-{{""["__cla"+"ss__"].__mro__[1]["__subcla"+"sses__"]()}}  
-```
+![Subclasses 1](/assets/2021-ICTF/subclasses.png)
 
 ![List of all objects](/assets/2021-ICTF/build-objects.png)
 
@@ -111,9 +109,7 @@ Finally, I came across `<class '_frozen_importlib_external.FileLoader'>` which l
 The syntax for this is a bit wild but [this resource](https://github.com/TheMaccabees/ctf-writeups/blob/master/HexionCTF2020/Notes/README.md)
 explained it very well for me. Injecting this final statement output the flag.
 
-```
-{{""["__cla"+"ss__"].__mro__[1]["__subcla"+"sses__"]()[99]("flag.txt", "flag.txt").get_data("flag.txt")}}
-```
+![Build Flag](/assets/2021-ICTF/buildsol.png)
 
 ![Build Flag](/assets/2021-ICTF/build4.png)
 
