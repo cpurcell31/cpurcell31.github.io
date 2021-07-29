@@ -204,7 +204,7 @@ With the code out of the way, the next step for me was to somehow get my hands o
 a cookie. Using the credentials I got earlier, I logged into the site as firepwny
 and got to see Rick Astley.
 
-![Rick](/assets/2021-ICTF/cookie3.png)
+![Rick](/assets/Challenge/cookie.png)
 
 Unfortunately, only the admin can see the flag and his password wasn't as weak.
 However, I did get a cookie to dissect as a runner-up prize.
