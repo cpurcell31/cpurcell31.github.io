@@ -1,0 +1,299 @@
+---
+layout: post
+title:  "Imaginary CTF 2021: Cookie Stream Extended Writeup"
+tags: CTF competition
+---
+
+## Cookie Stream - Web - 150pts
+
+```
+    Cookie streaming service? Naaaaaaah. Password protected Rickroll as a Service? YAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSS!
+```
+
+For this challenge we are given both a python script and a website that uses it. I
+started off by looking at the website.
+
+![Login Page](/assets/Challenge/login.png)
+
+We are greeted by a login page and not much else. Next the python code.
+
+```
+key = urandom(16)
+cnonce = urandom(8)
+
+users = {
+    'admin' : '240964a7a2f1b057b898ef33c187f2c2412aa4d849ac1a920774fd317000d33ebb8b0064834ed1f8a74763df4e95cd8c8be3a154b46929c3969ce323db69b81f',
+    'ImaginaryCTFUser' : '87197acc4657e9adcc2e4e24c77268fa5b95dea2867eacd493a0478a0c493420bfb2280c7e4e579a604e0a243f74a36a8931edf71b088add09537e54b11ce326',
+    'Eth007' : '444c67bb7d9d56580e0a2fd1ad00c535e465fc3ca9558e8333512fe65ff971a3dfb6b08f48ea4f91f8e8b55887ec3f0d7634a8df98e636a4134628c95a8f0ebf',
+    'just_a_normal_user' : 'b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86',
+    'firepwny' : '6adee5baa5ad468ac371d40771cf2e83e3033f91076f158d2c8d5d7be299adfce15247067740edd428ef596006d6eaa843b36cc109618e0a1cae843b6eed5c29',
+    ':roocursion:' : '7f5310d2675c09c1b274f7642bf4979b2ce642515551a7617d155033e77ecfd53dede33ee541adde2f1072739696d0138d1b2f90c9ecc596095fa43b759e9baa',
+}
+
+def check(username, password):
+    if username not in users.keys():
+        return False
+    if sha512(password.encode()).hexdigest() == users[username]:
+        return True
+
+@app.route('/')
+def index():
+    return render_template('login.html')
+
+@app.route('/backend', methods=['GET', 'POST'])
+def backend():
+    if request.method == 'POST':
+        if not check(request.form['username'], request.form['password']):
+            return 'Wrong username/password.'
+        resp = make_response(redirect('/home'))
+        nonce = urandom(8)
+        cipher = AES.new(key, AES.MODE_CTR, nonce=nonce) # my friend told me that cbc had some weird bit flipping attack? ctr sounds way cooler anyways
+        cookie = hexlify(nonce + cipher.encrypt(pad(request.form['username'].encode(), 16)))
+        resp.set_cookie('auth', cookie)
+        return resp
+    else:
+        return make_response(redirect('/home'))
+
+@app.route('/home', methods=['GET'])
+def home():
+    nonce = unhexlify(request.cookies.get('auth')[:16])
+    cipher = AES.new(key, AES.MODE_CTR, nonce=nonce)
+    username = unpad(cipher.decrypt(unhexlify(request.cookies.get('auth')[16:])), 16).decode()
+    if username == 'admin':
+        flag = open('flag.txt').read()
+        return render_template('fun.html', username=username, message=f'Your flag: {flag}')
+    else:
+        return render_template('fun.html', username=username, message='Only the admin user can view the flag.')
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    return redirect('/')
+```
+
+There is a bunch to break down in this script. But first, let's look at this line.
+
+```
+cipher = AES.new(key, AES.MODE_CTR, nonce=nonce) # my friend told me that cbc had some weird bit flipping attack? ctr sounds way cooler anyways
+```
+
+The code and comment both tell me that maybe it's time to learn a bit about AES CTR mode.
+
+### AES CTR Mode Summary
+
+The following is a quick look into both encryption and decryption using CTR mode.
+
+![Encryption](/assets/Challenge/ctr-encrypt.png)
+
+Encryption with CTR mode follows this general set of steps.
+
+  1. A nonce is concatenated to a counter
+  2. The key and nonce+counter are used to perform some black magic
+  3. The block of text we want to encrypt is XOR'd with the result of step 2
+  4. Ciphertext pops out
+  5. The counter is incremented and the process repeats until all the text is encrypted
+
+![Decryption](/assets/Challenge/ctr-mode.png)
+
+Decryption is very similar to encryption in CTR mode, here are the general steps to it.
+
+  1. The same nonce used in encryption is concatenated with the counter
+  2. The key and nonce+counter are combined using the same black magic as before
+  3. This time, the ciphertext we want to decrypt is XOR'd with the result of step 2
+  4. Plaintext pops out
+  5. The counter is incremented and the process repeats until all the text is decrypted
+
+It's important to note that if the key and nonce pair are never reused, this process
+is very secure.    
+
+### Analyzing the Code
+
+Going back to the code, it's time for a more complete analysis.
+
+```
+key = urandom(16)
+cnonce = urandom(8)
+```
+
+The first few lines create a random 16 byte for key and cnonce. The key remains this
+value for the rest of the program, which seems questionable.
+
+```
+users = {
+    'admin' : '240964a7a2f1b057b898ef33c187f2c2412aa4d849ac1a920774fd317000d33ebb8b0064834ed1f8a74763df4e95cd8c8be3a154b46929c3969ce323db69b81f',
+    'ImaginaryCTFUser' : '87197acc4657e9adcc2e4e24c77268fa5b95dea2867eacd493a0478a0c493420bfb2280c7e4e579a604e0a243f74a36a8931edf71b088add09537e54b11ce326',
+
+[...]
+
+def check(username, password):
+    if username not in users.keys():
+        return False
+    if sha512(password.encode()).hexdigest() == users[username]:
+        return True
+```
+
+This next block starts off with a dictionary of users and what appears to be hashes
+of their passwords. The second half of this excerpt confirms that they are SHA512
+format hashes. We can also see that the check(username, password) function is used
+to authenticate users.
+
+![John](/assets/Challenge/john.png)
+
+A quick check with John the Ripper reveals that 3 passwords were weak enough to be
+cracked: ImaginaryCTFUser:idk, just_a_normal_user:password, and firepwny:pwned
+
+```
+def backend():
+    if request.method == 'POST':
+        if not check(request.form['username'], request.form['password']):
+            return 'Wrong username/password.'
+        resp = make_response(redirect('/home'))
+        nonce = urandom(8)
+        cipher = AES.new(key, AES.MODE_CTR, nonce=nonce) # my friend told me that cbc had some weird bit flipping attack? ctr sounds way cooler anyways
+        cookie = hexlify(nonce + cipher.encrypt(pad(request.form['username'].encode(), 16)))
+        resp.set_cookie('auth', cookie)
+        return resp
+    else:
+        return make_response(redirect('/home'))
+```
+
+This function performs two main tasks: call check() to confirm the supplied username
+and password, and make a session cookie for the user with AES CTR mode.
+
+```
+nonce = urandom(8)
+cipher = AES.new(key, AES.MODE_CTR, nonce=nonce) # my friend told me that cbc had some weird bit flipping attack? ctr sounds way cooler anyways
+cookie = hexlify(nonce + cipher.encrypt(pad(request.form['username'].encode(), 16)))
+```
+
+Looking a bit deeper into this function provides some important details on how the cookies
+are formed:
+
+  - A random nonce is made for each cookie
+  - The username is encrypted using AES CTR mode
+  - The username is padded with extra bytes using the pad() function
+  - The nonce is affixed to the front of the encrypted username
+
+The last most important detail is that the cookies aren't timestamped and cookie
+expiry isn't set. This means a user (or us) could keep using the same cookie forever.
+
+```
+@app.route('/home', methods=['GET'])
+def home():
+    nonce = unhexlify(request.cookies.get('auth')[:16])
+    cipher = AES.new(key, AES.MODE_CTR, nonce=nonce)
+    username = unpad(cipher.decrypt(unhexlify(request.cookies.get('auth')[16:])), 16).decode()
+    if username == 'admin':
+        flag = open('flag.txt').read()
+        return render_template('fun.html', username=username, message=f'Your flag: {flag}')
+    else:
+        return render_template('fun.html', username=username, message='Only the admin user can view the flag.')    
+```
+
+The final section of code has all the session management details in it:
+
+  1. The user supplies their cookie
+  2. The nonce is removed from the front of the cookie
+  3. The username is decrypted and unpadded
+  4. The script checks if the username is admin and prints the flag if it is
+
+### Logging In
+
+With the code out of the way, the next step for me was to somehow get my hands on
+a cookie. Using the credentials I got earlier, I logged into the site as firepwny
+and got to see Rick Astley.
+
+![Rick](/assets/2021-ICTF/cookie3.png)
+
+Unfortunately, only the admin can see the flag and his password wasn't as weak.
+However, I did get a cookie to dissect as a runner-up prize.
+
+### Mathing it Out
+
+Since we know so much about how this cookie is made, we can break it down into parts.
+
+```
+original cookie: a23d98c011b41eab3b0e8375b7b6ecfc52af4f92105485a2
+
+nonce: a23d98c011b41eab
+
+username + padding: 3b0e8375b7b6ecfc52af4f92105485a2
+```
+
+Normally, this part should be a massive roadblock. However, since the cookies never expire
+or get their validity checked, we can potentially use this one to pretend to be admin.
+How? Unfortunately, a few equations are needed for that.
+
+![P XOR F](/assets/2021-ICTF/pxorf.PNG)
+
+This is the normal equation to represent what AES CTR mode does. Here **C** is the ciphertext, **P** is the plaintext and **F(k,n)** represents the black magic that AES does to combine the
+nonce **n**, the key **k**, and the counter.
+
+In this situation, the only thing we don't know is the key.
+Meaning we shouldn't be able reverse this, especially if the nonce is random every time.
+However because the script always uses the same key and relies on the user to supply the nonce,
+we can force F(k, n) to always be the same value Y.
+
+![P XOR Y](/assets/2021-ICTF/pxory.PNG)
+
+Our equation becomes way easier to reverse with Y being some constant value and we can even manipulate it a bit using XOR rules.
+
+![Y](/assets/2021-ICTF/y.PNG)
+
+Using XOR rules we can figure out a value for Y and use it to put any value we want
+into the cookie.
+
+### Baking the Cookie
+
+The first step to making the cookie we want is finding out the value for Y. To do that
+I take the original username, "firepwny", convert it to hexadecimal and add some padding to it
+
+```
+'firepwny' = 6669726570776e79
+
+'firepwny'+ padding = 6669726570776e790808080808080808
+```
+
+How did I choose what to pad the username with? Well the way the pad(input, number)
+function works is that it will add bytes to the end of the input up until it's length
+is divisible evenly by "number_of_bytes". For example, pad(b'firepwny', 16) pads
+firepwny until it is 16 bytes long. The byte value used to pad the input is chosen
+based on how many bytes it needs to pad. So if I were to pad "admin" to 16 bytes,
+
+```
+pad('admin', 16) = admin\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b\x0b
+
+hex('admin')+padding = 61646d696e0b0b0b0b0b0b0b0b0b0b0b
+```
+
+\x0b is chosen because admin needs to be padded with 11 bytes to be 16 bytes in length.
+With that out of the way, we can continue by XORing our padded version of firepwny
+with its encrypted counter part to find Y.
+
+```
+Y = 6669726570776e790808080808080808 XOR 3b0e8375b7b6ecfc52af4f92105485a2
+Y = 5d67f110c7c182855aa7479a185c8daa
+```
+
+Next to get the desired plaintext baked into the cookie I XOR'd Y with the padded
+version of "admin".
+
+```
+New Ciphertext = 5d67f110c7c182855aa7479a185c8daa XOR 61646d696e0b0b0b0b0b0b0b0b0b0b0b
+New Ciphertext = 3c039c79a9ca898e51ac4c91135786a1
+```
+
+Finally, I re-added the nonce to the front to force the website to use that value
+when decrypting the cookie.
+
+```
+New Cookie = a23d98c011b41eaba23d98c011b41eab3c039c79a9ca898e51ac4c91135786a1
+```
+
+### Saying Goodbye to Rick
+
+The final step of this process was to switch back to the browser and replace the
+cookie with the brand new one.
+
+![Cookie Flag](/assets/2021-ICTF/cookie4.png)
+
+After copy pasting the new cookie into the browser and refreshing the page, we are greeted by the flag and the challenge is complete.

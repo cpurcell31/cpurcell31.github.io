@@ -472,7 +472,7 @@ and passwords. So, I booted up john and input the password hashes to see if any 
 ![John](/assets/2021-ICTF/john.png)
 
 The results show that 3 sets of credentials are available ImaginaryCTFUser:idk, just_a_normal_user:password,
-and firepwny:pwned. I logged in as firepwny and checked got to see Rick Astley.
+and firepwny:pwned. I logged in as firepwny and got to see Rick Astley.
 
 ![Rick](/assets/2021-ICTF/cookie3.png)
 
@@ -525,7 +525,7 @@ all the math people here it is boiled down to an equation
 Here **C** is the ciphertext, **P** is the plaintext and **F(k,n)** represents the black magic that AES does to combine the
 nonce, the key, and the counter. In this situation, we have values for 3 of the 4 variables, C, P, and n. Since, we don't know
 the value of the key k and the nonce is random every time, we shouldn't be able to do anything here. However due to the way the script works,
-the nonce can be forced to be a value we know. This means we can force F(k,n) to essentially be the same value every time.
+there is no cookie expiry and therefore, the nonce can be forced to be a value we know. This means we can force F(k,n) to essentially be the same value every time.
 
 ![P XOR Y](/assets/2021-ICTF/pxory.PNG)
 
