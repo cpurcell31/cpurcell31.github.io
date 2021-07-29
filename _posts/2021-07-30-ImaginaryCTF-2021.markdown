@@ -407,8 +407,7 @@ The process continues until I find every letter of the password. Which, in the e
 
     Cookie streaming service? Naaaaaaah. Password protected Rickroll as a Service? YAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSS!
 
-For this challenge we are given another combo of python code and a website that uses it. The difference here is that this
-challenge is more of a crypto challenge.
+For this challenge we are given another combo of python code and a website that uses it. The difference here is that this challenge has a crypto challenge vibe.
 
 ```
 key = urandom(16)
