@@ -10,12 +10,13 @@ tags: CTF competition
     Cookie streaming service? Naaaaaaah. Password protected Rickroll as a Service? YAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSS!
 ```
 
-For this challenge we are given both a python script and a website that uses it. I
-started off by looking at the website.
+For this challenge we are given another combo of python code and a website that uses it. The difference here is that this challenge has a crypto challenge vibe.
+
+I began by looking at the website.
 
 ![Login Page](/assets/Challenge/login.png)
 
-We are greeted by a login page and not much else. Next the python code.
+We are greeted by a login page and not much else. Alright, next the python code.
 
 ```
 key = urandom(16)
@@ -76,11 +77,11 @@ There is a bunch to break down in this script. But first, let's look at this lin
 cipher = AES.new(key, AES.MODE_CTR, nonce=nonce) # my friend told me that cbc had some weird bit flipping attack? ctr sounds way cooler anyways
 ```
 
-The code and comment both tell me that maybe it's time to learn a bit about AES CTR mode.
+The code and comment both tell me that maybe it's about time I learn a bit about AES CTR mode.
 
 ### AES CTR Mode Summary
 
-The following is a quick look into both encryption and decryption using CTR mode.
+Here's the basic run-down on how AES CTR mode works.
 
 ![Encryption](/assets/Challenge/ctr-encrypt.png)
 
@@ -94,7 +95,7 @@ Encryption with CTR mode follows this general set of steps.
 
 ![Decryption](/assets/Challenge/ctr-mode.png)
 
-Decryption is very similar to encryption in CTR mode, here are the general steps to it.
+Decryption is very similar to encryption in CTR mode, here are the steps to it.
 
   1. The same nonce used in encryption is concatenated with the counter
   2. The key and nonce+counter are combined using the same black magic as before
@@ -102,7 +103,7 @@ Decryption is very similar to encryption in CTR mode, here are the general steps
   4. Plaintext pops out
   5. The counter is incremented and the process repeats until all the text is decrypted
 
-It's important to note that if the key and nonce pair are never reused, this process
+An important note is that if the key and nonce pair are never reused, this process
 is very secure.    
 
 ### Analyzing the Code
@@ -115,7 +116,7 @@ cnonce = urandom(8)
 ```
 
 The first few lines create a random 16 byte for key and cnonce. The key remains this
-value for the rest of the program.
+value for the rest of the program. Cnonce, weirdly enough, is never mentioned again.
 
 ```
 users = {
@@ -133,12 +134,11 @@ def check(username, password):
 
 This next block starts off with a dictionary of users and what appears to be hashes
 of their passwords. The second half of this excerpt confirms that they are SHA512
-format hashes. We can also see that the check(username, password) function is used
-to authenticate users.
+format hashes. Also, this turns out to be the function that authenticates logins.
 
 ![John](/assets/Challenge/john.png)
 
-A quick check with John the Ripper reveals that 3 passwords were weak enough to be
+I did a quick check with John the Ripper and revealed that 3 passwords were weak enough to be
 cracked: ImaginaryCTFUser:idk, just_a_normal_user:password, and firepwny:pwned
 
 ```
@@ -174,7 +174,7 @@ are formed:
   - The nonce is affixed to the front of the encrypted username
 
 The last most important detail is that the cookies aren't timestamped and cookie
-expiry isn't set. This means a user (or us) could keep using the same cookie forever.
+expiry isn't set. This means I could potentially use a single cookie forever.
 
 ```
 @app.route('/home', methods=['GET'])
@@ -196,13 +196,13 @@ The final section of code has all the session management details in it:
   3. The username is decrypted and unpadded
   4. The script checks if the username is admin and prints the flag if it is
 
-Also, cookies are never validated, meaning, someone could possibly create their own cookie.
+Also, cookies are never completely validated, meaning, someone could possibly create their own cookies.
 
 ### Logging In
 
 With the code out of the way, the next step for me was to somehow get my hands on
 a cookie. Using the credentials I got earlier, I logged into the site as firepwny
-and got to see Rick Astley.
+and got to see my idol, Rick Astley.
 
 ![Rick](/assets/Challenge/cookie.png)
 
@@ -211,7 +211,7 @@ However, I did get a cookie to dissect as a runner-up prize.
 
 ### Mathing it Out
 
-Since we know so much about how this cookie is made, we can break it down into parts.
+Since I learned so much about how this cookie is made, I was able to break it into pieces.
 
 ```
 original cookie: a23d98c011b41eab3b0e8375b7b6ecfc52af4f92105485a2
@@ -222,8 +222,8 @@ username + padding: 3b0e8375b7b6ecfc52af4f92105485a2
 ```
 
 Normally, this part should be a massive roadblock. However, since the cookies never expire
-or get their validity checked, we can potentially use this one to pretend to be admin.
-How? Unfortunately, a few equations are needed for that.
+or get their validity checked, I could potentially use this cookie to pretend to be admin.
+How? Unfortunately, I needed a few equations to figure it out.
 
 ![P XOR F](/assets/2021-ICTF/pxorf.PNG)
 
@@ -233,21 +233,22 @@ nonce **n**, the key **k**, and the counter.
 In this situation, the only thing we don't know is the key.
 Meaning we shouldn't be able reverse this, especially if the nonce is random every time.
 However because the script always uses the same key and relies on the user to supply the nonce,
-we can force F(k, n) to always be the same value - Y.
+the value of F(k, n) can be simplified to a constant value - Y.
 
 ![P XOR Y](/assets/2021-ICTF/pxory.PNG)
 
-Our equation becomes way easier to reverse with Y being some constant value and we can even manipulate it a bit using XOR rules.
+Our equation becomes way easier to reverse with Y being some constant value and then
+the equation can be manipulated a bit using XOR rules.
 
 ![Y](/assets/2021-ICTF/y.PNG)
 
-Using XOR rules we can figure out a value for Y and use it to put any value we want
+By using XOR rules we can figure out a value for Y and use it to put any value we want
 into the cookie.
 
 ### Baking the Cookie
 
-The first step to making the cookie we want is finding out the value for Y. To do that
-I take the original username, "firepwny", convert it to hexadecimal and add some padding to it
+To put it all into practice, I needed to first find out the value of Y. To do that
+I take the original username, "firepwny", convert it to hexadecimal and add some padding to it.
 
 ```
 'firepwny' = 6669726570776e79
@@ -255,10 +256,11 @@ I take the original username, "firepwny", convert it to hexadecimal and add some
 'firepwny'+ padding = 6669726570776e790808080808080808
 ```
 
-How did I choose what to pad the username with? Well the way the pad(input, number)
-function works is that it will add bytes to the end of the input up until it's length
-is divisible evenly by "number_of_bytes". For example, pad(b'firepwny', 16) pads
-firepwny until it is 16 bytes long.
+How did I choose what to pad the username with?
+
+Well, the way the pad(input, number) function works is that it will add bytes to
+the end of the input up until it's length is divisible evenly by "number_of_bytes".
+For example, pad(b'firepwny', 16) pads firepwny until it is 16 bytes long.
 
 The byte value used to pad the input is chosen
 based on how many bytes it needs to pad. So if I were to pad "admin" to 16 bytes...
@@ -270,7 +272,8 @@ hex('admin')+padding = 61646d696e0b0b0b0b0b0b0b0b0b0b0b
 ```
 
 \x0b is chosen because admin needs to be padded with 11 bytes to be 16 bytes in length.
-With that out of the way, we can continue by XORing our padded version of firepwny
+
+With that out of the way, I continued by XORing the padded version of firepwny
 with its encrypted counter part to find Y.
 
 ```
