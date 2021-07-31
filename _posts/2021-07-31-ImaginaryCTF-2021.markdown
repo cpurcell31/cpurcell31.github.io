@@ -10,13 +10,13 @@ tags: CTF competition
     Cookie streaming service? Naaaaaaah. Password protected Rickroll as a Service? YAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSS!
 ```
 
-For this challenge we are given another combo of python code and a website that uses it. The difference here is that this challenge has a crypto challenge vibe.
+For this challenge, we are given another combo of python code and a website. The difference here is that this challenge has a crypto challenge vibe.
 
 I began by looking at the website.
 
 ![Login Page](/assets/Challenge/login.png)
 
-We are greeted by a login page and not much else. Alright, next the python code.
+We are greeted by a login page and not much else. Alright, next, the python code.
 
 ```
 key = urandom(16)
@@ -95,7 +95,7 @@ Encryption with CTR mode follows this general set of steps.
 
 ![Decryption](/assets/Challenge/ctr-mode.png)
 
-Decryption is very similar to encryption in CTR mode, here are the steps to it.
+Decryption is very similar to encryption in CTR mode, here are the steps.
 
   1. The same nonce used in encryption is concatenated with the counter
   2. The key and nonce+counter are combined using the same black magic as before
@@ -115,7 +115,7 @@ key = urandom(16)
 cnonce = urandom(8)
 ```
 
-The first few lines create a random 16 byte for key and cnonce. The key remains this
+The first few lines create a random 16-byte key and an 8-byte cnonce. The key remains this
 value for the rest of the program. Cnonce, weirdly enough, is never mentioned again.
 
 ```
@@ -132,7 +132,7 @@ def check(username, password):
         return True
 ```
 
-This next block starts off with a dictionary of users and what appears to be hashes
+This next block starts with a dictionary of users and what appears to be hashes
 of their passwords. The second half of this excerpt confirms that they are SHA512
 format hashes. Also, this turns out to be the function that authenticates logins.
 
@@ -168,7 +168,7 @@ cookie = hexlify(nonce + cipher.encrypt(pad(request.form['username'].encode(), 1
 Looking a bit deeper into this function provides some important details on how the cookies
 are formed:
 
-  - A random nonce is made for each cookie
+  - A random 8-byte nonce is made for each cookie
   - The username is encrypted using AES CTR mode
   - The username is padded with extra bytes using the pad() function
   - The nonce is affixed to the front of the encrypted username
@@ -222,7 +222,7 @@ username + padding: 3b0e8375b7b6ecfc52af4f92105485a2
 ```
 
 Normally, this part should be a massive roadblock. However, since the cookies never expire
-or get their validity checked, I could potentially use this cookie to pretend to be admin.
+or get their validity checked, I could potentially use this cookie to pretend to be the admin.
 How? Unfortunately, I needed a few equations to figure it out.
 
 ![P XOR F](/assets/2021-ICTF/pxorf.PNG)
@@ -231,13 +231,13 @@ This is the normal equation to represent what AES CTR mode does. Here **C** is t
 nonce **n**, the key **k**, and the counter.
 
 In this situation, the only thing we don't know is the key.
-Meaning we shouldn't be able reverse this, especially if the nonce is random every time.
-However because the script always uses the same key and relies on the user to supply the nonce,
+Meaning we shouldn't be able to reverse this, especially if the nonce is random every time.
+However, because the script always uses the same key and relies on the user to supply the nonce,
 the value of F(k, n) can be simplified to a constant value - Y.
 
 ![P XOR Y](/assets/2021-ICTF/pxory.PNG)
 
-Our equation becomes way easier to reverse with Y being some constant value and then
+Our equation becomes way easier to reverse with Y being some constant value. Then
 the equation can be manipulated a bit using XOR rules.
 
 ![Y](/assets/2021-ICTF/y.PNG)
@@ -258,8 +258,8 @@ I take the original username, "firepwny", convert it to hexadecimal and add some
 
 How did I choose what to pad the username with?
 
-Well, the way the pad(input, number) function works is that it will add bytes to
-the end of the input up until it's length is divisible evenly by "number_of_bytes".
+Well, the way the pad(input, number_of_bytes) function works is that it will add bytes to
+the end of the input until its length is divisible evenly by "number_of_bytes".
 For example, pad(b'firepwny', 16) pads firepwny until it is 16 bytes long.
 
 The byte value used to pad the input is chosen
@@ -274,7 +274,7 @@ hex('admin')+padding = 61646d696e0b0b0b0b0b0b0b0b0b0b0b
 \x0b is chosen because admin needs to be padded with 11 bytes to be 16 bytes in length.
 
 With that out of the way, I continued by XORing the padded version of firepwny
-with its encrypted counter part to find Y.
+with its encrypted counterpart to find Y.
 
 ```
 Y = 6669726570776e790808080808080808 XOR 3b0e8375b7b6ecfc52af4f92105485a2
@@ -303,4 +303,4 @@ cookie with the brand new one.
 
 ![Cookie Flag](/assets/2021-ICTF/cookie4.png)
 
-After copy pasting the new cookie into the browser and refreshing the page, we are greeted by the flag and the challenge is complete.
+After copy-pasting the new cookie into the browser and refreshing the page, we are greeted by the flag and the challenge is complete.
