@@ -1,0 +1,503 @@
+---
+layout: post
+title:  "RACTF 2021 Writeup"
+tags: CTF competition
+---
+
+![RACTF Logo](/assets/RACTF/ractflogo.png)
+
+Here's another CTF event I participated in recently. This one hosted by the Really Awesome CTF team. This one was a little more challenging
+than the previous one (at least for me) but I still felt I learned quite a bit from it. Anyway, here are some of the challenges I solved.
+
+## Web
+
+### Really Awesome Monitoring Dashboard
+
+`🌟 Perfect infrastructure 🌟`
+
+For the first web challenge we are given only a link to a site. First off, let's explore.
+
+![Site](/assets/RACTF/radash.png)
+
+The site lives up to the challenge name for sure. For the basics,
+
+- It appears to run Grafana to render the dashboard
+- The source doesn't really contain much to go on
+- There is a login page, but we don't have any details yet
+- We can further inspect each element of the dashboard
+
+![Inspect](/assets/RACTF/radashinspect.png)
+
+Inspecting certain elements shows that they make sql queries through the site's api to display some data. Looking through burp, I can seem
+very frequent POST requests to this api with queries to update one of the elements.
+
+![Burp](/assets/RACTF/radash2.png)
+
+Inside each request is an sql query. I then tried to modify the query slightly to see if I could use these requests.
+
+![Modify](/assets/RACTF/radashsql.png)
+
+I modified the query to see if I could get a table listing. Sure enough, it returned a list containing the table names logs and flags.
+Flags sounds like the right place to look so I made another query to check the table's column names.
+
+![Table Columns](/assets/RACTF/radashsql2.png)
+
+Here we can see the table creation statement, which, gives it two columns: challenge and flag. I made a final query to see if I could extract
+the flag(s).
+
+![Flag](/assets/RACTF/radashsql3.png)
+
+And success!
+
+### Emojibook 1
+
+`😂 The flag is at /flag.txt`
+
+Another web challenge but this time we given source code as well as a link. First let's check out the site.
+
+![Emojibook](/assets/RACTF/emoji.png)
+
+The idea of the site is fairly simple, users log in and create "notes" which contain emojis and text. Luckily there is a registration page that works, so I went ahead and made an account and logged in. Next up I needed to figure out how the site worked especially relating to posting notes. So I looked through the source code.
+
+[**A copy of the source code can be found here**](https://github.com/cpurcell31/cpurcell31.github.io/assets/RACTF/Source)
+
+There is a fair bit to unpack but I will boil it down to some important bits.
+
+```
+└───Emojibook
+    │   emoji.json
+    │   manage.py
+    │   requirements.txt
+    ├───emoji
+    ├───notebook
+    │   │   asgi.py
+    │   │   settings.py
+    │   │   urls.py
+    │   │   wsgi.py
+    │   │   __init__.py
+    │   │
+    │   └───__pycache__
+    ├───notes
+    │   │   admin.py
+    │   │   apps.py
+    │   │   forms.py
+    │   │   models.py
+    │   │   tests.py
+    │   │   views.py
+    │   │   __init__.py
+    │   ├───migrations
+    │   │   │   0001_initial.py
+    │   │   │   __init__.py
+    │   │   └───__pycache__
+    │   └───__pycache__
+    │           admin.cpython-39.pyc
+    │           apps.cpython-39.pyc
+    │           forms.cpython-39.pyc
+    │           models.cpython-39.pyc
+    │           views.cpython-39.pyc
+    │           __init__.cpython-39.pyc
+    ├───static
+    └───templates
+        │   base.html
+        │   create.html
+        │   index.html
+        │   note.html
+        └───registration
+                login.html
+                register.html
+```
+
+Here is the general structure of the application. I've omitted some things like all the emoji files to make it briefer. Now to get the some important code segments.
+
+```
+settings.py
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-ccl^w$g=w#j_6gsiy^921q#eotiyd+o9xqni1cndz=k^a@pm+8'
+```
+
+This segment looks pretty damning but won't be used until Emojibook 2 (which I didn't solve).
+
+```
+forms.py
+
+def save(self, commit=True):
+    instance = super(NoteCreateForm, self).save(commit=False)
+    instance.author = self.user
+    instance.body = instance.body.replace("{{", "").replace("}}", "").replace("..", "")
+
+    with open("emoji.json") as emoji_file:
+        emojis = json.load(emoji_file)
+
+        for emoji in re.findall("(:[a-z_]*?:)", instance.body):
+            instance.body = instance.body.replace(emoji, "{{" + emojis[emoji.replace(":", "")] + ".png}}")
+```
+
+This snippet shows how the emojis are inserted into notes. First the user types something like :grinning_face: and then the script searches
+through emoji.json to find the matching .png. Finally, the script replaces the :grinning_face: with the something like "{{1F600.png}}". This
+segment also does a bit of input sanitization by replacing user supplied "{{", "}}", and "..".
+
+```
+views.py
+
+def view_note(request: HttpRequest, pk: int) -> HttpResponse:
+    note = get_object_or_404(Note, pk=pk)
+    text = note.body
+    for include in re.findall("({{.*?}})", text):
+        print(include)
+        file_name = os.path.join("emoji", re.sub("[{}]", "", include))
+        with open(file_name, "rb") as file:
+            text = text.replace(include, f"<img src=\"data:image/png;base64,{base64.b64encode(file.read()).decode('latin1')}\" width=\"25\" height=\"25\" />")
+
+    return render(request, "note.html", {"note": note, "text": text})
+```
+
+This next segment is where the notes are rendered for the user. This means actually displaying the emoji based on the text inserted by the previous
+script. The script grabs the proper emoji.png file from the path emoji/<emoji filename>.png then inserts the file into the note as an img. However,
+this script could also allow a way in if we could somehow exchange the emoji filename with one of our choosing. I tested this LFI with the following
+
+![LFI](/assets/RACTF/emoji2.png)
+
+The idea here is to avoid the input santization by supplying some ".." to break up our set of "{{" and "}}". Then I inserted a file I wanted to
+extract in between the inner curly braces, in this case, /etc/passwd
+
+![LFI Output](/assets/RACTF/emoji3.png)
+
+When the note is posted, it outputs something like this. A title plus a broken png. However, inspecting the image provides some base64, which decodes
+into the contents of /etc/passwd. The final step was to use this vulnerability to read the /flag.txt
+
+```
+data:image/png;base64,cmFjdGZ7ZGo0bmcwX2xmaX0K
+```
+
+The note resulting note looks very similar but this time the img contains the base64 encoded flag.
+
+## OSINT
+
+### Triangles
+
+This challenge begins the OSINT section and consists of only a single picture. To solve the challenge you have to find the location the
+picture was taken and submit it by clicking the point on the supplied map.
+
+![Triangles](/assets/RACTF/triangles.jpg)
+
+The first step for me was to look around the picture and find some clues as to what country or city this could be. Luckily, there is a huge banner
+with the "Ragusa Foto Festival" on it. Also, there is a sign with landmark directions on it.
+
+![Sign](/assets/RACTF/ragusasign.png)
+
+Googling the location of these attractions gives us a few points on the map to try and triangulate the original photo spot.
+
+![Google Maps](/assets/RACTF/ragusa.png)
+
+So the place we are looking for is somewhere in the middle of all these points. I started off by jumping right into street view in the center of it all at Piazza della Republica. After a small bit of searching I found the right spot by the stairs and the sign.
+
+![Location](/assets/RACTF/plaza.png)
+
+Submitting this location to the challenge map solves the challenge.
+
+### Skyline
+
+Much like Triangles, for this challenge we are given a single picture and have to find the location it was taken. However, this challenge is quite a
+bit trickier.
+
+![Skyline](/assets/RACTF/skyline.jpg)
+
+Not much is in this picture, except for a very unique pattern on the gondola seats and a skyline you would easily recognize if you knew
+the city this picture was taken in. Luckily, not many cities have a gondola in them, especially one that goes over a river. A quick google search for
+urban gondolas will hopefully land a few famous examples to check.
+
+https://archive.curbed.com/2017/9/21/16340394/urban-gondolas-cable-cars-cities
+
+One of the first links in the search revealed some nice examples to check. The several with pictures didn't appear to be the right ones. Either the wrong seat colour or the location looked completely off. However, after checking through the rest of the list I came across Emirates Air Line in London.
+
+![Emirates](/assets/RACTF/notbojo.jpg)
+
+Googling some pictures reveals that London has to be the correct location. The gondola seats match exactly and the surroundings look very similar.
+Next step was to find a spot close to the original photo. This step took a bit of guess work and to find a close enough spot I had to take a street view trip with a family.
+
+![Family Trip](/assets/RACTF/family.png)
+
+Submitting a point roughly between the two Emirates Stations solves the challenge.
+
+
+### Silver Darlings
+
+The trend continues with this section. We are given a single photo and need to find the location it was taken at.
+
+![Silver Darlings](/assets/RACTF/silver_darlings.jpg)
+
+Fortunately, we have a bit more to look into for this picture. The first thing to notice is the big sign for Cafe de la Mairie. Next, there are a couple of small signs, one with what looks like a phone number on it and another with "Chambres Dhotes". Given, the language of everything here it's a safe bet its somewhere that speaks French. Unfortunately, there are a TON of Cafe de la Mairies around France.
+
+![Cafes](/assets/RACTF/cafes.png)
+
+So the next best bet is the phone number. Searching the phone number on google provides a few reverse lookup sites, mainly French ones.
+
+![Locations](/assets/RACTF/places.png)
+
+One of the sites gives a broad geolocation of the number. Given how many cities are in the list, I decided to do another broad google maps search for
+the cafe.
+
+![Search 2](/assets/RACTF/ancien.png)
+
+One peculiar entry pops up: Ancien Cafe de la Mairie.
+
+![Ancien](/assets/RACTF/ancien2.jpg)
+
+The preview photo of the cafe looks exactly like the photo (just from a different angle).
+
+![Solution](/assets/RACTF/ancien3.png)
+
+Now that we have the place, the final step is to submit it and complete the challenge.
+
+### John Poet
+
+Well, well, well, another single picture to figure out the location.
+
+![John Poet](/assets/RACTF/john_poet.jpg)
+
+This picture has a lot going on, but at the same time, a lot of tricky stuff. Some major things to notice are
+
+- The restraunt sign that says "kal cerato" or something - pretty hard to read
+- A big sign that says "Nova"
+- Some small signs in the background that say "R.H.C"
+
+If we can get some more details on any of these hints we might be able to narrow down the location. Unfortunately, I couldn't decode any of the small
+details into something tangible. So I tried a reverse image search. The usual nonsense results popped up, but luckily, I kept scrolling and found one with a very similar building shape.
+
+![Lookalike](/assets/RACTF/lookalike.png)
+
+And sure enough, in the related photos I found that Nova sign as well. The location turned out to be near the Nova Victoria in London.
+
+![Nova](/assets/RACTF/nova.png)
+
+Now to narrow it down even further, I did a quick tour in street view and found the exact spot to submit.
+
+![Spot](/assets/RACTF/novafinal.png)
+
+### 50m on the Right
+
+You know the drill by now, we are given a single picture and need to find the location the photo was taken.
+
+![50m on the Right](/assets/RACTF/50m_on_the_right.jpg)
+
+Most notably from this photo, a sign with many a detail can be found on the ground.
+
+![Sign](/assets/RACTF/sign.png)
+
+The sign can be a bit hard to read. However, on it there is a name of a restaurant, a phone number, some text in both English and Portuguese, and a small map. Given some of the hints, I started by searching for Bistro 24 in Portugal.
+
+![Bistro](/assets/RACTF/bistro.png)
+
+Exactly one Bistro 24, let's check it out a bit further.
+
+![Bistro24](/assets/RACTF/bistro24.png)
+
+The phone number is an exact match to the sign so we have the place. However, this isn't the exact right place. The sign said Bistro 24 was 50m to the right. So I had to explore a bit to find the where the sign was. Finding the big blue "Zona" no parking sign would be the best bet here.
+
+![Blue Sign](/assets/RACTF/isawthesign.png)
+
+After a bunch of exploring, I found the blue sign and submitted this location to complete the challenge.
+
+### OHSHINT
+
+```
+Agent,
+
+We've got an OSINT challenge for you. We've been tracking a suspect and found that he went on holiday within the UK recently. We've pulled a recent image from the suspect's social media.
+
+Can you take a look and find out the rough location where this image was taken?
+```
+
+Again we are given a single picture for this challenge but also a big hint to where it might have been taken.
+
+![Lake](/assets/RACTF/image.jpg)
+
+Unfortunately, there is not much to go on with the picture alone. Also, the hint isn't really THAT helpful alone. I mean, on a universal scale the UK
+is pretty small, but when we need to find accurate coordinates, it's pretty big. Since there was not much to work with in the picture, I decided to check its metadata with exiftool.
+
+![Exiftool](/assets/RACTF/exiftool.png)
+
+The description within the metadata provides a huge hint to help narrow down the search. There is also a set of coordinates, however, send us nowhere close to the UK. The rest of the metadata is a slew of easter eggs and is there for mindgames. Going back to the description, we can narrow down our search to a lodge by a big lake, north east of Lancaster. I began my search for all locations that fit this criteria.
+
+![Lodges](/assets/RACTF/lodges.png)
+
+Admittedly, this next step took me longer than it should have, but, there are a lot of big-ish lakes near Lancaster (and the mindgames might have worked!). Finally, I came across one specific lake-lodge combo.
+
+![Lake Lodge](/assets/RACTF/tegid.png)
+
+The initial google maps photo didn't seem like it could be at all the right place. But after looking at a few more photos it was probably the right place.
+
+![Pine Lake 1](/assets/RACTF/pinelake.png)
+
+![Pine Lake 2](/assets/RACTF/pinelake2.png)
+
+Finally, submitting a point near Tegid Lodge completes the challenge.
+
+## Miscellaneous
+
+### RSFPWS - Intercepted
+
+```
+This game i'm playing is fun! There's this box that seemingly does nothing though... It sends a "network request" whatever that is. Can you have a look?
+```
+
+This challenge was a fairly unique one for me. The challenge revolves around exploiting a simple Unity game. However, this first part, titled "Intercepted", is just an intro.
+
+![Boot Screen](/assets/RACTF/boot.png)
+
+The first step I did was boot up the game. Since, the title was "Intercepted" I also booted up Wireshark and got it to listen in. After entering
+the ip and port, we are greeted by a simple landscape with a few boxes and floating text.
+
+![After Load](/assets/RACTF/game.png)
+
+![First Box](/assets/RACTF/game3.png)
+
+Given the title of the challenge, this first part revolves around this box. I followed the instructions from the floating text and entered the box.
+Next I switched to Wireshark to see if I captured anything. There was a lot of noise from the game so I filtered down the capture a bit.
+
+![Flag](/assets/RACTF/game4.png)
+
+From the capture we can see where the server exchanges connection messages and more importantly, the packet containing the flag.
+
+### RSFPWS - Invulnerable
+
+```
+This game i'm playing is fun! They have these cubes where you walk into them and take damage, how awesome! One of them instant kills you though, that kinda sucks. Can you solve that?
+```
+
+This is the second part of the Unity game exploiting challenges and it was a bit more "exploity" than the last one. To start off I examined the
+two other red boxes in the game.
+
+![Boxes 2](/assets/RACTF/game2.png)
+
+As we can see, there is a box that damages the player and one that kills the player. The goal is to survive the "death box" somehow. Since this is
+a Unity game, I decided to try Cheat Engine. Cheat Engine allows me to edit the program on the fly. Luckily, there are very few server-side components/checks to this game so I am free to mess with the code.
+
+![Mono](/assets/RACTF/game5.png)
+
+To examine the assembly and functions behind the game I first needed to activate mono features in Cheat Engine then use the utility called "Mono Dissector". From this menu the thing we want to look at is Assembly-CSharp.dll (it basically contains all the scripts we want to look at). Next
+I looked through the list of entities until I found something to do with the death box.
+
+![HP Delete](/assets/RACTF/game6.png)
+
+Here we have the "HpDeleteBox". This entity is exactly what we are looking for and also contains a function called "OnTriggerEnter". The function supposedly activates when the player enters the collision zone of the HpDeleteBox. From there using the "Jit" command I examined the assembly.
+
+![Assembly](/assets/RACTF/game7.png)
+
+An excerpt from the function is shown above. I'm no expert on assembly so naturally my eyes were drawn to the instructions: "call UIManager.SetFlag" and "call PlayerManager.SetHealth". So, in theory, the first function should set the flag, and the second function should set the player's health to 0. Since the goal is to avoid death, I tried replacing the call to PlayerManager.SetHealth with nothing (nop).
+
+![NOP](/assets/RACTF/game8.png)
+
+I then got Cheat Engine to reassemble the code and switched back into the running game and stepped into the death box.
+
+![Flag](/assets/RACTF/game9.png)
+
+I survived! And as a reward I got the flag.
+
+
+### Call&Response
+
+```
+Agent,
+
+We're working a major case. We've been called in to covertly investigate a foreign govt agency, the GDGS, by a private organisation. We've finished performing initial reconnaissance of the target building and it's surrounding areas. We know they have a wireless network which they use to carry out live activities. Gaining access here would be substiantial. Problem is, they've somewhat competently secured it using WPA2 EAP-PEAP authentication which means gaining a packet capture of the handshake process is useless as the authentication exchange is carried out over a TLS 1.2 session. Nonetheless, we setup an access point with same ESSID as the target and managed to trick an employee's device into attempting to connect to our AP. In the process, we've obtained an username and certain auth values. We're not entirely sure what we need to do with them.
+
+Can you take a look and help us recover the password?
+```
+
+To start off, we are given some output from what the evil twin access point captured.
+
+```
+username:    PrinceAli
+c:    c3:ae:5e:f9:dc:0e:22:fb
+r:    6c:52:1e:52:72:cc:7a:cb:0e:99:5e:4e:1c:3f:ab:d0:bc:39:54:8e:b0:21:e4:d0
+```
+
+Here c stands for the challenge sent during PEAP authentication and r stands for the response. Luckily, all the hard work has been done for us here.
+All that's left is to crack the challenge and response. To do that I used asleap
+
+```
+asleap -C c3:ae:5e:f9:dc:0e:22:fb -R 6c:52:1e:52:72:cc:7a:cb:0e:99:5e:4e:1c:3f:ab:d0:bc:39:54:8e:b0:21:e4:d0 -W /usr/share/wordlists/rockyou.txt
+```
+
+And fairly quickly we get our output, which, also happens to be the flag.
+
+![Flag](/assets/RACTF/asleap.png)
+
+Oh, also [here](http://blog.opensecurityresearch.com/2012/04/capturing-and-cracking-peap.html) is a small tutorial on an expanded version of this process. It details capturing the authentication through to cracking the challenge and response.
+
+### Missing Tools
+
+```
+Man, my friend broke his linux install pretty darn bad. He can only use like, 4 commands. Can you take a look and see if you can recover at least some of his data?
+```
+
+This challenge starts off with a username, password, an ip, and a port number. I started by connecting to the machine using ssh with the supplied
+credentials.
+
+![Initial State](/assets/RACTF/missingtools.png)
+
+Once ssh connects, we are greeted by a banner telling us that this is a restricted shell. Next I tried to figure out which commands I could use.
+The shell was heavily restricted and on top of that, many more commands were completely removed from the system. Since I needed to at least find some
+sort of idea I looked up a way to list files without ls
+
+![echo *](/assets/RACTF/missingtools2.png)
+
+Since echo is one of the few allowed commands, I learned that `echo *` could be used to list directory contents. As we can see from the results of the command, the home directory contains our flag. But how exactly do I read it without cat, or head, or more, etc? After a lot of soul searching and
+trying hundred of flags with the allowed commands, I found a work-around.
+
+![Flag](/assets/RACTF/missingtools3.png)
+
+Using the **.** (source) operator I can print the flag to stderr because it will treat its contents like a command.
+
+As an aside, this is not the author intended solution. The intended solution involved using split and sha256sum (both of which are allowed commands)
+to split the flag file into parts and then hash those parts. Cracking those hashes and combining the output would result in the flag.
+
+## Steganography
+
+### I'm a Shouty Man
+
+```
+You have intercepted an shouty man's secret message. find the flag!
+```
+
+For this challenge we are given a zip file containing a whole bunch of audio of Shouty Man saying different letters and numbers. Also, there is a
+single large file containing 30 minutes of audio.
+
+![Files](/assets/RACTF/shouty.png)
+
+The large audio file contains Shouty Man saying those different letters and numbers seemingly at random. He alternates between saying letters quietly and shouting letters. I first decided to write down a couple of minutes worth of Shouty Man dialogue.
+
+`Bml2YW11CyBzZWQgZWxpdCBpbnRlcmR1bSwgY29udmFsBGlzIH[...]`
+
+Now this is pretty peculiar, the string looks like it could be in base64. Sure enough decoding this small segment gave me some almost intelligible output.
+
+``
+
+Now, I'm sure there is a more elegant way to solve this but I decided to listen through the full 30 minutes and jot down every thing Shouty Man said.
+I then decoded the base64 and got the following output,
+
+``
+
+I did this in 5 minute intervals so I did worry myself throughout. However, it turned out to be not a complete waste of time and I was rewarded with the flag.
+
+## Conclusion
+
+All in all, this ctf turned out pretty nicely for me. I did have a handful of other challenges that I got a majority of the way through but couldn't
+figure out the final step to. Reading through some of the writeups I found a couple I ended up frustratingly close to finishing and others I would
+have never got in a million years.
+
+Thank you to everyone who worked on creating challenges and the infra for this event. Hopefully there will be an RACTF 2022.
+
+
+## Lessons Learned
+
+1. API Abuse
+2. Django-Python LFI
+3. Photo OSINT Strategies and Techniques
+4. Unity Game Exploiting
+5. WPA2 EAS-PEAP Challenge and Response Cracking
+6. Restricted Shell Bypassing
+7. Source Bash Operator
+8. Patience When Solving Steganography Challenges
