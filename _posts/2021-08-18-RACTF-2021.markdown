@@ -9,6 +9,7 @@ tags: CTF competition
 Here's another CTF event I participated in recently. This one hosted by the Really Awesome CTF team. This one was a little more challenging
 than the previous one (at least for me) but I still felt I learned quite a bit from it. Anyway, here are some of the challenges I solved.
 &nbsp;
+&nbsp;
 
 ## **Web**
 
@@ -49,6 +50,7 @@ the flag(s).
 ![Flag](/assets/RACTF/radashsql3.png)
 
 And success!
+&nbsp;
 &nbsp;
 
 ### **Emojibook 1**
@@ -174,6 +176,7 @@ data:image/png;base64,cmFjdGZ7ZGo0bmcwX2xmaX0K
 
 The resulting note looks very similar but this time the img contains the base64 encoded flag.
 &nbsp;
+&nbsp;
 
 ## **OSINT**
 
@@ -198,6 +201,7 @@ So the place we are looking for is somewhere in the middle of all these points. 
 ![Location](/assets/RACTF/plaza.png)
 
 Submitting this location to the challenge map solves the challenge.
+&nbsp;
 &nbsp;
 
 ### **Skyline**
