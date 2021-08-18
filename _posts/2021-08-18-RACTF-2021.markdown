@@ -4,11 +4,11 @@ title:  "RACTF 2021 Writeup"
 tags: CTF competition
 ---
 
-[RACTF LOGO](/assets/RACTF/ractflogo.png)
+![RACTF LOGO](/assets/RACTF/ractflogo.png)
 
 Here's another CTF event I participated in recently. This one hosted by the Really Awesome CTF team. This one was a little more challenging
 than the previous one (at least for me) but I still felt I learned quite a bit from it. Anyway, here are some of the challenges I solved.
-&nbsp;
+
 &nbsp;
 
 ## **Web**
