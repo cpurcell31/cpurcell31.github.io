@@ -4,12 +4,14 @@ title:  "RACTF 2021 Writeup"
 tags: CTF competition
 ---
 
+[RACTF LOGO](/assets/RACTF/ractflogo.png)
+
 Here's another CTF event I participated in recently. This one hosted by the Really Awesome CTF team. This one was a little more challenging
 than the previous one (at least for me) but I still felt I learned quite a bit from it. Anyway, here are some of the challenges I solved.
 
-## Web
+## **Web**
 
-### Really Awesome Monitoring Dashboard
+### **Really Awesome Monitoring Dashboard**
 
 `🌟 Perfect infrastructure 🌟`
 
@@ -47,7 +49,7 @@ the flag(s).
 
 And success!
 
-### Emojibook 1
+### **Emojibook 1**
 
 `😂 The flag is at /flag.txt`
 
@@ -170,9 +172,9 @@ data:image/png;base64,cmFjdGZ7ZGo0bmcwX2xmaX0K
 
 The resulting note looks very similar but this time the img contains the base64 encoded flag.
 
-## OSINT
+## **OSINT**
 
-### Triangles
+### **Triangles**
 
 This challenge begins the OSINT section and consists of only a single picture. To solve the challenge you have to find the location the
 picture was taken and submit it by clicking the point on the supplied map.
@@ -194,7 +196,7 @@ So the place we are looking for is somewhere in the middle of all these points. 
 
 Submitting this location to the challenge map solves the challenge.
 
-### Skyline
+### **Skyline**
 
 Much like Triangles, for this challenge we are given a single picture and have to find the location it was taken. However, this challenge is quite a
 bit trickier.
@@ -219,7 +221,7 @@ Next step was to find a spot close to the original photo. This step took a bit o
 Submitting a point roughly between the two Emirates Stations solves the challenge.
 
 
-### Silver Darlings
+### **Silver Darlings**
 
 The trend continues with this section. We are given a single photo and need to find the location it was taken at.
 
@@ -275,7 +277,7 @@ Now to narrow it down even further, I did a quick tour in street view and found 
 
 ![Spot](/assets/RACTF/novafinal.png)
 
-### 50m on the Right
+### **50m on the Right**
 
 You know the drill by now, we are given a single picture and need to find the location the photo was taken.
 
@@ -299,7 +301,7 @@ The phone number is an exact match to the sign so we have the place. However, th
 
 After a bunch of exploring, I found the blue sign and submitted this location to complete the challenge.
 
-### OHSHINT
+### **OHSHINT**
 
 ```
 Agent,
@@ -334,9 +336,9 @@ The initial google maps photo didn't seem like it could be at all the right plac
 
 Finally, submitting a point near Tegid Lodge completes the challenge.
 
-## Miscellaneous
+## **Miscellaneous**
 
-### RSFPWS - Intercepted
+### **RSFPWS - Intercepted**
 
 ```
 This game i'm playing is fun! There's this box that seemingly does nothing though... It sends a "network request" whatever that is. Can you have a look?
@@ -360,7 +362,7 @@ Next I switched to Wireshark to see if I captured anything. There was a lot of n
 
 From the capture we can see where the server exchanges connection messages and more importantly, the packet containing the flag.
 
-### RSFPWS - Invulnerable
+### **RSFPWS - Invulnerable**
 
 ```
 This game i'm playing is fun! They have these cubes where you walk into them and take damage, how awesome! One of them instant kills you though, that kinda sucks. Can you solve that?
@@ -396,7 +398,7 @@ I then got Cheat Engine to reassemble the code and switched back into the runnin
 I survived! And as a reward I got the flag.
 
 
-### Call&Response
+### **Call&Response**
 
 ```
 Agent,
@@ -425,7 +427,9 @@ And fairly quickly we get our output, which, also happens to be the flag.
 
 Oh, also [here](http://blog.opensecurityresearch.com/2012/04/capturing-and-cracking-peap.html) is a small tutorial on an expanded version of this process. It details capturing the authentication through to cracking the challenge and response.
 
-### Missing Tools
+&nbsp;
+
+### **Missing Tools**
 
 ```
 Man, my friend broke his linux install pretty darn bad. He can only use like, 4 commands. Can you take a look and see if you can recover at least some of his data?
@@ -452,9 +456,11 @@ Using the **.** (aka source) operator I can print the flag to stderr because it 
 As an aside, this is not the author intended solution. The intended solution involved using split and sha256sum (both of which are allowed commands)
 to split the flag file into parts and then hash those parts. Cracking those hashes and combining the output would result in the flag.
 
-## Steganography
+&nbsp;
 
-### I'm a Shouty Man
+## **Steganography**
+
+### **I'm a Shouty Man**
 
 ```
 You have intercepted an shouty man's secret message. find the flag!
@@ -480,7 +486,9 @@ I then decoded the base64 and got the following output,
 
 I did this in 5 minute intervals so I did worry myself throughout. However, it turned out to be not a complete waste of time and I was rewarded with the flag.
 
-## Conclusion
+&nbsp;
+
+## **Conclusion**
 
 All in all, this ctf turned out pretty nicely for me. I did have a handful of other challenges that I got a majority of the way through but couldn't
 figure out the final step to. Reading through some of the writeups I found a couple I ended up frustratingly close to finishing and others I would
@@ -489,7 +497,7 @@ have never got in a million years.
 Thank you to everyone who worked on creating challenges and the infra for this event. Hopefully there will be an RACTF 2022.
 
 
-## Lessons Learned
+## **Lessons Learned**
 
 1. API Abuse
 2. Django-Python LFI
