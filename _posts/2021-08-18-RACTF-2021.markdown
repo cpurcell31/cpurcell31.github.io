@@ -4,8 +4,6 @@ title:  "RACTF 2021 Writeup"
 tags: CTF competition
 ---
 
-![RACTF LOGO](/assets/RACTF/ractflogo.png)
-
 Here's another CTF event I participated in recently. This one hosted by the Really Awesome CTF team. This one was a little more challenging
 than the previous one (at least for me) but I still felt I learned quite a bit from it. Anyway, here are some of the challenges I solved.
 
@@ -50,7 +48,7 @@ the flag(s).
 ![Flag](/assets/RACTF/radashsql3.png)
 
 And success!
-&nbsp;
+
 &nbsp;
 
 ### **Emojibook 1**
@@ -175,7 +173,7 @@ data:image/png;base64,cmFjdGZ7ZGo0bmcwX2xmaX0K
 ```
 
 The resulting note looks very similar but this time the img contains the base64 encoded flag.
-&nbsp;
+
 &nbsp;
 
 ## **OSINT**
@@ -201,7 +199,7 @@ So the place we are looking for is somewhere in the middle of all these points. 
 ![Location](/assets/RACTF/plaza.png)
 
 Submitting this location to the challenge map solves the challenge.
-&nbsp;
+
 &nbsp;
 
 ### **Skyline**
@@ -227,6 +225,7 @@ Next step was to find a spot close to the original photo. This step took a bit o
 ![Family Trip](/assets/RACTF/family.png)
 
 Submitting a point roughly between the two Emirates Stations solves the challenge.
+
 &nbsp;
 
 ### **Silver Darlings**
@@ -259,6 +258,7 @@ The preview photo of the cafe looks exactly like the photo (just from a differen
 ![Solution](/assets/RACTF/ancien3.png)
 
 Now that we have the place, the final step is to submit it and complete the challenge.
+
 &nbsp;
 
 ### **John Poet**
@@ -285,6 +285,7 @@ And sure enough, in the related photos I found that Nova sign as well. The locat
 Now to narrow it down even further, I did a quick tour in street view and found the exact spot to submit.
 
 ![Spot](/assets/RACTF/novafinal.png)
+
 &nbsp;
 
 ### **50m on the Right**
@@ -310,6 +311,7 @@ The phone number is an exact match to the sign so we have the place. However, th
 ![Blue Sign](/assets/RACTF/isawthesign.png)
 
 After a bunch of exploring, I found the blue sign and submitted this location to complete the challenge.
+
 &nbsp;
 
 ### **OHSHINT**
@@ -346,6 +348,7 @@ The initial google maps photo didn't seem like it could be at all the right plac
 ![Pine Lake 2](/assets/RACTF/pinelake2.png)
 
 Finally, submitting a point near Tegid Lodge completes the challenge.
+
 &nbsp;
 
 ## **Miscellaneous**
@@ -373,6 +376,7 @@ Next I switched to Wireshark to see if I captured anything. There was a lot of n
 ![Flag](/assets/RACTF/game4.png)
 
 From the capture we can see where the server exchanges connection messages and more importantly, the packet containing the flag.
+
 &nbsp;
 
 ### **RSFPWS - Invulnerable**
@@ -409,6 +413,7 @@ I then got Cheat Engine to reassemble the code and switched back into the runnin
 ![Flag](/assets/RACTF/game9.png)
 
 I survived! And as a reward I got the flag.
+
 &nbsp;
 
 ### **Call&Response**
@@ -439,6 +444,7 @@ asleap -C c3:ae:5e:f9:dc:0e:22:fb -R 6c:52:1e:52:72:cc:7a:cb:0e:99:5e:4e:1c:3f:a
 And fairly quickly we get our output, which, also happens to be the flag.
 
 Oh, also [here](http://blog.opensecurityresearch.com/2012/04/capturing-and-cracking-peap.html) is a small tutorial on an expanded version of this process. It details capturing the authentication through to cracking the challenge and response.
+
 &nbsp;
 
 ### **Missing Tools**
@@ -467,6 +473,7 @@ Using the **.** (aka source) operator I can print the flag to stderr because it 
 
 As an aside, this is not the author intended solution. The intended solution involved using split and sha256sum (both of which are allowed commands)
 to split the flag file into parts and then hash those parts. Cracking those hashes and combining the output would result in the flag.
+
 &nbsp;
 
 ## **Steganography**
@@ -496,6 +503,7 @@ I then decoded the base64 and got the following output,
 `[...] tHe rEaL fLAg i5 ractf{oMg_it5_aN_aud10phil3!!!} [...]`
 
 I did this in 5 minute intervals so I did worry myself throughout. However, it turned out to be not a complete waste of time and I was rewarded with the flag.
+
 &nbsp;
 
 ## **Conclusion**
