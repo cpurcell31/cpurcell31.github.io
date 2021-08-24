@@ -15,6 +15,7 @@ You can find the competition site [here](https://2021.cor.team/)
 
 Anyway, here are the writeups for some of the challenges I solved.
 
+&nbsp;
 
 ## **Crypto**
 
@@ -105,6 +106,7 @@ After I had a dictionary, I could decode each character by searching
 for its decoded value in the dictionary. Finally, concatenating all
 the resulting decoded characters gives us the flag.
 
+&nbsp;
 
 ### **4096**
 
@@ -157,6 +159,8 @@ For convenience the full script can be found [here](https://gist.github.com/jack
 I made a few adjustments to the script to include my own list of primes, n, e, and
 c. Then the script immediately spat out the flag.
 
+&nbsp;
+
 ## **Web**
 
 ### **devme**
@@ -207,6 +211,8 @@ modify the "createUser" query to make sure I was following the rules of graphql.
 ![Final Query](/assets/corCTF/devWebQuery.png)
 
 This query promptly spat out the flag and the challenge was complete.
+
+&nbsp;
 
 ### **buyme**
 
@@ -356,6 +362,8 @@ Here I send a full user object which includes a flag list already containing the
 I also set user.money to $100 so I could buy a new flag (this time a Chinese flag).
 The response to this request redirects to the home page which notices we have the corCTF flag
 and prints out the flag.
+
+&nbsp;
 
 ## **Rev**
 
@@ -552,6 +560,8 @@ It's important to remember that special characters aren't shifted but they do ha
 their own prime. Anyway, putting this all together we can conclude that
 corctf{see?_rEv_aint_so_bad} is our flag and the challenge is complete.
 
+&nbsp;
+
 ## **Misc**
 
 ### **yeetcode**
@@ -575,7 +585,7 @@ the output to see if it solves the problem of a+b=?.
 
 Here is my solution to the problem. Next I submitted my code.
 
-![Pass](/assets/corCTF/yeetsuccess.png)
+![Pass](/assets/corCTF/yeetsucces.png)
 
 As you can see, I got passed with flying colours. But, what happens
 if my code doesn't pass? Let's try it out.
@@ -674,6 +684,8 @@ def f(a,b):
 
 Here is what the query string looks like before formatting. Anyway, after a
 handful of seconds the flag was printed out by my script.
+
+&nbsp;
 
 ## **Conclusion**
 
