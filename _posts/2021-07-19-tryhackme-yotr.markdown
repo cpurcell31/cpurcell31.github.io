@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Tryhackme: Year of the Rabbit"
-categories: THM
+tags: THM
 ---
 
 Machine Created By: Muirlandoracle
@@ -23,7 +23,7 @@ check to see if anonymous login is allowed.
 
 ![ftp anonymous login](/assets/THM-YotR/ftp-anon-THM-YotR.png)
 
-No success there so let's turn our attention to http. The index page is the default apache page so let's see if 
+No success there so let's turn our attention to http. The index page is the default apache page so let's see if
 we can enumerate anything open in the background.
 
 ![Gobuster Enumeration](/assets/THM-YotR/gobuster-THM-YotR.png)
@@ -80,7 +80,7 @@ Now we can ssh into the machine as Eli.
 Starting off, we are greeted by a message to Gwendoline from Root. The message hints towards a secret message hidden in
 a secret spot on the machine.
 
-A lot of enumeration later and I found a "s3cr3t" directory in /usr/games that contained a single file. A file with 
+A lot of enumeration later and I found a "s3cr3t" directory in /usr/games that contained a single file. A file with
 a potential password for gwendoline.
 
 ![Gwen Password](/assets/THM-YotR/gwen-pass-THM-YotR.png)
@@ -96,7 +96,7 @@ Since we have the password for gwendoline, there is no harm in doing a quick `su
 ![sudo -l](/assets/THM-YotR/gwen-sudo-THM-YotR.png)
 
 It looks like gwen has permissions to use vi on her file user.txt as anyone but root. Or so it seems.
-Luckily there is a vulnerability with this exact kind of sudo permissions on this version of sudo. 
+Luckily there is a vulnerability with this exact kind of sudo permissions on this version of sudo.
 
     sudo -u#-1 /usr/bin/vi /home/gwendoline/user.txt
 

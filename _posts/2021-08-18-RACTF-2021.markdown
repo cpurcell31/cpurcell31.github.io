@@ -1,10 +1,10 @@
 ---
 layout: post
 title:  "RACTF 2021 Writeup"
-tags: CTF competition
+tags: CTF
 ---
 
-Here's another CTF event I participated in recently. This one hosted by the Really Awesome CTF team. This one was a little more challenging
+Here's another CTF event I participated in recently. This one hosted by the Really Awesome CTF team. This event was a little more challenging
 than the previous one (at least for me) but I still felt I learned quite a bit from it. Anyway, here are some of the challenges I solved.
 
 &nbsp;
@@ -160,7 +160,7 @@ this script could also allow a way in if we could somehow exchange the emoji fil
 
 ![LFI](/assets/RACTF/emoji2.png)
 
-The idea here is to avoid the input santization by supplying some ".." to break up our set of "{{" and "}}". Then I inserted a file I wanted to
+The idea here is to avoid the input sanitization by supplying some ".." to break up our set of "{{" and "}}". Then I inserted a file I wanted to
 extract in between the inner curly braces, in this case, /etc/passwd
 
 ![LFI Output](/assets/RACTF/emoji3.png)
@@ -245,7 +245,7 @@ So the next best bet is the phone number. Searching the phone number on google p
 ![Locations](/assets/RACTF/places.png)
 
 One of the sites gives a broad geolocation of the number. Given how many cities are in the list, I decided to do another broad google maps search for
-the cafe.
+the café.
 
 ![Search 2](/assets/RACTF/ancien.png)
 
@@ -253,7 +253,7 @@ One peculiar entry pops up: Ancien Cafe de la Mairie.
 
 ![Ancien](/assets/RACTF/ancien2.jpg)
 
-The preview photo of the cafe looks exactly like the photo (just from a different angle).
+The preview photo of the café looks exactly like the photo (just from a different angle).
 
 ![Solution](/assets/RACTF/ancien3.png)
 
@@ -269,7 +269,7 @@ Well, well, well, another single picture to figure out the location.
 
 This picture has a lot going on, but at the same time, a lot of tricky stuff. Some major things to notice are
 
-- The restraunt sign that says "kal cerato" or something - pretty hard to read
+- The restaurant sign that says "kal cerato" or something - pretty hard to read
 - A big sign that says "Nova"
 - Some small signs in the background that say "R.H.C"
 

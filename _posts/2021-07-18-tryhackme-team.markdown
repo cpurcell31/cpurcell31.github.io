@@ -48,7 +48,7 @@ Using a lot of file extension testing and a bit of sudden realization the old sc
 Hint: "As the 'dev' site is under contruction maybe it has some flaws? 'url?=' + 'This rooms picture'"
 
 The file gives us a username and password for the ftp server. On the ftp server only one file is available and it gives another
-hint. This time to add dev.team.thm to the /etc/hosts file and a small hint about where an id_rsa key could be found 
+hint. This time to add dev.team.thm to the /etc/hosts file and a small hint about where an id_rsa key could be found
 
 ![Ftp File](/assets/THM-Team/newsite-THM-Team.png)
 
@@ -64,7 +64,7 @@ on the original output so I viewed the page source code to get a prettier versio
 
 ![LFI #2](/assets/THM-Team/lfi2-THM-Team.png)
 
-We can clearly see that dale backed up his id_rsa key to the config file. A quick copy, plus removing all the #s, and 
+We can clearly see that dale backed up his id_rsa key to the config file. A quick copy, plus removing all the #s, and
 not forgetting to add a blank new line at the end of the file and I had a serviceable key. I then ssh'd into the machine
 as dale and found the first flag.
 
@@ -107,7 +107,7 @@ I went ahead and setup a python simple http server on my kali box and downloaded
 
 All of the super interesting results tagged by linpeas were relating to one thing: a writeable script
 "/usr/local/bin/main_backup.sh". The script is fairly simple, but most importantly, I can write to it since gyles is
-part of a the admin group. 
+part of a the admin group.
 
 ![Main Backup](/assets/THM-Team/main_backup-THM-Team.png)
 
@@ -126,9 +126,3 @@ Sure enough, we have root and the final flag.
 3. SSH Key Formatting
 4. Simple Script Manipulation
 5. Some Linux Enumeration
-
-
-
-
-
-

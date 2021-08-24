@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Imaginary CTF 2021 Writeup"
-tags: CTF competition
+tags: CTF
 ---
 
 This competition was hosted by the team over

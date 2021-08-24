@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Tryhackme: h4cked"
-categories: THM
+tags: THM
 ---
 
 Machine Created By: toxicat0r
@@ -19,14 +19,14 @@ questions.
 
 ### Question: The attacker is trying to log into a specific service. What service is this?
 
-Luckily, there isn't any traffic from other hosts so we can answer this one pretty easily 
+Luckily, there isn't any traffic from other hosts so we can answer this one pretty easily
 and gain a bit of extra information
 
 ![Start](/assets/THM-h4cked/start-THM-h4.png)
 
     Attacker IP: 192.168.0.147
 	Victim IP: 192.168.0.115
-	
+
 Since the port 21 its safe to assume that the answer is FTP but let's keep looking to see if that changes.
 Also take note of how many different TCP handshakes the attacker begins (shown by different source port numbers).
 
@@ -38,22 +38,22 @@ might come up later.
     Answer: ftp
 
 ### Question: There is a very popular tool by Van Hauser which can be used to brute force a series of services. What is the name of this tool?
-	
+
 A quick google search or thinking about very commonly used brute force tools will find the answer to this one.
 
     Answer: hydra
 
-Going back to the number of established TCP sessions, this really makes sense. 
+Going back to the number of established TCP sessions, this really makes sense.
 
 ### Question The attacker is trying to log on with a specific username. What is the username?
-	
+
 We saw the answer to this one a little earlier, at packet 81 we can see the attacker requests an ftp session
 with username set to `jenny`
 
-    Answer: jenny 
+    Answer: jenny
 
 ### Question: What is the user's password?
-	
+
 This one has two possible ways to solve it:
 1. Find when hydra is successful and follow the tcp stream
 2. Find when the attacker logs in
@@ -75,7 +75,7 @@ There we have it. The attacker attempts to log in as jenny and supplies a passwo
 
 
 ### Question: What is the current FTP working directory after the attacker logged in?
-	
+
 ![Directory](/assets/THM-h4cked/dir-THM-h4.png)
 
 Luckily, the attacker knows as little about the FTP directory as we do so they issue a PWD (no. 400).
@@ -83,9 +83,9 @@ The response to this request contains the answer to this question.
 
     Answer: /var/www/html
 
-	
+
 ### Question: The attacker uploaded a backdoor. What is the backdoor's filename?
-	
+
 ![Shell](/assets/THM-h4cked/shell-name-THM-h4.png)
 
 Later on, the attacker initiates a STOR request to FTP and puts a file titled shell.php in /var/www/html
@@ -94,7 +94,7 @@ Later on, the attacker initiates a STOR request to FTP and puts a file titled sh
 
 
 ### Question: The backdoor can be downloaded from a specific URL, as it is located inside the uploaded file. What is the full URL?
-	
+
 ![Shell Location](/assets/THM-h4cked/sh-loc-THM-h4.png)
 
 A tiny bit later we can see when the shell.php file is uploaded to the ftp server by looking at the FTP-DATA protocol.
@@ -105,7 +105,7 @@ more information for later on.
 
 
 ### Question: Which command did the attacker manually execute after getting a reverse shell?
-	
+
 At this point the attacker is basically done with FTP. The attacker's next step would be to activate the reverse shell.
 
 ![Activate](/assets/THM-h4cked/get-sh-THM-h4.png)
@@ -123,21 +123,21 @@ Now we can see all of the session. First off we can note the answer to this ques
 
 
 ### Question: What is the computer's hostname?
-	
+
 Next thing we see is that the victim machine is called "wir3"
 
     Answer: wir3
 
 
 ### Question: Which command did the attacker execute to spawn a new TTY shell?
-	
+
 The final thing we can see from this screenshot is that the attacker upgrades his shell with python.
 
     Answer: python3 -c 'import pty; pty.spawn("/bin/bash")'
 
 
 ### Question: Which command was executed to gain a root shell?
-	
+
 ![Root Access](/assets/THM-h4cked/root-THM-h4.png)
 
 Next we see the attacker su to jenny using the password he discovered before via hydra and FTP.
@@ -145,10 +145,10 @@ Then he performs `sudo -l` to check jenny's privileges. Unfortunately, jenny has
 This means to escalate to root privileges all the attacker needs to do is type `sudo su`
 
     Answer: sudo su
-	
-	
+
+
 ### Question: The attacker downloaded something from GitHub. What is the name of the GitHub project?
-	
+
 A final thing we can notice from this screenshot is that the attacker clones the Reptile repo from git.
 
     Answer: Reptile
@@ -160,7 +160,7 @@ A little bit of research into Reptile reveals that it is a rootkit which will be
 persistence.
 
     Answer: rootkit
-	
+
 
 ## Part 2: Gaining Access
 
@@ -193,7 +193,7 @@ a small shell upgrade. Then perform the following inputs to upgrade make it more
     export TERM=xterm
 	Ctrl+Z
 	stty raw -echo;fg
-	
+
 Now that we have a proper shell our next step is to get access to jenny's account.
 
 ![Su Jenny](/assets/THM-h4cked/su-jenny-THM-h4.png)
@@ -219,4 +219,3 @@ And there we have it. We have root access and can grab the flag from the Reptile
     sudo -l
 	sudo su
 	python3 -c 'import pty; pty.spawn("/bin/bash")'
-	
