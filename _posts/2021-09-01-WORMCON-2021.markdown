@@ -4,8 +4,6 @@ title:  "WORMCON 2021 Networking Challenges"
 tags: CTF
 ---
 
-## Smol INTRO
-
 ## Network At Risk : Part 1
 
 ```
@@ -123,6 +121,8 @@ w o  r  m  c  o n  {  h  t t  p  _  1  s  _  n  0  t  _ s 4 f 3  _  h  4  h  4  
 
 Deocding it all results in the flag.
 
+&nbsp;
+
 ## Network At Risk : Part 2
 
 ```
@@ -164,6 +164,8 @@ echo 'wormcon{Y0u_4r3_St1LL_US1nG_F7P}'
 
 Inside the script we see the flag.
 
+&nbsp;
+
 ## Network At Risk : Part 3
 
 ```
@@ -196,6 +198,7 @@ Combining these words and placing them in the WORMCON flag format completes the 
 wormcon{welcome_to_the_world_of_voip}
 ```
 
+&nbsp;
 
 ## Network At Risk : Part 4
 
@@ -250,7 +253,7 @@ Combining the password and the bssid within the WORMCON flag format results in t
 wormcon{P@$$w0rd_82:25:fa:ee:ed:91}
 ```
 
-## Conclusion
+&nbsp;
 
 ## Lessons Learned
 
