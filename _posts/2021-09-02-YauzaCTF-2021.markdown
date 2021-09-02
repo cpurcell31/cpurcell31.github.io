@@ -11,11 +11,15 @@ A cursory glance at the text in the file reveals nothing untoward. However, digg
 deeper into the bytes of the file reveals some weird stuff.
 
 ![Bytes](/assets/yauzaCTF/bytes.png)
+<figcaption align=center><b>Figure 1: Bytes of lorem_ipsum.txt</b></figcaption>
+&nbsp;
 
 There is clearly some nonsense happening inbetween some of the words of the text.
 I opened the file in vim to see what it would render these characters as.
 
 ![Vim](/assets/yauzaCTF/vim.png)
+<figcaption align=center><b>Figure 2: lorem_ipsum.txt in Vim </b></figcaption>
+&nbsp;
 
 Interestingly enough, we can see here that the characters inbetween the words are
 a series of unicode zero-width characters. These specific characters are sometimes
@@ -26,6 +30,8 @@ To solve this quickly, we can input the text into a zero-width steganography dec
 like the one [here](http://330k.github.io/misc_tools/unicode_steganography.html).
 
 ![Flag](/assets/yauzaCTF/site.png)
+<figcaption align=center><b>Figure 3: ZWSP Deocding Website </b></figcaption>
+&nbsp;
 
 And out pops the flag. From here the challenge is complete but if you want to know more about
 the encoding scheme continue to read on.
@@ -94,6 +100,8 @@ Note: while this is easy to do by hand, we can save all that time by using a
 decoding site like the one [here](http://330k.github.io/misc_tools/unicode_steganography.html)
 
 ![Vim](/assets/yauzaCTF/vim.png)
+<figcaption align=center><b>Figure 4: lorem_ipsum.txt in Vim </b></figcaption>
+&nbsp;
 
 To start we need to know the general size of "blocks" of unicode. In this example it's
 pretty easy to see from the first set of zero-width characters that the "block" size is 8.
@@ -101,11 +109,15 @@ So 8 unicode characters are equivalent to a single plaintext character. Next we 
 text up into sets of 8 unicode characters.
 
 ![Divided](/assets/yauzaCTF/zwsp.png)
+<figcaption align=center><b>Figure 5: Unicode Characters Within lorem_ipsum.txt </b></figcaption>
+&nbsp;
 
 Then decoding becomes as simple as writing down the base 4 representation, converting
 to base 10, and finally, converting to ascii characters.
 
 ![Base 4](/assets/yauzaCTF/base4.png)
+<figcaption align=center><b>Figure 6: Unicode Converted to Base 4 </b></figcaption>
+&nbsp;
 
 ```
 YauzaCTF{1_c4n_h1d3_wh473v3r_y0u_w4n7_3v3rywh3r3}
