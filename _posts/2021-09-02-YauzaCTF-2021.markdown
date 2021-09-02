@@ -70,19 +70,19 @@ b = 98 = 01100010 = 00010122 (base 3) ---> U+200B U+200B U+200B U+200C U+200B U+
 This challenge has an ecoding that is a bit more complex but still easy enough to
 understand. We have the following characters hidden throughout the text
 
-    - U+200C
-    - U+200D
-    - U+202C
-    - U+FFEF
+- U+200C
+- U+200D
+- U+202C
+- U+FFEF
 
 Here we have 4 unicode characters so we need to think in base 4 instead of base 2 or 3.
 To ease the process, let's assume that the values follow an increasing order, here
 are the base 4 values for each zero-width character:
 
-   - U+200C = 0
-   - U+200D = 1
-   - U+202C = 2
-   - U+FFEF = 3
+- U+200C = 0
+- U+200D = 1
+- U+202C = 2
+- U+FFEF = 3
 
 So to encode a character with this scheme we convert its decimal value to base 4
 then swap in the appropriate zero-width characters.
