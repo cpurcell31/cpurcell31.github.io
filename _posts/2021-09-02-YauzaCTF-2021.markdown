@@ -36,6 +36,8 @@ like the one [here](http://330k.github.io/misc_tools/unicode_steganography.html)
 And out pops the flag. From here the challenge is complete but if you want to know more about
 the encoding scheme continue to read on.
 
+&nbsp;
+
 ## Under the Hood
 
 To create a zero-width steganographic encoding the hidden text is first converted to
