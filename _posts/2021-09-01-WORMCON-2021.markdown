@@ -21,7 +21,7 @@ This series of challenges starts out with a deep inspection. Looking through the
 packet capture reveals a lot of traffic, mostly TLS traffic. Since we do not have any
 keys provided, we should start out by filtering out TLS traffic.
 
-![Filter](/assets/wormCTF/net1filters.png)
+![Filter](/assets/wormCTF/net1filter.png)
 
 This greatly reduces our search field and brings to light some oddities. We see
 some traffic on 127.0.0.1 port 1337, which by virtue of port choice, is suspicious.

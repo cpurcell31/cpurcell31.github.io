@@ -113,6 +113,8 @@ YauzaCTF{1_c4n_h1d3_wh473v3r_y0u_w4n7_3v3rywh3r3}
 
 And that's the long way of how to get the flag.
 
+&nbsp;
+
 ## Lessons Learned
 
 1. Zero-Width Space Steganography (ZWSP) Encoding and Decoding
