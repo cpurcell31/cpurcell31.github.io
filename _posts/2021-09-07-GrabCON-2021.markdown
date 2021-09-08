@@ -34,7 +34,7 @@ a nice little script to OSINT protonmail accounts for me.
 
 
 The challenge ended up being as simple as that. If you wanna check out this script
-its repository can be found [here](https://github.com/pixelbubble/ProtOSINT)
+its repository can be found [here](https://github.com/pixelbubble/ProtOSINT).
 
 &nbsp;
 
@@ -570,7 +570,7 @@ And he has this much of cancer now.
 ```
 
 For this warm-up crypto challenge we are given a single text file. You can find the full
-contents of the file [here](https://github.com/cpurcell31/cpurcell31.github.io/tree/gh-pages/assets/grab/mukesh.txt)
+contents of the file [here](https://github.com/cpurcell31/cpurcell31.github.io/tree/gh-pages/assets/grab/mukesh.txt).
 
 ```
 S01ZRENXU1NJVkhGUVZKUkpaRkZNMlNLSTVKVENWU0xLVlZYQVlLVElaTkVVVlRNS0pIRkc2U1dKVkpH
