@@ -334,26 +334,26 @@ Flag Format: flag{Name-of-sensor}
 This is another interesting hardware / packet analysis challenge involving a SCADA system
 packet capture.
 
-![Capture]()
+![Capture](/assets/csawQuals/bacnet1.png)
 
 From the start of the capture we can see a bunch of request and response packets to specific
 analog sensors. There are 8 total sensors and they measure various things like temperature, voltage,
 lumens, etc. Unfortunately, in the current state its hard to find a baseline for these values.
 To fix it up a bit I sorted the packets by their info.
 
-![Sorted]()
+![Sorted](/assets/csawQuals/bacnet2.png)
 
 The packets are now sorted by the sensor number (1-8). Now we can look at the object name, units of the sensor,
 and then go through the present-value packets to see if anything looks out of place. Most of the
 sensors seemed to have normal looking values across the capture.
 
-![Kilowatt]()
+![Kilowatt](/assets/csawQuals/bacnet3.png)
 
 Here is Sensor_12345 (number 7 but its object-name is Sensor_12345) which measure
 kilowatt hours. It has a normal operating value around 1500 kWh within the capture.
 However, at some point it changes.
 
-![Spike]()
+![Spike](/assets/csawQuals/bacnet4.png)
 
 The Kilowatt hours measurement spikes to 9999 and stays there for a few captures.
 This is definitely odd behaviour and definitely not within the normal we saw in previous packets.
