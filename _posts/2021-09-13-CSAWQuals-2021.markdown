@@ -4,6 +4,24 @@ title:  "CSAW 2021 Qualifier Writeup"
 tags: CTF
 ---
 
+```
+- Warm-up
+  - Password Checker
+- Crypto
+  - Gotta Decrypt Them All
+- ICS
+  - The Magic Modbus
+  - A Pain in the BAC(net)
+- Forensics
+  - Lazy Leaks
+  - Contact Us
+  - Sonicgraphy Fallout
+- Conclusion
+- Lessons Learned
+{:toc}
+```
+
+&nbsp;
 
 ## **Warm-up**
 
