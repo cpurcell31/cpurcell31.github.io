@@ -12,8 +12,6 @@ my opinion.
 
 Anyway, here are some of the challenges I solved during the event.
 
-&nbsp;
-
 - OSINT
   - Proton Date
   - Victim 1
@@ -38,6 +36,8 @@ Anyway, here are some of the challenges I solved during the event.
 - Conclusion
 - Lessons Learned
 {:toc}
+
+&nbsp;
 
 ## **OSINT**
 
