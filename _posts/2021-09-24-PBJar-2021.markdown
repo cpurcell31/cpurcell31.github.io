@@ -1,0 +1,90 @@
+---
+layout: post
+title:  "PBJar CTF 2021 Writeup"
+tags: CTF
+---
+
+- Misc
+	- TechLead
+	- readFlag1
+	- readFlag2
+	- readFlag3
+	- MEV
+- Pwn
+	- Ret2Libc
+	- Walkthrough
+- Rev
+	- web
+- Web
+	- ProgrammersHateProgramming
+	- ProgrammersHateProgramming 2
+	- cOrL
+	- Hack NASA With HTML Mr. Inspector Sherlock
+- Forensics
+	- Stegosaurus stenops
+	- Art Mystery
+	- Wirf die Gläser an die Wand
+	- tippy tappies
+	- Luna Guesser
+	- memedium
+	- Mr. Robot and Friends
+	- Lysergic acid diethylamide
+- Conclusion
+- Lessons Learned
+{:toc}
+
+&nbsp;
+
+## Misc
+
+### TechLead
+
+### readFlag1
+
+### readFlag2
+
+### readFlag3
+
+### MEV
+
+## Pwn
+
+### Ret2Libc
+
+### Walkthrough
+
+## Rev
+
+### web
+
+## Web
+
+### ProgrammersHateProgramming
+
+### ProgrammersHateProgramming 2
+
+### cOrL
+
+### Hack NASA With HTML Mr. Inspector Sherlock
+
+## Forensics
+
+### Stegosaurus stenops
+
+### Art Mystery
+
+### Wirf die Gläser an die Wand
+
+### tippy tappies
+
+### Luna Guesser
+
+### memedium
+
+### Mr. Robot and Friends
+
+### Lysergic acid diethylamide
+
+## Conclusion
+
+## Lessons Learned
