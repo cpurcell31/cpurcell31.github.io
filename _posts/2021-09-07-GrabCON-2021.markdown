@@ -14,6 +14,31 @@ Anyway, here are some of the challenges I solved during the event.
 
 &nbsp;
 
+- OSINT
+  - Proton Date
+  - Victim 1
+  - Victim 2
+  - Website
+  - The Tour 1
+  - The Tour 2
+- PWN
+  - Easybin
+  - Can You?
+- Reversing
+  - Easy Rev
+  - Baby Rev
+- Crypto
+  - Warm-up
+  - Poke Ball RSA
+  - Old Monk's Password
+- Web
+  - E4sy P43sy
+  - Basic Calc
+  - Breaking Bad
+- Conclusion
+- Lessons Learned
+{:toc}
+
 ## **OSINT**
 
 ### **Proton Date**
