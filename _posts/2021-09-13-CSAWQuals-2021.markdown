@@ -4,7 +4,6 @@ title:  "CSAW 2021 Qualifier Writeup"
 tags: CTF
 ---
 
-```
 - Warm-up
   - Password Checker
 - Crypto
@@ -19,7 +18,6 @@ tags: CTF
 - Conclusion
 - Lessons Learned
 {:toc}
-```
 
 &nbsp;
 
