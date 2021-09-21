@@ -744,7 +744,7 @@ need to find. I started by examining the file in a notepad.
 
 Nothing seemed out of the ordinary so I moved on to examine the file's hex in xxd.
 
-![xxd](/assets/pbjar/moscow1.png)
+![xxd](/assets/pbjar/moscow2.png)
 <figcaption align=center><b>Figure 15-2: </b></figcaption>
 &nbsp;
 
