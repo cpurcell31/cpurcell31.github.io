@@ -35,9 +35,9 @@ tags: CTF
 
 &nbsp;
 
-## Misc
+## **Misc**
 
-### TechLead
+### **TechLead**
 
 
 >Infamous YouTuber, and ex-Google / ex-Facebook TechLead found a quick way to make a few million dollars of a crypto scam (as a millionare). He created the ERC-20 token Million (MM), and started promoting it on his social media platforms. The deployer address of the Million token smart contract is the personal address of TechLead, what is the highest historical Ethereum balance of his personal address?
@@ -80,7 +80,7 @@ And success! The flag worked and the challenge was complete.
 
 &nbsp;
 
-### readFlag1
+### **readFlag1**
 
 >The address of my new smart contract is 0xf0674CD7D1C0c616063a786E7d1434340E09BadD, the flag is inside it, and the code is published on Etherscan.
 >
@@ -110,7 +110,7 @@ description said, the flag was right there in the code.
 
 &nbsp;
 
-### readFlag2
+### **readFlag2**
 
 >I have republished the previous the contract at 0x585C403bC5c7eb62BF3630c7FeF1F837603bA866, but this time >no source code for you this time. Luckily, the ABI of the smart contract is the same as the previous one. >Figure out how to "get()" the flag.
 >
@@ -156,7 +156,7 @@ In the "Properties" tab we can clearly see the result of a get() call, the flag.
 
 &nbsp;
 
-### readFlag3
+### **readFlag3**
 
 >0xe2a9e67bdA26Dd48c8312ea1FE6a7C111e5D7a7A
 >
@@ -190,7 +190,7 @@ flag{s3t_by_c0nstructor}
 &nbsp;
 
 
-### MEV
+### **MEV**
 
 >The miner of Block #12983883 on the Ethereum Blockchain partakes in the common practice of MEV. What is the exact amount of Ether that was transfered to the miner as a bribe from the transaction that was included first in this block?
 >
@@ -246,9 +246,9 @@ miner's address. Sure enough, the transfer value was the "bribe" and the flag.
 
 &nbsp;
 
-## Pwn
+## **Pwn**
 
-### Ret2Libc
+### **Ret2Libc**
 
 >Ready to learn how to take ROP to the next level?
 >
@@ -258,7 +258,7 @@ miner's address. Sure enough, the transfer value was the "bribe" and the flag.
 
 
 
-### Walkthrough
+### **Walkthrough**
 
 >This program is supposed to be an introduction to pwn that guides you through creating some exploits.
 >
@@ -270,9 +270,9 @@ miner's address. Sure enough, the transfer value was the "bribe" and the flag.
 >
 >Created By: Rythm
 
-## Rev
+## **Rev**
 
-### web
+### **web**
 
 >I downloaded this program back when the version number was still v1. It's been a long time... I heard the most recent update has the flag in it.
 >
@@ -354,9 +354,9 @@ The final step was to download this version and run it to get the flag.
 
 &nbsp;
 
-## Web
+## **Web**
 
-### ProgrammersHateProgramming
+### **ProgrammersHateProgramming**
 
 >just a little different than before
 >
@@ -440,7 +440,7 @@ And there it is, the really long and informative flag we were looking for.
 
 >flag{server_side_php_xss_is_less_known_but_considering_almost_80%_of_websites_use_php_it_is_good_to_know_thank_me_later_i_dont_want_to_stop_typing_this_flagg_is_getting_long_but_i_feel_like_we're_developing_a_really_meaningful_connection}
 
-### ProgrammersHateProgramming 2
+### **ProgrammersHateProgramming 2**
 
 >oh noes now there are more filters :((
 >
@@ -513,7 +513,7 @@ Again, the flag is printed out nicely in the note we created.
 
 >flag{wow_that_was_a_lot_of_filters_anyways_how_about_that_meaningful_connection_i_mentioned_earlier_:)}
 
-### cOrL
+### **cOrL**
 
 >Descriptions are hard give me a break. (Think of common usernames and passwords for admin)
 >
@@ -550,7 +550,7 @@ The response to the PUT request contains just what we needed, the flag.
 
 &nbsp;
 
-### Hack NASA With HTML Mr. Inspector Sherlock
+### **Hack NASA With HTML Mr. Inspector Sherlock**
 
 >now introducing... the world's best website ever!!!
 >
@@ -597,9 +597,9 @@ a single complete flag.
 
 &nbsp;
 
-## Forensics
+## **Forensics**
 
-### Stegosaurus stenops
+### **Stegosaurus stenops**
 
 >This stenops swallowed the flag... and some unusually large rock
 >
@@ -627,7 +627,7 @@ The hidden text was the flag we were looking for.
 
 >flag{ungulatus_better_than_stenops}  
 
-### Art Mystery
+### **Art Mystery**
 
 >You put you new artwork into a safe but when you looked in the morning,
 >someone had stolen it!! Next time you'll have to cheCk youR loCk.
@@ -727,7 +727,7 @@ should be fixed. After a quick edit, I had a new, working picture and the flag.
 
 &nbsp;
 
-### Wirf die Gläser an die Wand
+### **Wirf die Gläser an die Wand**
 
 >Our operatives managed to intercept this message. We know they've been transporting their
 >plans over the network we infiltrated so there must be something here that we're not seeing.
@@ -777,7 +777,7 @@ the flag.
 
 &nbsp;
 
-### tippy tappies
+### **tippy tappies**
 
 >how'd you get this in the first place :eyes: dids you has logger on me?
 >
@@ -874,7 +874,7 @@ the output is the flag (which requires a tiny bit of formatting).
 
 &nbsp;
 
-### Luna Guesser
+### **Luna Guesser**
 
 >We intercepted this message being sent from a strange location. Can you figure out where it's being sent from?
 >
@@ -941,7 +941,7 @@ be option 3: Mare Tranquillitatis.
 
 &nbsp;
 
-### memedium
+### **memedium**
 
 >not memeasy not memhard... just memedium. (p.s. it'd be good if you found password and wrapped it in flag{} lol)
 >
@@ -977,7 +977,7 @@ guess at the flag and sure enough, it works.
 
 &nbsp;
 
-### Mr. Robot and Friends
+### **Mr. Robot and Friends**
 
 >phishing scams are scaryyyy ;w; and it seems like this fool fell for the oldest
 >trick in the book. maybe if he watched more Mr. Robot he'd know how about this
@@ -1073,7 +1073,7 @@ Submitting this flag resulted in a victory and the challenge was complete.
 
 &nbsp;
 
-### Lysergic acid diethylamide
+### **Lysergic acid diethylamide**
 
 >Don't do drugs kids and look for hints in the challenge
 >
@@ -1109,6 +1109,6 @@ the right amound to print out the flag that was hiding in the LSBs.
 
 &nbsp;
 
-## Conclusion
+## **Conclusion**
 
-## Lessons Learned
+## **Lessons Learned**
