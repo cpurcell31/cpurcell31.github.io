@@ -68,9 +68,7 @@ that displays things like highest and lowest values.
 This wallet had an historical high of 1.4625790953780384 ETH in it. All that's left was
 to try the flag.
 
-```
-flag{1.4625790953780384}
-```
+>flag{1.4625790953780384}
 
 And success! The flag worked and the challenge was complete.
 
@@ -98,9 +96,7 @@ more details.
 Among the extra details there is the source code and ABI for the contract. And just like the
 description said, the flag was right there in the code.
 
-```
-flag{etherscan_S0urc3_c0de}
-```
+>flag{etherscan_S0urc3_c0de}
 
 &nbsp;
 
@@ -140,9 +136,7 @@ Next to look at the fruits of our labour.
 
 In the "Properties" tab we can clearly see the result of a get() call, the flag.
 
-```
-flag{web3js_plus_ABI_equalls_flag}
-```
+>flag{web3js_plus_ABI_equalls_flag}
 
 &nbsp;
 
@@ -217,9 +211,7 @@ Transaction 0xddb777fbc72b8c3f31f687e302412c2f663b704bcf2faab5d938cd3f9c8b41f8 l
 a couple of transfers in its "Interacted With (To):" section. One of which, has the
 miner's address. Sure enough, the transfer value was the "bribe" and the flag.
 
-```
-flag{0.009672680170055358}
-```
+>flag{0.009672680170055358}
 
 &nbsp;
 
@@ -278,8 +270,38 @@ version numbers. All that I needed to do was find the last version number that w
 This boils down to a success or fail condition, meaning, it should be able to be tested
 with a binary search of sorts. The next step was to create a script to do this work for me.
 
-```
+```python
+import requests, time
 
+url = 'http://147.182.172.217:42100/v{}'
+
+
+def query(s):
+  ret = None
+  while ret is None:
+    time.sleep(0.5)
+    in_url = url.format(s)
+    res = requests.get(in_url).text
+    if 'version not found' in res: ret = False
+    else: ret = True
+    print(ret)
+  return ret
+
+def binsearch(lo, hi):
+    while lo < hi:
+        mid = (hi+lo) // 2
+        if query(mid):  
+            lo = mid+1
+        else:
+            hi = mid
+    return lo
+
+def solve():
+    print("Beginning Binary Search...")
+    val = binsearch(3, 300000000000)
+    print(val)
+
+solve()
 ```
 
 The script examines the webserver responses to see if the version is available or not
@@ -288,9 +310,7 @@ The final step was to download this version and run it to get the flag.
 
 ![Run final version](/assets/pbjar/version5.png)
 
-```
-flag{h0w_l0ng_wher3_y0u_g0ne_f0r_3910512832}
-```
+>flag{h0w_l0ng_wher3_y0u_g0ne_f0r_3910512832}
 
 &nbsp;
 
@@ -372,17 +392,13 @@ flag<?php<?php system("cat flag.php"); ?>?>
 
 And there it is, the really long and informative flag we were looking for.
 
-```
-flag{server_side_php_xss_is_less_known_but_considering_almost_80%_of_websites_use_php_it_is_good_to_know_thank_me_later_i_dont_want_to_stop_typing_this_flagg_is_getting_long_but_i_feel_like_we're_developing_a_really_meaningful_connection}
-```
+>flag{server_side_php_xss_is_less_known_but_considering_almost_80%_of_websites_use_php_it_is_good_to_know_thank_me_later_i_dont_want_to_stop_typing_this_flagg_is_getting_long_but_i_feel_like_we're_developing_a_really_meaningful_connection}
 
 ### ProgrammersHateProgramming 2
 
-```
-oh noes now there are more filters :((
-
-Created By: ZeroDayTea
-```
+>oh noes now there are more filters :((
+>
+>Created By: ZeroDayTea
 
 The sequel to the previous ProgrammersHateProgramming challenge, ProgrammersHateProgramming 2
 contains a beefed up blacklist with a few new filters. This time the source code was
@@ -447,17 +463,13 @@ flag<?php<?<?php system("ccatat /flag.php") ?>?>
 
 Again, the flag is printed out nicely in the note we created.
 
-```
-flag{wow_that_was_a_lot_of_filters_anyways_how_about_that_meaningful_connection_i_mentioned_earlier_:)}
-```
+>flag{wow_that_was_a_lot_of_filters_anyways_how_about_that_meaningful_connection_i_mentioned_earlier_:)}
 
 ### cOrL
 
-```
-Descriptions are hard give me a break. (Think of common usernames and passwords for admin)
-
-Created By: ZeroDayTea
-```
+>Descriptions are hard give me a break. (Think of common usernames and passwords for admin)
+>
+>Created By: ZeroDayTea
 
 c0rL is a sourceless web challenge that gives us a simple website.
 
@@ -480,19 +492,15 @@ instead of the default POST.
 I used curl to craft the request but any other similar tool (burp, etc) would have worked.
 The response to the PUT request contains just what we needed, the flag.
 
-```
-flag{HTTP_r3qu35t_m3th0d5_ftw}
-```
+>flag{HTTP_r3qu35t_m3th0d5_ftw}
 
 &nbsp;
 
 ### Hack NASA With HTML Mr. Inspector Sherlock
 
-```
-now introducing... the world's best website ever!!!
-
-Created By: DefyGG
-```
+>now introducing... the world's best website ever!!!
+>
+>Created By: DefyGG
 
 Presenting the next challenge, the ~~ugliest~~ best website ever! For this challenge we
 are given a link to a website and must crawl through it to find parts of the flag.
@@ -506,34 +514,26 @@ order but here were their locations.
 
 ![Flag Part 3](/assets/pbjar/sherlock1.png)
 
-```
-_a_d3t3ct1iv3????!?!?!}
-```
+>_a_d3t3ct1iv3????!?!?!}
 
 The third part of the flag was hidden inside the HTML of the index page. Within this __
 block and in a rendered view would be seen quickly scrolling accross the page.
 
 ![Flag Part 2](/assets/pbjar/sherlock2.png)
 
-```
-I_th0ugh1_sh3l0ck_w2s
-```
+>I_th0ugh1_sh3l0ck_w2s
 
 The second part of the flag was hidden in plain sight on the about-styled page.
 
 ![Flag Part 1](/assets/pbjar/sherlock3.png)
 
-```
-flag{wA1t_a_m1nUt3_
-```
+>flag{wA1t_a_m1nUt3_
 
 The first (or final) part of the flag is hidden in javascript for the old.html
 page. The final step to this whole process is to combine all these parts into
 a single complete flag.
 
-```
-flag{wA1t_a_m1nUt3_I_th0ugh1_sh3l0ck_w2s_a_d3t3ct1iv3????!?!?!}
-```
+>flag{wA1t_a_m1nUt3_I_th0ugh1_sh3l0ck_w2s_a_d3t3ct1iv3????!?!?!}
 
 &nbsp;
 
@@ -561,9 +561,7 @@ to bruteforce a password and extract anything hidden in the image.
 Stegseek quickly output a passphrase but also some hidden text into my output file.
 The hidden text was the flag we were looking for.
 
-```
-flag{ungulatus_better_than_stenops}
-```  
+>flag{ungulatus_better_than_stenops}  
 
 ### Art Mystery
 
@@ -649,13 +647,9 @@ should be fixed. After a quick edit, I had a new, working picture and the flag.
 
 ![Real Art](/assets/pbjar/art.png)
 
-```
-
-```
+>flag{you_found_my_size}
 
 &nbsp;
-
-
 
 ### Wirf die Gläser an die Wand
 
@@ -692,9 +686,7 @@ titles as passwords.
 The German version of the password turned out to be the most effective and out popped
 the flag.
 
-```
-
-```
+>flag{du_bist_ein_echter_Russe}
 
 &nbsp;
 
@@ -782,12 +774,9 @@ translated into ascii.
 Figure # shows the output of the script when run against the new .pcapng file. Among
 the output is the flag (which requires a tiny bit of formatting).
 
-```
-flag{wowgoodusbdetectivework}
-```
+>flag{wowgoodusbdetectivework}
 
 &nbsp;
-
 
 ### Luna Guesser
 
@@ -815,7 +804,7 @@ My search "luna decode signal" mentioned slow-scan television (SSTV). SSTV is a 
 radio operators to send pictures. But more importantly, it has been used quite a bit for
 transmitting images from space. Here is an example of what SSTV sounds like.
 
-[Click Here to Listen to an SSTV Signal Example]()
+[Click Here to Listen to an SSTV Signal Example](/assets/pbjar/sstv_example.wav)
 
 The example is quite alike the .wav file we were given. Now that we know what it is,
 we just have to turn it into a picture. There are a few tools available to perform this.
@@ -844,9 +833,7 @@ There are a few of options here to try:
 Trial and error is the best bet here. In the end, the correct answer turned out to
 be option 3: Mare Tranquillitatis.
 
-```
-flag{mare_tranquillitatis}
-```
+>flag{mare_tranquillitatis}
 
 &nbsp;
 
@@ -876,9 +863,7 @@ Figure # shows the output of john the ripper. There is only 1 hash that john was
 to crack and nicely enough, it is the admin hash. This seems like a good enough
 guess at the flag and sure enough, it works.
 
-```
-flag{superman83}
-```
+>flag{superman83}
 
 &nbsp;
 
@@ -956,9 +941,7 @@ email in response to the phishing email in question. Connecting the dots further
 is a response to the one sent by Th3 Wh1t3R0s3. Which means Th3_Wh1t3R0s3 should be the flag.
 Submitting this flag resulted in a victory and the challenge was complete.
 
-```
-flag{Th3_Wh1t3R0s3}
-```
+>flag{Th3_Wh1t3R0s3}
 
 &nbsp;
 
@@ -994,9 +977,7 @@ flag printed.
 A shift of 6 ended up providing next important result. In fact, the shift was just
 the right amound to print out the flag that was hiding in the LSBs.
 
-```
-flag{dont_do_drugs_solve_column_based_lsbeeeeee}
-```
+>flag{dont_do_drugs_solve_column_based_lsbeeeeee}
 
 &nbsp;
 
