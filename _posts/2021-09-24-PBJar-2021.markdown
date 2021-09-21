@@ -54,16 +54,22 @@ ETH balance of Techlead's personal wallet. To start I began with a quick google 
 to see if their wallet address popped up.
 
 ![Google](/assets/pbjar/tech1.png)
+<figcaption align=center><b>Figure 1-1: </b></figcaption>
+&nbsp;
 
 Sure enough, the third link down had an etherscan link to a wallet. On the etherscan
 page there is confirmation that this is probably the right address.
 
 ![Mod Comment](/assets/pbjar/tech2.png)
+<figcaption align=center><b>Figure 1-2: </b></figcaption>
+&nbsp;
 
 Now we just needed to find the highest balance. Luckily, etherscan has an analytics tab
 that displays things like highest and lowest values.
 
 ![Analytics](/assets/pbjar/tech3.png)
+<figcaption align=center><b>Figure 1-3: </b></figcaption>
+&nbsp;
 
 This wallet had an historical high of 1.4625790953780384 ETH in it. All that's left was
 to try the flag.
@@ -87,11 +93,15 @@ Ropsten test net. The first step was to look up 0xf0674CD7D1C0c616063a786E7d1434
 on ropsten etherscan.
 
 ![Contract](/assets/pbjar/reado1.png)
+<figcaption align=center><b>Figure 2-1: </b></figcaption>
+&nbsp;
 
 Next I examined the contract further in the "Contract" tab to see if there were any
 more details.
 
 ![Tab](/assets/pbjar/reado2.png)
+<figcaption align=center><b>Figure 2-2: </b></figcaption>
+&nbsp;
 
 Among the extra details there is the source code and ABI for the contract. And just like the
 description said, the flag was right there in the code.
@@ -123,16 +133,22 @@ Use a site like https://justsmartcontracts.dev/#/ to do the call for me. I had n
 how to make a script for this one so I chose option 2.
 
 ![Smart Contracts](/assets/pbjar/readt1.png)
+<figcaption align=center><b>Figure 3-1: </b></figcaption>
+&nbsp;
 
 The smart contracts site requires 2 pieces of information to work: an address and an ABI,
 which is exactly what we have. From here it was as simple adding a contract and
 inputting the details, remembering to set the network id to Ropsten.
 
 ![Details](/assets/pbjar/readt2.png)
+<figcaption align=center><b>Figure 3-2: </b></figcaption>
+&nbsp;
 
 Next to look at the fruits of our labour.
 
 ![Contract Details](/assets/pbjar/readt3.png)
+<figcaption align=center><b>Figure 3-3: </b></figcaption>
+&nbsp;
 
 In the "Properties" tab we can clearly see the result of a get() call, the flag.
 
@@ -153,11 +169,15 @@ is a bit ambiguous compared to the last. We are given another smart contract add
 need to find the flag somewhere in it. I began by checking it out on the Ropsten etherscan.
 
 ![Contract](/assets/pbjar/readr1.png)
+<figcaption align=center><b>Figure 4-1: </b></figcaption>
+&nbsp;
 
 The contract is fairly similar to readFlag1 in terms of details. However, there are
 a few more sections.
 
 ![Sections](/assets/pbjar/readr2.png)
+<figcaption align=center><b>Figure 4-2: </b></figcaption>
+&nbsp;
 
 The few extra sections provide more details on the contract code and execution. Most importantly,
 inside "Constructor Arguments" there are encoded and decoded function arguments. One of which,
@@ -191,21 +211,32 @@ transactions. This means the miner could order a transaction first if they were 
 With this in mind, I went on to examine the block.
 
 ![Block](/assets/pbjar/mev1.png)
+<figcaption align=center><b>Figure 5-1: </b></figcaption>
+&nbsp;
 
 Since there didn't appear to be anything referring to an obvious "bribe" on the
 main page, I moved on to check the transactions on the block.
 
 ![Transactions](/assets/pbjar/mev2.png)
+<figcaption align=center><b>Figure 5-2: </b></figcaption>
+&nbsp;
+
 
 Now assuming that this transaction order is sorted by latest completion, the first
 transaction on the block should be at the end of this list.
 
 ![Last Transaction](/assets/pbjar/mev3.png)
+<figcaption align=center><b>Figure 5-3: </b></figcaption>
+&nbsp;
+
 
 There was a conspicuous entry mentioning MEV Bot at the end of the list. Which seemed like
 a good place to start.
 
 ![MEV Bot](/assets/pbjar/mev4.png)
+<figcaption align=center><b>Figure 5-4: </b></figcaption>
+&nbsp;
+
 
 Transaction 0xddb777fbc72b8c3f31f687e302412c2f663b704bcf2faab5d938cd3f9c8b41f8 lists
 a couple of transfers in its "Interacted With (To):" section. One of which, has the
@@ -252,18 +283,25 @@ which downloads an executable "v1" and are tasked with finding the most recent u
 v1 is invoked it will "update" and download the next version of the program.
 
 ![V1 to V2](/assets/pbjar/version1.png)
+<figcaption align=center><b>Figure 8-1: </b></figcaption>
+&nbsp;
+
 
 The problem is, who knows how many versions behind the program is. It could take a while to
 manually update to the latest version. Next I tried to skip ahead some versions by manipulating the
 url.
 
 ![Url Manipulation](/assets/pbjar/version2.png)
+<figcaption align=center><b>Figure 8-2: </b></figcaption>
+&nbsp;
 
 It turns out, I could access whichever version I wanted by changing the url. So I used
 this direct object reference "vulnerability" to see what happens when I input an insanely
 large version number.
 
 ![Large Version Fail](/assets/pbjar/version3.png)
+<figcaption align=center><b>Figure 8-3: </b></figcaption>
+&nbsp;
 
 The site returns a "failed to find version message" meaning there is a limit to the
 version numbers. All that I needed to do was find the last version number that works.
@@ -309,6 +347,8 @@ and narrows down the search field. Running it results in the latest version numb
 The final step was to download this version and run it to get the flag.
 
 ![Run final version](/assets/pbjar/version5.png)
+<figcaption align=center><b>Figure 8-4: </b></figcaption>
+&nbsp;
 
 >flag{h0w_l0ng_wher3_y0u_g0ne_f0r_3910512832}
 
@@ -323,6 +363,8 @@ The final step was to download this version and run it to get the flag.
 >Created By: ZeroDayTea
 
 ![Site](/assets/pbjar/prog1.png)
+<figcaption align=center><b>Figure 9-1: </b></figcaption>
+&nbsp;
 
 ProgrammersHateProgramming is the first in a pair of challenges where we are tasked with
 examining a note taking application for vulnerabilities. When I first completed the challenge
@@ -365,6 +407,8 @@ to avoid it. To test this out I tried this POC:
 And this was the resulting note:
 
 ![Phpinfo Note](/assets/pbjar/prog5.png)
+<figcaption align=center><b>Figure 9-2: </b></figcaption>
+&nbsp;
 
 So I guess the exploit works. The next move was to find the flag. Since I was able to inject
 PHP commands and see the output, I could invoke a system command and look for the flag
@@ -389,6 +433,8 @@ bypass that as well as the PHP tags.
 flag<?php<?php system("cat flag.php"); ?>?>
 ```
 ![Flag.php](/assets/pbjar/prog3.png)
+<figcaption align=center><b>Figure 9-3: </b></figcaption>
+&nbsp;
 
 And there it is, the really long and informative flag we were looking for.
 
@@ -460,6 +506,8 @@ flag<?php<?<?php system("ccatat /flag.php") ?>?>
 ```
 
 ![Result of Payload](/assets/pbjar/progrevenge1.png)
+<figcaption align=center><b>Figure 10-1: </b></figcaption>
+&nbsp;
 
 Again, the flag is printed out nicely in the note we created.
 
@@ -474,6 +522,8 @@ Again, the flag is printed out nicely in the note we created.
 c0rL is a sourceless web challenge that gives us a simple website.
 
 ![Login Page](/assets/pbjar/corl1.png)
+<figcaption align=center><b>Figure 11-1: </b></figcaption>
+&nbsp;
 
 The website initially presents a login page. The page source is mostly empty and doesn't
 offer too many hints. Supposedly, the goal here is to break in through this login form.
@@ -481,6 +531,8 @@ The first thing to try with most of these is to try some common weak username pa
 combinations.
 
 ![admin](/assets/pbjar/corl2.png)
+<figcaption align=center><b>Figure 11-2: </b></figcaption>
+&nbsp;
 
 Inputting the combination admin:admin resulted in the output in Figure #. This output
 provided a huge hint on what to do next. The keyword of the sentence "put" immediately reminded
@@ -488,6 +540,8 @@ me of the HTTP PUT method. The next step seemed to be to try sending the login a
 instead of the default POST.
 
 ![PUT Request Curl](/assets/pbjar/corl3.png)
+<figcaption align=center><b>Figure 11-3: </b></figcaption>
+&nbsp;
 
 I used curl to craft the request but any other similar tool (burp, etc) would have worked.
 The response to the PUT request contains just what we needed, the flag.
@@ -513,6 +567,8 @@ and/or use tools to assist with this. I ended up finding the parts of the flag i
 order but here were their locations.
 
 ![Flag Part 3](/assets/pbjar/sherlock1.png)
+<figcaption align=center><b>Figure 12-1: </b></figcaption>
+&nbsp;
 
 >_a_d3t3ct1iv3????!?!?!}
 
@@ -520,12 +576,16 @@ The third part of the flag was hidden inside the HTML of the index page. Within 
 block and in a rendered view would be seen quickly scrolling accross the page.
 
 ![Flag Part 2](/assets/pbjar/sherlock2.png)
+<figcaption align=center><b>Figure 12-2: </b></figcaption>
+&nbsp;
 
 >I_th0ugh1_sh3l0ck_w2s
 
 The second part of the flag was hidden in plain sight on the about-styled page.
 
 ![Flag Part 1](/assets/pbjar/sherlock3.png)
+<figcaption align=center><b>Figure 12-3: </b></figcaption>
+&nbsp;
 
 >flag{wA1t_a_m1nUt3_
 
@@ -549,6 +609,8 @@ To start off forensics we have Stegosaurus stenops, a steganography challenge.
 Supposedly, inside the given .jpg file there is a hidden flag.
 
 ![Stego](/assets/pbjar/stegosaurus.jpg)
+<figcaption align=center><b>Figure 13-1: </b></figcaption>
+&nbsp;
 
 Upon initial inspection, the image shows nothing untoward. The next step for me was
 to apply some tools to the file to see if there are any hints or flags in the open.
@@ -557,6 +619,8 @@ some jpg steganography tools and tried out stegseek. My goal with stegseek was t
 to bruteforce a password and extract anything hidden in the image.
 
 ![Stegseek](/assets/pbjar/stego1.png)
+<figcaption align=center><b>Figure 13-2: </b></figcaption>
+&nbsp;
 
 Stegseek quickly output a passphrase but also some hidden text into my output file.
 The hidden text was the flag we were looking for.
@@ -575,12 +639,16 @@ The hidden text was the flag we were looking for.
 Art Mystery starts out with us investigating a png file. Let's take a look at the image.
 
 ![Art](/assets/pbjar/art2.png)
+<figcaption align=center><b>Figure 14-1: </b></figcaption>
+&nbsp;
 
 The file is clearly broken and my default viewer says there is a CRC error in the IHDR chunk.
 This means that some part of the IHDR does not match up with the picture's original CRC value.
 To inspect further I tried using pngcheck on the file.
 
 ![Pngcheck](/assets/pbjar/art1.png)
+<figcaption align=center><b>Figure 14-2: </b></figcaption>
+&nbsp;
 
 The error appears to be a result of the dimensions of the image being set to 0 x 0.
 Unfortunately, pngcheck didn't reveal any potential fixes or values that would work.
@@ -603,11 +671,15 @@ The important parts for this challenge are the width and height, which come righ
 header. Here's an example of what it looks like in a normal png file.
 
 ![Example png](/assets/pbjar/art_ihdr.png)
+<figcaption align=center><b>Figure 14-3: </b></figcaption>
+&nbsp;
 
 Figure # shows the example IHDR chunk with the width and height bytes highlighted. These values
 are what I edited to attempt to fix the file. I put in some random values and tried pngcheck again.
 
 ![Pngcheck 2](/assets/pbjar/art3.png)
+<figcaption align=center><b>Figure 14-4: </b></figcaption>
+&nbsp;
 
 It's not a full fix, but its does reveal the CRC we need to get. So hopefully, all we need to do
 is find the right width and height to satisfy the CRC. I found an excellent script [here]() to
@@ -641,11 +713,15 @@ The script will attempt all dimensions within a range and check the CRC value, p
 every valid set of dimensions. Here is the script in action:
 
 ![Script](/assets/pbjar/art4.png)
+<figcaption align=center><b>Figure 14-5: </b></figcaption>
+&nbsp;
 
 So for art.png we just need to edit into the IHDR "02b0" for both width and height and the picture
 should be fixed. After a quick edit, I had a new, working picture and the flag.
 
 ![Real Art](/assets/pbjar/art.png)
+<figcaption align=center><b>Figure 14-6: </b></figcaption>
+&nbsp;
 
 >flag{you_found_my_size}
 
@@ -663,10 +739,15 @@ Dschinghis Khan. Supposedly, somewhere hidden in this message, there is a flag w
 need to find. I started by examining the file in a notepad.
 
 ![notepad](/assets/pbjar/german1.png)
+<figcaption align=center><b>Figure 15-1: </b></figcaption>
+&nbsp;
 
 Nothing seemed out of the ordinary so I moved on to examine the file's hex in xxd.
 
 ![xxd](/assets/pbjar/moscow1.png)
+<figcaption align=center><b>Figure 15-2: </b></figcaption>
+&nbsp;
+
 
 The file has some extra whitespace characters hidden between the lines of lyrics.
 Specifically, it contains extra spaces and tabs. Searching up whitespace steganography
@@ -675,6 +756,9 @@ Stegsnow appends tabs and spaces to the end of lines of text to hide the message
 Next I tried running stegsnow against the message to see what was hiding there.
 
 ![Stegsnow Round 1](/assets/pbjar/german3.png)
+<figcaption align=center><b>Figure 15-3: </b></figcaption>
+&nbsp;
+
 
 Unfortunately, stegsnow wasn't too keen on returning anything just yet. It either needed
 a password for decoding or I was way off course. For passwords, nothing seemed more suitable
@@ -682,6 +766,9 @@ to me than the title of the song. So I tried stegsnow again with both the Englis
 titles as passwords.
 
 ![Flag](/assets/pbjar/moscow.png)
+<figcaption align=center><b>Figure 15-4: </b></figcaption>
+&nbsp;
+
 
 The German version of the password turned out to be the most effective and out popped
 the flag.
@@ -700,12 +787,17 @@ Tippy tappies is a forensics challenge where we are given a capture of some USB 
 To start off, let's look at the capture in Wireshark.
 
 ![USB Captures](/assets/pbjar/tippy1.png)
+<figcaption align=center><b>Figure 16-1: </b></figcaption>
+&nbsp;
+
 
 The USB capture contains a variety of different packet types. The majority of the
 frames are USB protocol "URB_INTERRUPT in" frames. Given how many of them there are,
 I felt it was a decent place to start my examination.
 
 ![Interrupt in Frame](/assets/pbjar/tippy2.png)
+<figcaption align=center><b>Figure 16-2: </b></figcaption>
+&nbsp;
 
 The interrupt in frames in this capture contain a bunch of HID data that shows the USB device
 was a keyboard. Meaning this capture must be some sort of keylogging session. In Figure #
@@ -713,6 +805,8 @@ we can see there are two varieties of interrupt in frames - input and confirmati
 With this in mind, I narrowed down my search to just input frames using a filter.
 
 ![Filter](/assets/pbjar/tippy3.png)
+<figcaption align=center><b>Figure 16-3: </b></figcaption>
+&nbsp;
 
 I used a combination of filters to find only frames with valid key input. Looking through
 some of the input, it was highly likely that I was on the right track. By just scrolling
@@ -770,6 +864,8 @@ each block must be trimmed down to only the key press code. Finally, the code ca
 translated into ascii.
 
 ![Script Output](/assets/pbjar/tippy4.png)
+<figcaption align=center><b>Figure 16-4: </b></figcaption>
+&nbsp;
 
 Figure # shows the output of the script when run against the new .pcapng file. Among
 the output is the flag (which requires a tiny bit of formatting).
@@ -799,6 +895,8 @@ this sound had something to do with space or the moon. I searched for a while be
 stumbling upon some interesting results.
 
 ![Luna Decode](/assets/pbjar/luna2.png)
+<figcaption align=center><b>Figure 17-1: </b></figcaption>
+&nbsp;
 
 My search "luna decode signal" mentioned slow-scan television (SSTV). SSTV is a method for
 radio operators to send pictures. But more importantly, it has been used quite a bit for
@@ -812,17 +910,23 @@ I ended up using QSSTV but really any single one should work well enough. Next I
 audio into QSSTV](https://ourcodeworld.com/articles/read/956/how-to-convert-decode-a-slow-scan-television-transmissions-sstv-audio-file-to-images-using-qsstv-in-ubuntu-18-04) and tried to get a picture out of it.
 
 ![QSSTV Gif](/assets/pbjar/luna123.gif)
+<figcaption align=center><b>Figure 17-2: </b></figcaption>
+&nbsp;
 
 Figure # shows the decoding in action. Eventually, the audio ends and the full
 picture is rendered.
 
 ![Moon Landing](/assets/pbjar/luna3.png)
+<figcaption align=center><b>Figure 17-3: </b></figcaption>
+&nbsp;
 
 The output is clearly a picture from the 1969 Moon Landing. So supposedly, the
 location we are looking for is somewhere on the moon. Specifically, the moon landing site.
 A quick search turns up all we should need.
 
 ![Moon landing search](/assets/pbjar/luna7.png)
+<figcaption align=center><b>Figure 17-4: </b></figcaption>
+&nbsp;
 
 There are a few of options here to try:
 
@@ -847,17 +951,23 @@ This forensics challenge involves extracting a password from a memory dump. To b
 I started up volatility to get an idea of what profile I should use for this analysis.
 
 ![Vol.py](/assets/pbjar/meme1.png)
+<figcaption align=center><b>Figure 18-1: </b></figcaption>
+&nbsp;
 
 Out of the 3 choices available I decided to go with the first one "". Next I need
 to get a dump of all the NTLM hashes from the file. To do this I use the hashdump
 plugin.
 
 ![Hashdump](/assets/pbjar/meme2.png)
+<figcaption align=center><b>Figure 18-2: </b></figcaption>
+&nbsp;
 
 After a few seconds 3 hashes popped out. To continue, I copied these hashes to a
 file and ran them through john the ripper.
 
 ![John](/assets/pbjar/meme3.png)
+<figcaption align=center><b>Figure 18-3: </b></figcaption>
+&nbsp;
 
 Figure # shows the output of john the ripper. There is only 1 hash that john was able
 to crack and nicely enough, it is the admin hash. This seems like a good enough
@@ -881,36 +991,48 @@ memory. The goal of this challenge is to find the name of someone who sent a fis
 Like memedium, I first needed to get a profile name to use in volatility.
 
 ![Profile](/assets/pbjar/robot1.png)
+<figcaption align=center><b>Figure 19-1: </b></figcaption>
+&nbsp;
 
 Again, there are a few choices but the first one is fine by me. Next I wanted to do a few things
 to search for emails in the capture. First, I wanted to see if outlook had a running process.
 To check the processes in the capture I used the pslist plugin.
 
 ![pslist](/assets/pbjar/robot2.png)
+<figcaption align=center><b>Figure 19-2: </b></figcaption>
+&nbsp;
 
 Luckily, outlook was running so I could dump the memory specific to its process.
 Noting down the PID for outlook (3196), I used the memdump plugin to, well, dump the
 memory.
 
 ![memdump 3196](/assets/pbjar/robot3.png)
+<figcaption align=center><b>Figure 19-3: </b></figcaption>
+&nbsp;
 
 Now that all the outlook process memory was in 1 file I wanted to move on to seeing if
 the capture had any .pst or .ost files in it. With these files I might be able to get
 a look at some full emails.
 
 ![Filescan](/assets/pbjar/robot4.png)
+<figcaption align=center><b>Figure 19-4: </b></figcaption>
+&nbsp;
 
 Combining the filescan plugin with a grep printed out some useful information. There are
 a trio of potential .ost files. The ost files also reveal an account on the machine,
 FrontDesk. Next, to dump the ost data.
 
 ![File dump](/assets/pbjar/robot5.png)
+<figcaption align=center><b>Figure 19-5: </b></figcaption>
+&nbsp;
 
 Unfortunately, like in Figure #, none of the .ost files had much data in them, definitely
 not enough to work with. I then worked back a few steps to the outlook process dump.
 I started examining it by trying to extract some email addresses from the process dump.
 
 ![grep emails](/assets/pbjar/robots6.png)
+<figcaption align=center><b>Figure 19-6: </b></figcaption>
+&nbsp;
 
 I managed to grep a bunch of email addresses from the file, a few of which were mangled a bit.
 Looking through the list I noticed one fairly conspicuous email: th3wh1t3r0s3@gmail.com.
@@ -918,18 +1040,24 @@ The rest of the emails were fairly normal looking so I decided to investigate th
 first.
 
 ![white rose](/assets/pbjar/robot_mayb_needed.png)
+<figcaption align=center><b>Figure 19-7: </b></figcaption>
+&nbsp;
 
 Issuing a grep for the email shows a few results, most importantly, a "From: Th3 Wh1t3R0s3" tag.
 There is an email from Th3 Wh1t3R0s3 in memory but the contents aren't available from this view.
 To investigate further I examined the process dump starting at the line where the "From" tag appears.
 
 ![Tail command](/assets/pbjar/robot8.png)
+<figcaption align=center><b>Figure 19-8: </b></figcaption>
+&nbsp;
 
 A few lines following the From tag there is the "To:" tag which shows that frontdesk is the direct
 recipient of this email. However, still no readable email body. I figured with a bit more work,
 we might be able to figure out the contents of this email.
 
 ![Grep hello](/assets/pbjar/robot10.png)
+<figcaption align=center><b>Figure 19-9: </b></figcaption>
+&nbsp;
 
 Grepping for "hello" reveals a single email body with a few suspicious details. The email is targeted
 at a Mr. Wellick with the headline "VPN Update". The email also offers a link to some software named
