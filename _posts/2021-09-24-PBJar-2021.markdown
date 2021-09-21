@@ -864,7 +864,7 @@ The output is clearly a picture from the 1969 Moon Landing. So supposedly, the
 location we are looking for is somewhere on the moon. Specifically, the moon landing site.
 A quick search turns up all we should need.
 
-![Moon landing search](/assets/pbjar/)
+![Moon landing search](/assets/pbjar/luna7.png)
 
 There are a few of options here to try:
 
