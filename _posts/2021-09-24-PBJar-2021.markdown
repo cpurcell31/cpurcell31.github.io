@@ -431,17 +431,15 @@ The new filters replace all occurrences of their keyword that they see, but they
 not recursive. This means we can "nest" a keyword within itself and it will only filter
 the inner keyword. For example
 
-```
-str_replace("cat", "", "ccatat") = cat
-
-or basically,
-
-ccatat ---> cat
-```
+>str_replace("cat", "", "ccatat") = cat
+>
+>or basically,
+>
+>ccatat ---> cat
 
 All I needed to do was slightly adjust the payload from the previous challenge.
 
-```
+```php
 flag<?php<?<?php system("ccatat /flag.php") ?>?>
 ```
 
@@ -543,11 +541,9 @@ flag{wA1t_a_m1nUt3_I_th0ugh1_sh3l0ck_w2s_a_d3t3ct1iv3????!?!?!}
 
 ### Stegosaurus stenops
 
-```
-This stenops swallowed the flag... and some unusually large rock
-
-Created By: ZeroDayTea
-```
+>This stenops swallowed the flag... and some unusually large rock
+>
+>Created By: ZeroDayTea
 
 To start off forensics we have Stegosaurus stenops, a steganography challenge.
 Supposedly, inside the given .jpg file there is a hidden flag.
@@ -571,14 +567,12 @@ flag{ungulatus_better_than_stenops}
 
 ### Art Mystery
 
-```
-You put you new artwork into a safe but when you looked in the morning,
-someone had stolen it!! Next time you'll have to cheCk youR loCk.
-
-P.S I might want to remake this challenge with a new image and flag
-
-Created By: ZeroDayTea
-```
+>You put you new artwork into a safe but when you looked in the morning,
+>someone had stolen it!! Next time you'll have to cheCk youR loCk.
+>
+>P.S I might want to remake this challenge with a new image and flag
+>
+>Created By: ZeroDayTea
 
 Art Mystery starts out with us investigating a png file. Let's take a look at the image.
 
@@ -597,17 +591,15 @@ So naturally I just tried editing in a random one.
 To preface this operation, I should explain a bit about the IHDR chunk. According to
 [this resource]() the IHDR chunk will have the following qualities:
 
-```
-The IHDR chunk must appear FIRST. It contains:
-
-   Width:              4 bytes
-   Height:             4 bytes
-   Bit depth:          1 byte
-   Color type:         1 byte
-   Compression method: 1 byte
-   Filter method:      1 byte
-   Interlace method:   1 byte
-```
+>The IHDR chunk must appear FIRST. It contains:
+>
+>   Width:              4 bytes
+>   Height:             4 bytes
+>   Bit depth:          1 byte
+>   Color type:         1 byte
+>   Compression method: 1 byte
+>   Filter method:      1 byte
+>   Interlace method:   1 byte
 
 The important parts for this challenge are the width and height, which come right after the IHDR
 header. Here's an example of what it looks like in a normal png file.
@@ -623,7 +615,7 @@ It's not a full fix, but its does reveal the CRC we need to get. So hopefully, a
 is find the right width and height to satisfy the CRC. I found an excellent script [here]() to
 do the bruteforcing for me.
 
-```
+```python
 from zlib import crc32
 
 data = open("art.png",'rb').read()
@@ -667,12 +659,10 @@ should be fixed. After a quick edit, I had a new, working picture and the flag.
 
 ### Wirf die Gläser an die Wand
 
-```
-Our operatives managed to intercept this message. We know they've been transporting their
-plans over the network we infiltrated so there must be something here that we're not seeing.
-
-Created By: ZeroDayTea
-```
+>Our operatives managed to intercept this message. We know they've been transporting their
+>plans over the network we infiltrated so there must be something here that we're not seeing.
+>
+>Created By: ZeroDayTea
 
 For this challenge we are given a single text file containing lyrics to Moskau by
 Dschinghis Khan. Supposedly, somewhere hidden in this message, there is a flag we
@@ -710,11 +700,9 @@ the flag.
 
 ### tippy tappies
 
-```
-how'd you get this in the first place :eyes: dids you has logger on me?
-
-Created By: ZeroDayTea
-```
+>how'd you get this in the first place :eyes: dids you has logger on me?
+>
+>Created By: ZeroDayTea
 
 Tippy tappies is a forensics challenge where we are given a capture of some USB input.
 To start off, let's look at the capture in Wireshark.
@@ -746,7 +734,7 @@ Both are completely valid ways to solve this problem but for visual "wow" I'll d
 a script for reading and decoding the frames. However, first, I exported only the keyboard
 input frames into a new pcapng file using "File -> Export Specified Packets".
 
-```
+```python
 import re
 
 # HID codes in decimal
@@ -864,11 +852,9 @@ flag{mare_tranquillitatis}
 
 ### memedium
 
-```
-not memeasy not memhard... just memedium. (p.s. it'd be good if you found password and wrapped it in flag{} lol)
-
-Created By: ZeroDayTea
-```
+>not memeasy not memhard... just memedium. (p.s. it'd be good if you found password and wrapped it in flag{} lol)
+>
+>Created By: ZeroDayTea
 
 This forensics challenge involves extracting a password from a memory dump. To begin
 I started up volatility to get an idea of what profile I should use for this analysis.
@@ -898,14 +884,12 @@ flag{superman83}
 
 ### Mr. Robot and Friends
 
-```
-phishing scams are scaryyyy ;w; and it seems like this fool fell for the oldest
-trick in the book. maybe if he watched more Mr. Robot he'd know how about this
-kind of thing (the flag is the name of the person who sent the phishing email
-e.g. flag{Bob_Smith})
-
-Created By: ZeroDayTea
-```
+>phishing scams are scaryyyy ;w; and it seems like this fool fell for the oldest
+>trick in the book. maybe if he watched more Mr. Robot he'd know how about this
+>kind of thing (the flag is the name of the person who sent the phishing email
+>e.g. flag{Bob_Smith})
+>
+>Created By: ZeroDayTea
 
 This next memory forensics challenge revolves around finding a phishing email within the
 memory. The goal of this challenge is to find the name of someone who sent a fishing email.
@@ -980,11 +964,9 @@ flag{Th3_Wh1t3R0s3}
 
 ### Lysergic acid diethylamide
 
-```
-Don't do drugs kids and look for hints in the challenge
-
-Created By: ZeroDayTea
-```
+>Don't do drugs kids and look for hints in the challenge
+>
+>Created By: ZeroDayTea
 
 LSD is an image forensics challenge in which we must find a flag hidden in a .png file.
 
