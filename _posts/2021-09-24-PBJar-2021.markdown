@@ -618,7 +618,7 @@ However, nothing really worked out or gave any important details. Eventually I l
 some jpg steganography tools and tried out stegseek. My goal with stegseek was to attempt
 to bruteforce a password and extract anything hidden in the image.
 
-![Stegseek](/assets/pbjar/stego1.png)
+![Stegseek](/assets/pbjar/stegoflag.png)
 <figcaption align=center><b>Figure 13-2: </b></figcaption>
 &nbsp;
 
