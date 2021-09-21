@@ -853,7 +853,7 @@ we just have to turn it into a picture. There are a few tools available to perfo
 I ended up using QSSTV but really any single one should work well enough. Next I [piped the
 audio into QSSTV]() and tried to get a picture out of it.
 
-![QSSTV Gif](/assets/pbjar/)
+![QSSTV Gif](/assets/pbjar/luna123.gif)
 
 Figure # shows the decoding in action. Eventually, the audio ends and the full
 picture is rendered.
