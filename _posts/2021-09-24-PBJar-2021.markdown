@@ -39,15 +39,14 @@ tags: CTF
 
 ### TechLead
 
-```
-Infamous YouTuber, and ex-Google / ex-Facebook TechLead found a quick way to make a few million dollars of a crypto scam (as a millionare). He created the ERC-20 token Million (MM), and started promoting it on his social media platforms. The deployer address of the Million token smart contract is the personal address of TechLead, what is the highest historical Ethereum balance of his personal address?
 
-Million Token: https://coinmarketcap.com/currencies/million/
-
-Flag format: flag{0.006942069420}
-
-Created by bruh.
-```
+>Infamous YouTuber, and ex-Google / ex-Facebook TechLead found a quick way to make a few million dollars of a crypto scam (as a millionare). He created the ERC-20 token Million (MM), and started promoting it on his social media platforms. The deployer address of the Million token smart contract is the personal address of TechLead, what is the highest historical Ethereum balance of his personal address?
+>
+>Million Token: https://coinmarketcap.com/currencies/million/
+>
+>Flag format: flag{0.006942069420}
+>
+>Created by bruh.
 
 A majority of the challenges in the Misc category were about blockchain so get
 ready for some block investigation. For Techlead we are asked to find the highest
@@ -79,13 +78,11 @@ And success! The flag worked and the challenge was complete.
 
 ### readFlag1
 
-```
-The address of my new smart contract is 0xf0674CD7D1C0c616063a786E7d1434340E09BadD, the flag is inside it, and the code is published on Etherscan.
-
-Important: This smart contract is on Ropsten
-
-Created By: bruh.
-```
+>The address of my new smart contract is 0xf0674CD7D1C0c616063a786E7d1434340E09BadD, the flag is inside it, and the code is published on Etherscan.
+>
+>Important: This smart contract is on Ropsten
+>
+>Created By: bruh.
 
 The goal of this next challenge is to retrieve the flag from a smart contract on the
 Ropsten test net. The first step was to look up 0xf0674CD7D1C0c616063a786E7d1434340E09BadD
@@ -109,13 +106,11 @@ flag{etherscan_S0urc3_c0de}
 
 ### readFlag2
 
-```
-I have republished the previous the contract at 0x585C403bC5c7eb62BF3630c7FeF1F837603bA866, but this time no source code for you this time. Luckily, the ABI of the smart contract is the same as the previous one. Figure out how to "get()" the flag.
-
-Important: This smart contract is on Ropsten
-
-Created By: bruh.
-```
+>I have republished the previous the contract at 0x585C403bC5c7eb62BF3630c7FeF1F837603bA866, but this time >no source code for you this time. Luckily, the ABI of the smart contract is the same as the previous one. >Figure out how to "get()" the flag.
+>
+>Important: This smart contract is on Ropsten
+>
+>Created By: bruh.
 
 Part 2 of this set of readFlag challenges asks us to "get()" the flag from the smart contract.
 A few important details are provided as well. First, obviously, the smart contract address.
@@ -153,13 +148,11 @@ flag{web3js_plus_ABI_equalls_flag}
 
 ### readFlag3
 
-```
-0xe2a9e67bdA26Dd48c8312ea1FE6a7C111e5D7a7A
-
-Important: This smart contract is on Ropsten
-
-Created By: bruh.
-```
+>0xe2a9e67bdA26Dd48c8312ea1FE6a7C111e5D7a7A
+>
+>Important: This smart contract is on Ropsten
+>
+>Created By: bruh.
 
 This is the final challenge in this set of readFlag challenges and the goal of this one
 is a bit ambiguous compared to the last. We are given another smart contract address and
@@ -185,21 +178,19 @@ flag{s3t_by_c0nstructor}
 
 ### MEV
 
-```
-The miner of Block #12983883 on the Ethereum Blockchain partakes in the common practice of MEV. What is the exact amount of Ether that was transfered to the miner as a bribe from the transaction that was included first in this block?
-
-Info about MEV: https://ethereum.org/en/developers/docs/mev/
-
-Flag format: flag{0.006942069420}
-
-Created By: bruh.
-```
+>The miner of Block #12983883 on the Ethereum Blockchain partakes in the common practice of MEV. What is the exact amount of Ether that was transfered to the miner as a bribe from the transaction that was included first in this block?
+>
+>Info about MEV: https://ethereum.org/en/developers/docs/mev/
+>
+>Flag format: flag{0.006942069420}
+>
+>Created By: bruh.
 
 MEV is a challenge with the goal of examining an ETH miner to find a "bribe" of sorts.
 We are given a block number where this all takes place as well as a link to information
 about MEV.
 
-	Maximal (formerly "miner") extractable value (MEV) refers to the maximum value that can be extracted from block production in excess of the standard block reward and gas fees by including, excluding, and changing the order of transactions in a block.
+	>Maximal (formerly "miner") extractable value (MEV) refers to the maximum value that can be extracted from block production in excess of the standard block reward and gas fees by including, excluding, and changing the order of transactions in a block.
 
 With MEV the miner has control over what is/isn't allowed on the block and the order of
 transactions. This means the miner could order a transaction first if they were "inclined" to.
@@ -236,39 +227,33 @@ flag{0.009672680170055358}
 
 ### Ret2Libc
 
-```
-Ready to learn how to take ROP to the next level?
-
-Connect with "nc 143.198.127.103 42001".
-
-Created By: Rythm
-```
+>Ready to learn how to take ROP to the next level?
+>
+>Connect with "nc 143.198.127.103 42001".
+>
+>Created By: Rythm
 
 
 
 ### Walkthrough
 
-```
-This program is supposed to be an introduction to pwn that guides you through creating some exploits.
-
-While the program may look long, the majority of the program is just printing information to help teach you basic pwn techniques.
-
-I hope this can help people who are confused begin to understand the general concept of how pwn exploits work by changing parts of memory.
-
-Connect with "nc 147.182.172.217 42001".
-
-Created By: Rythm
-```
+>This program is supposed to be an introduction to pwn that guides you through creating some exploits.
+>
+>While the program may look long, the majority of the program is just printing information to help teach you basic pwn techniques.
+>
+>I hope this can help people who are confused begin to understand the general concept of how pwn exploits work by changing parts of memory.
+>
+>Connect with "nc 147.182.172.217 42001".
+>
+>Created By: Rythm
 
 ## Rev
 
 ### web
 
-```
-I downloaded this program back when the version number was still v1. It's been a long time... I heard the most recent update has the flag in it.
-
-Created By: eyangch
-```
+>I downloaded this program back when the version number was still v1. It's been a long time... I heard the most recent update has the flag in it.
+>
+>Created By: eyangch
 
 web is a Rev challenge... web is a Rev challenge where we are given a website link
 which downloads an executable "v1" and are tasked with finding the most recent update for it. When
@@ -313,11 +298,9 @@ flag{h0w_l0ng_wher3_y0u_g0ne_f0r_3910512832}
 
 ### ProgrammersHateProgramming
 
-```
-just a little different than before
-
-Created By: ZeroDayTea
-```
+>just a little different than before
+>
+>Created By: ZeroDayTea
 
 ![Site](/assets/pbjar/prog1.png)
 
@@ -326,7 +309,7 @@ examining a note taking application for vulnerabilities. When I first completed 
 there wasn't any source code available but later on the admins provided it to make the challenge
 less guessy. Let's take a look at this code.
 
-```
+```php
 <?php
 if(isset($_POST["notewrite"]))
 {
@@ -355,7 +338,7 @@ Luckily, this set of filters is pretty easy to bypass. Since it only checks for 
 occurrence, we can just put another set of "<?php" or "flag" at the front of our payload
 to avoid it. To test this out I tried this POC:
 
-```
+```php
 <?php<?php phpinfo(); ?>?>
 ```
 
@@ -367,14 +350,14 @@ So I guess the exploit works. The next move was to find the flag. Since I was ab
 PHP commands and see the output, I could invoke a system command and look for the flag
 on the server.
 
-```
+```php
 <?php<?php system("ls"); ?>?>
 ```
 
 The current directory looked like the place where all the notes are stored but unfortunately,
 didn't contain any flags.
 
-```
+```php
 <?php<?php system("ls /"); ?>?>
 ```
 
@@ -382,7 +365,7 @@ The root directory was a different story. It had a file named flag.php, which se
 like a good file to look into. Note: remember that flag is a filtered word so we need to
 bypass that as well as the PHP tags.
 
-```
+```php
 flag<?php<?php system("cat flag.php"); ?>?>
 ```
 ![Flag.php](/assets/pbjar/prog3.png)
@@ -405,7 +388,7 @@ The sequel to the previous ProgrammersHateProgramming challenge, ProgrammersHate
 contains a beefed up blacklist with a few new filters. This time the source code was
 provided right from the beginning but still wouldn't take THAT much guessing to figure out.
 
-```
+```php
 <?php
 if(isset($_POST["notewrite"]))
 {
