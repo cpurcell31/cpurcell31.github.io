@@ -534,7 +534,7 @@ combinations.
 <figcaption align=center><b>Figure 11-2: Results from Inputting Common Username and Password</b></figcaption>
 &nbsp;
 
-Inputting the combination admin:admin resulted in the output in Figure #. This output
+Inputting the combination admin:admin resulted in the output in **Figure 11-2**. This output
 provided a huge hint on what to do next. The keyword of the sentence "put" immediately reminded
 me of the HTTP PUT method. The next step seemed to be to try sending the login as a PUT request
 instead of the default POST.
@@ -674,7 +674,7 @@ header. Here's an example of what it looks like in a normal png file.
 <figcaption align=center><b>Figure 14-3: Example IHDR Chunk</b></figcaption>
 &nbsp;
 
-Figure # shows the example IHDR chunk with the width and height bytes highlighted. These values
+**Figure 14-3** shows the example IHDR chunk with the width and height bytes highlighted. These values
 are what I edited to attempt to fix the file. I put in some random values and tried pngcheck again.
 
 ![Pngcheck 2](/assets/pbjar/art3.png)
@@ -800,7 +800,7 @@ I felt it was a decent place to start my examination.
 &nbsp;
 
 The interrupt in frames in this capture contain a bunch of HID data that shows the USB device
-was a keyboard. Meaning this capture must be some sort of keylogging session. In Figure #
+was a keyboard. Meaning this capture must be some sort of keylogging session. In **Figure 16-2**
 we can see there are two varieties of interrupt in frames - input and confirmation.
 With this in mind, I narrowed down my search to just input frames using a filter.
 
@@ -867,7 +867,7 @@ translated into ascii.
 <figcaption align=center><b>Figure 16-4: Python Script Results</b></figcaption>
 &nbsp;
 
-Figure # shows the output of the script when run against the new .pcapng file. Among
+Figure **16-4** shows the output of the script when run against the new .pcapng file. Among
 the output is the flag (which requires a tiny bit of formatting).
 
 >flag{wowgoodusbdetectivework}
@@ -913,7 +913,7 @@ audio into QSSTV](https://ourcodeworld.com/articles/read/956/how-to-convert-deco
 <figcaption align=center><b>Figure 17-2: QSSTV Translating LunaGuesser.wav</b></figcaption>
 &nbsp;
 
-Figure # shows the decoding in action. Eventually, the audio ends and the full
+**Figure 17-2** shows the decoding in action. Eventually, the audio ends and the full
 picture is rendered.
 
 ![Moon Landing](/assets/pbjar/luna3.png)
@@ -969,7 +969,7 @@ file and ran them through john the ripper.
 <figcaption align=center><b>Figure 18-3: Cracking the Hashes with John the Ripper</b></figcaption>
 &nbsp;
 
-Figure # shows the output of john the ripper. There is only 1 hash that john was able
+**Figure 18-3** shows the output of john the ripper. There is only 1 hash that john was able
 to crack and nicely enough, it is the admin hash. This seems like a good enough
 guess at the flag and sure enough, it works.
 
@@ -1026,7 +1026,7 @@ FrontDesk. Next, to dump the ost data.
 <figcaption align=center><b>Figure 19-5: Volatility - Dumping .ost File Data</b></figcaption>
 &nbsp;
 
-Unfortunately, like in Figure #, none of the .ost files had much data in them, definitely
+Unfortunately, like in **Figure 19-5**, none of the .ost files had much data in them, definitely
 not enough to work with. I then worked back a few steps to the outlook process dump.
 I started examining it by trying to extract some email addresses from the process dump.
 
@@ -1085,7 +1085,7 @@ LSD is an image forensics challenge in which we must find a flag hidden in a .pn
 <figcaption align=center><b>Figure 20-1: Given Challenge Image</b></figcaption>
 &nbsp;
 
-Figure # shows the .png in question. There is nothing particularly noticeable from the
+**Figure 20-1** shows the .png in question. There is nothing particularly noticeable from the
 image itself so I decided to move on and try some steganography tools on it.
 
 ![Zsteg](/assets/pbjar/secret1.png)
@@ -1101,7 +1101,7 @@ unlike what the hint says, zsteg is able to provide an offset.
 <figcaption align=center><b>Figure 20-3: Zsteg Tool Output With Shift of 2</b></figcaption>
 &nbsp;
 
-I decided to start with a shift of 2 and the results were very hopeful. Figure # shows
+I decided to start with a shift of 2 and the results were very hopeful. **Figure 20-3** shows
 that zsteg was able to find a large portion of the flag written backwards. Next I
 attempted a few bruteforce attempts on the shift to see if I could get more of the
 flag printed.
