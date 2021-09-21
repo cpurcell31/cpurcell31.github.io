@@ -798,7 +798,7 @@ Given the name of the challenge and the description, I banked on the idea that
 this sound had something to do with space or the moon. I searched for a while before
 stumbling upon some interesting results.
 
-![Luna Decode](/assets/pbjar/)
+![Luna Decode](/assets/pbjar/luna2.png)
 
 My search "luna decode signal" mentioned slow-scan television (SSTV). SSTV is a method for
 radio operators to send pictures. But more importantly, it has been used quite a bit for
@@ -816,7 +816,7 @@ audio into QSSTV](https://ourcodeworld.com/articles/read/956/how-to-convert-deco
 Figure # shows the decoding in action. Eventually, the audio ends and the full
 picture is rendered.
 
-![Moon Landing](/assets/pbjar/)
+![Moon Landing](/assets/pbjar/luna3.png)
 
 The output is clearly a picture from the 1969 Moon Landing. So supposedly, the
 location we are looking for is somewhere on the moon. Specifically, the moon landing site.
