@@ -282,7 +282,7 @@ web is a Rev challenge... web is a Rev challenge where we are given a website li
 that downloads an executable "v1" and are tasked with finding the most recent update for it. When
 v1 is invoked it will "update" and download the next version of the program.
 
-<div align="center"><img src="/assets/pbjar/version1.png"></div>
+<div align="center"><a href="/assets/pbjar/version1.png"><img src="/assets/pbjar/version1.png"></a></div>
 <figcaption align=center><b>Figure 8-1: Executing V1</b></figcaption>
 &nbsp;
 
@@ -299,7 +299,7 @@ It turns out, I could access whichever version I wanted by changing the URL. So 
 this direct object reference "vulnerability" to see what happens when I input an insanely
 large version number.
 
-<div align="center"><img src="/assets/pbjar/version3.png"></div>
+<div align="center"><a href="/assets/pbjar/version3.png"><img src="/assets/pbjar/version3.png"></a></div>
 <figcaption align=center><b>Figure 8-3: Inputting a Large Version Number</b></figcaption>
 &nbsp;
 
