@@ -202,7 +202,9 @@ MEV is a challenge with to examine an ETH miner to find a "bribe" of sorts.
 We are given a block number where this all takes place as well as a link to information
 about MEV.
 
-	>Maximal (formerly "miner") extractable value (MEV) refers to the maximum value that can be extracted from block production in excess of the standard block reward and gas fees by including, excluding, and changing the order of transactions in a block.
+	>Maximal (formerly "miner") extractable value (MEV) refers to the maximum value that can be
+	>extracted from block production in excess of the standard block reward and gas fees by
+	>including, excluding, and changing the order of transactions in a block.
 
 With MEV the miner has control over what is/isn't allowed on the block and the order of
 transactions. This means the miner could order a transaction first if they were "inclined" to.
@@ -624,7 +626,9 @@ to brute-force a password and extract anything hidden in the image.
 Stegseek quickly outputs a passphrase but also some hidden text into my output file.
 The hidden text was the flag we were looking for.
 
->flag{ungulatus_better_than_stenops}  
+>flag{ungulatus_better_than_stenops}
+
+&nbsp;  
 
 ### **Art Mystery**
 
