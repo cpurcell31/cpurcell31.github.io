@@ -649,7 +649,7 @@ The file is broken and my image viewer says there is a CRC error in the IHDR chu
 This means that some part of the IHDR does not match up with the picture's original CRC value.
 To inspect further I tried using pngcheck on the file.
 
-![Pngcheck](/assets/pbjar/art1.png)
+<div align="center"><a href="/assets/pbjar/art1.png"><img src="/assets/pbjar/art1.png"></a></div>
 <figcaption align=center><b>Figure 14-2: Results of Pngcheck</b></figcaption>
 &nbsp;
 
@@ -673,14 +673,14 @@ To preface this operation, I should explain a bit about the IHDR chunk. Accordin
 The important parts for this challenge are the width and height, which come right after the IHDR
 header. Here's an example of what it looks like in a normal png file.
 
-![Example png](/assets/pbjar/art_ihdr.png)
+<div align="center"><a href="/assets/pbjar/art_ihdr.png"><img src="/assets/pbjar/art_ihdr.png"></a></div>
 <figcaption align=center><b>Figure 14-3: Example IHDR Chunk</b></figcaption>
 &nbsp;
 
 **Figure 14-3** shows the example IHDR chunk with the width and height bytes highlighted. These values
 are what I edited to attempt to fix the file. I put in some random values and tried pngcheck again.
 
-![Pngcheck 2](/assets/pbjar/art3.png)
+<div align="center"><a href="/assets/pbjar/art3.png"><img src="/assets/pbjar/art3.png"></a></div>
 <figcaption align=center><b>Figure 14-4: Pngcheck Reveals Proper CRC Value</b></figcaption>
 &nbsp;
 
@@ -747,7 +747,7 @@ need to find. I started by examining the file in a notepad.
 
 Nothing seemed out of the ordinary so I moved on to examine the file's hex in xxd.
 
-![xxd](/assets/pbjar/moscow2.png)
+<div align="center"><a href="/assets/pbjar/moscow2.png"><img src="/assets/pbjar/moscow2.png"></a></div>
 <figcaption align=center><b>Figure 15-2: xxd Results for message.txt</b></figcaption>
 &nbsp;
 
@@ -768,7 +768,7 @@ a password for decoding or I was way off course. For passwords, nothing seemed m
 to me than the title of the song. So I tried stegsnow again with both the English and German
 titles as passwords.
 
-![Flag](/assets/pbjar/moscow.png)
+<div align="center"><a href="/assets/pbjar/moscow.png"><img src="/assets/pbjar/moscow.png"></a></div>
 <figcaption align=center><b>Figure 15-4: Stegsnow Results - With Password</b></figcaption>
 &nbsp;
 
@@ -925,7 +925,7 @@ audio into QSSTV](https://ourcodeworld.com/articles/read/956/how-to-convert-deco
 **Figure 17-2** shows the decoding in action. As the audio plays, the picture is created
 line by line. Eventually, the full picture was rendered, revealing the secret location.
 
-![Moon Landing](/assets/pbjar/luna3.png)
+<div align="center"><a href="/assets/pbjar/luna3.png"><img src="/assets/pbjar/luna3.png"></a></div>
 <figcaption align=center><b>Figure 17-3: Resulting SSTV Image - Buzz Aldrin on the Moon</b></figcaption>
 &nbsp;
 
@@ -1091,7 +1091,7 @@ Submitting this flag resulted in a victory and the challenge was complete.
 
 LSD is an image forensics challenge in which we must find a flag hidden in a .png file.
 
-![The Photo](/assets/pbjar/secret.png)
+<div align="center"><a href="/assets/pbjar/secret.png"><img src="/assets/pbjar/secret.png"></a></div>
 <figcaption align=center><b>Figure 20-1: Given Challenge Image</b></figcaption>
 &nbsp;
 
