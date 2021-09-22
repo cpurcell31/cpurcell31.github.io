@@ -641,7 +641,7 @@ The hidden text was the flag we were looking for.
 
 Art Mystery starts with us investigating a png file. Let's take a look at the image.
 
-[![Art](/assets/pbjar/art2.png)](/assets/pbjar/art2.png)
+<div align="center"><a href="/assets/pbjar/art2.png"><img src="/assets/pbjar/art2.png"></a></div>
 <figcaption align=center><b>Figure 14-1: Broken art.png Image</b></figcaption>
 &nbsp;
 
@@ -680,7 +680,7 @@ header. Here's an example of what it looks like in a normal png file.
 **Figure 14-3** shows the example IHDR chunk with the width and height bytes highlighted. These values
 are what I edited to attempt to fix the file. I put in some random values and tried pngcheck again.
 
-<div align="center"><a href="/assets/pbjar/art3.png"><img src="/assets/pbjar/art3.png"></a></div>
+<div align="center"><a href="/assets/pbjar/art4.png"><img src="/assets/pbjar/art4.png"></a></div>
 <figcaption align=center><b>Figure 14-4: Pngcheck Reveals Proper CRC Value</b></figcaption>
 &nbsp;
 
@@ -715,7 +715,7 @@ for x in range(1,2000):
 The script will attempt all dimensions within a range and check the CRC value, printing out
 every valid set of dimensions. Here is the script in action:
 
-[![Script](/assets/pbjar/art4.png)](/assets/pbjar/art4.png)
+<div align="center"><a href="/assets/pbjar/art3.png"><img src="/assets/pbjar/art3.png"></a></div>
 <figcaption align=center><b>Figure 14-5: Python Script Finds Proper Image Dimensions</b></figcaption>
 &nbsp;
 
