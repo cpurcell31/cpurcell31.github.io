@@ -299,7 +299,7 @@ It turns out, I could access whichever version I wanted by changing the URL. So 
 this direct object reference "vulnerability" to see what happens when I input an insanely
 large version number.
 
-![Large Version Fail](/assets/pbjar/version3.png){: .align-center}
+<div align="center"><img src="/assets/pbjar/version3.png"></div>
 <figcaption align=center><b>Figure 8-3: Inputting a Large Version Number</b></figcaption>
 &nbsp;
 
@@ -346,7 +346,7 @@ Based on the webserver's response, the script uses narrows down the search area.
 Eventually, the script will narrow the field down to the last available version number.
 The final step was to download this version and run it to get the flag.
 
-![Run final version](/assets/pbjar/version5.png)
+<a href="/assets/pbjar/version5.png"><div align="center"><img src="/assets/pbjar/version5.png"></div>
 <figcaption align=center><b>Figure 8-4: Executing the Latest Version</b></figcaption>
 &nbsp;
 
