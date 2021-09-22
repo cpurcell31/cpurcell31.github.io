@@ -369,7 +369,7 @@ The final step was to download this version and run it to get the flag.
 ProgrammersHateProgramming is the first in a pair of challenges where we are tasked with
 examining a note taking application for vulnerabilities. When I first completed the challenge
 there wasn't any source code available but later on the admins provided it to make the challenge
-less guessy. Let's take a look at this code.
+less "guessy". Let's take a look at this code.
 
 ```php
 <?php
@@ -519,7 +519,7 @@ Again, the flag is printed out nicely in the note we created.
 >
 >Created By: ZeroDayTea
 
-c0rL is a sourceless web challenge that gives us a simple website.
+c0rL is a source-less web challenge that gives us a simple website.
 
 ![Login Page](/assets/pbjar/corl1.png)
 <figcaption align=center><b>Figure 11-1: c0rL Website Login Page</b></figcaption>
@@ -562,7 +562,7 @@ To save everyone the eyesore, I will try to only include screenshots of web sour
 is the only bit that matters in this challenge really.
 
 The theme of this challenge is inspecting web source for clues. That means looking through
-the HTML code, style sheets, javascript, images, cookies, etc. It is important to be really thorough
+the HTML code, style sheets, JavaScript, images, cookies, etc. It is important to be really thorough
 and/or use tools to assist with this. I ended up finding the parts of the flag in reverse
 order but here were their locations.
 
@@ -573,7 +573,7 @@ order but here were their locations.
 >_a_d3t3ct1iv3????!?!?!}
 
 The third part of the flag was hidden inside the HTML of the index page. Within this __
-block and in a rendered view would be seen quickly scrolling accross the page.
+block and in a rendered view would be seen quickly scrolling across the page.
 
 ![Flag Part 2](/assets/pbjar/sherlock2.png)
 <figcaption align=center><b>Figure 12-2: Flag Part 2</b></figcaption>
@@ -589,7 +589,7 @@ The second part of the flag was hidden in plain sight on the about-styled page.
 
 >flag{wA1t_a_m1nUt3_
 
-The first (or final) part of the flag is hidden in javascript for the old.html
+The first (or final) part of the flag is hidden in JavaScript for the old.html
 page. The final step to this whole process is to combine all these parts into
 a single complete flag.
 
@@ -616,7 +616,7 @@ Upon initial inspection, the image shows nothing untoward. The next step for me 
 to apply some tools to the file to see if there are any hints or flags in the open.
 However, nothing really worked out or gave any important details. Eventually I looked up
 some jpg steganography tools and tried out stegseek. My goal with stegseek was to attempt
-to bruteforce a password and extract anything hidden in the image.
+to brute-force a password and extract anything hidden in the image.
 
 ![Stegseek](/assets/pbjar/stegoflag.png)
 <figcaption align=center><b>Figure 13-2: Stegseek Execution and Output</b></figcaption>
@@ -769,7 +769,6 @@ titles as passwords.
 <figcaption align=center><b>Figure 15-4: Stegsnow Results - With Password</b></figcaption>
 &nbsp;
 
-
 The German version of the password turned out to be the most effective and out popped
 the flag.
 
@@ -790,35 +789,34 @@ To start off, let's look at the capture in Wireshark.
 <figcaption align=center><b>Figure 16-1: Wireshark View of tippytappies.pcapng</b></figcaption>
 &nbsp;
 
-
-The USB capture contains a variety of different packet types. The majority of the
-frames are USB protocol "URB_INTERRUPT in" frames. Given how many of them there are,
-I felt it was a decent place to start my examination.
+The majority of the frames in the capture are USB protocol "URB_INTERRUPT in" frames.
+Given how many of them there are, I felt it was a decent place to start my examination.
 
 ![Interrupt in Frame](/assets/pbjar/tippy2.png)
 <figcaption align=center><b>Figure 16-2: URB_INTERRUPT Frame Examination</b></figcaption>
 &nbsp;
 
-The interrupt in frames in this capture contain a bunch of HID data that shows the USB device
+The "interrupt in" frames contain a bunch of Human Interface Device (HID) data that shows the USB device
 was a keyboard. Meaning this capture must be some sort of keylogging session. In **Figure 16-2**
-we can see there are two varieties of interrupt in frames - input and confirmation.
-With this in mind, I narrowed down my search to just input frames using a filter.
+we can see there are two varieties of interrupt in frames - input and confirmation. Within the input frames
+we can see the exact key inputs that are sent from the device. For example, in **Figure 16-2** the user pressed
+the "Enter" key. With this in mind, I narrowed down my search to just input frames using some filters.
 
 ![Filter](/assets/pbjar/tippy3.png)
 <figcaption align=center><b>Figure 16-3: Wireshark Capture With Filters Applied</b></figcaption>
 &nbsp;
 
 I used a combination of filters to find only frames with valid key input. Looking through
-some of the input, it was highly likely that I was on the right track. By just scrolling
-through some of the packets you can make out phrases like "sudo apt-get". From here there
-are two possible ways to move forward:
+some of the input, it was highly likely that I was on the right track. By scrolling
+through some of the frames you can make out phrases like "sudo apt-get" and "wechat".
+From here there are two possible ways to move forward:
 
 - Scroll through the input frames until the flag is found
 - Create a script to output the keys pressed in order
 
-Both are completely valid ways to solve this problem but for visual "wow" I'll demo
-a script for reading and decoding the frames. However, first, I exported only the keyboard
-input frames into a new pcapng file using "File -> Export Specified Packets".
+Both are completely valid ways to solve this problem but for "wow factor" and to save some eye-strain I'll demo
+a script for reading and decoding the frames. However, first, I needed to export only the keyboard
+input frames into a new .pcapng file using "File -> Export Specified Packets".
 
 ```python
 import re
@@ -856,19 +854,27 @@ for key in key_codes:
 print(result)
 ```
 
-First off, the keyboard sends Human Interface Device (HID) codes within each frame
-to represent which is pressed, so we need a dictionary to help translate them to ascii.
-Next each input frame is 72 bytes long and begins with the header bytes "c0 cc 0d 66 c5 ff
-ff". So the script matches all such blocks and puts them in a list. Just before translating,
-each block must be trimmed down to only the key press code. Finally, the code can be
-translated into ascii.
+The script is created with the format of these specific frames in mind. Each frame consists
+of 72 bytes with the first 8 being a constant header of "c0 cc 0d 66 c5 98 ff ff".
+Using regex the script finds all blocks matching these specific requirements.
+
+The extracted blocks are then trimmed down to the key input code. Aside some special keys like
+shift and ctrl, the data for key strokes are located in the last 6 bytes. When a key is pressed
+its corresponding HID scancode is placed in the first byte of the final 6 bytes. However,
+if another key is pressed or held at the same time, its code will be placed in the second byte.
+Since there are 6 bytes, for most keyboards a maximum of 6 keys can be pressed at a time.
+
+For this script specifically, we get the first key pressed and skip frames with double presses.
+This is to avoid some repeating letters in the sequence. Finally using a dictionary of the HID scancodes
+mentioned earlier, the script decodes the code values into ascii characters. You can find a full
+set of scancodes [here](https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2).
 
 ![Script Output](/assets/pbjar/tippy4.png)
 <figcaption align=center><b>Figure 16-4: Python Script Results</b></figcaption>
 &nbsp;
 
 Figure **16-4** shows the output of the script when run against the new .pcapng file. Among
-the output is the flag (which requires a tiny bit of formatting).
+the output is the flag (which requires a tiny bit of formatting before submitting).
 
 >flag{wowgoodusbdetectivework}
 
@@ -885,11 +891,11 @@ ex: flag{new_york_city}
 
 Luna Guesser is an audio forensics challenge where we are given a single .wav file
 and need to find the location it was sent from. The audio sounds pretty crazy, it
-almost sounds like connecting to dial-up internet.  
+almost sounds like connecting to dial-up internet.   
 
 [Click Here to Listen to the Audio](/assets/pbjar/LunaGuesser.wav)
 
-The trickiest part of this challenge is figuring out exactly what this sound is.
+The trickiest part of this challenge is figuring out exactly what this noise is.
 Given the name of the challenge and the description, I banked on the idea that
 this sound had something to do with space or the moon. I searched for a while before
 stumbling upon some interesting results.
@@ -899,13 +905,13 @@ stumbling upon some interesting results.
 &nbsp;
 
 My search "luna decode signal" mentioned slow-scan television (SSTV). SSTV is a method for
-radio operators to send pictures. But more importantly, it has been used quite a bit for
+radio operators to send pictures. But more on a more interesting note, it has been used quite a bit for
 transmitting images from space. Here is an example of what SSTV sounds like.
 
 [Click Here to Listen to an SSTV Signal Example](/assets/pbjar/sstv_example.wav)
 
-The example is quite alike the .wav file we were given. Now that we know what it is,
-we just have to turn it into a picture. There are a few tools available to perform this.
+The example is should remind you of the original .wav file for this challenge. Now that we know what we are dealing with,
+we just have to turn these sounds into a picture. There are a handful of tools available to perform this task.
 I ended up using QSSTV but really any single one should work well enough. Next I [piped the
 audio into QSSTV](https://ourcodeworld.com/articles/read/956/how-to-convert-decode-a-slow-scan-television-transmissions-sstv-audio-file-to-images-using-qsstv-in-ubuntu-18-04) and tried to get a picture out of it.
 
@@ -913,16 +919,16 @@ audio into QSSTV](https://ourcodeworld.com/articles/read/956/how-to-convert-deco
 <figcaption align=center><b>Figure 17-2: QSSTV Translating LunaGuesser.wav</b></figcaption>
 &nbsp;
 
-**Figure 17-2** shows the decoding in action. Eventually, the audio ends and the full
-picture is rendered.
+**Figure 17-2** shows the decoding in action. As the audio plays, the picture is created
+line by line. Eventually, the full picture was rendered, revealing the secret location.
 
 ![Moon Landing](/assets/pbjar/luna3.png)
-<figcaption align=center><b>Figure 17-3: Resulting SSTV Image - Man on the Moon</b></figcaption>
+<figcaption align=center><b>Figure 17-3: Resulting SSTV Image - Buzz Aldrin on the Moon</b></figcaption>
 &nbsp;
 
 The output is clearly a picture from the 1969 Moon Landing. So supposedly, the
-location we are looking for is somewhere on the moon. Specifically, the moon landing site.
-A quick search turns up all we should need.
+location we are looking for is somewhere on the moon. Specifically, the moon landing site or somewhere near it.
+A quick search turns up all we should need to solve this.
 
 ![Moon landing search](/assets/pbjar/luna7.png)
 <figcaption align=center><b>Figure 17-4: Google Search Results for "Moon Landing Site"</b></figcaption>
@@ -954,24 +960,25 @@ I started up volatility to get an idea of what profile I should use for this ana
 <figcaption align=center><b>Figure 18-1: Volatility - Finding Memory Profile</b></figcaption>
 &nbsp;
 
-Out of the 3 choices available I decided to go with the first one "". Next I need
-to get a dump of all the NTLM hashes from the file. To do this I use the hashdump
-plugin.
+Out of the 3 choices available I decided to go with the first one "WinXPSP2x86". Next I tried
+to get a dump of all the hashes from the file. To do this I use the hashdump plugin.  
 
 ![Hashdump](/assets/pbjar/meme2.png)
 <figcaption align=center><b>Figure 18-2: Volatility - Hashdump Results</b></figcaption>
 &nbsp;
 
-After a few seconds 3 hashes popped out. To continue, I copied these hashes to a
-file and ran them through john the ripper.
+The Mimikatz plugin also works even better for this task and skips a bit of work cracking the hashes.
+Unfortunately, the plugin broke on my machine. Anyway, after a few seconds 3 hashes popped out.
+Since this is a Windows capture we are working with, all the hashes should be in the NTLM format.
+To continue, I copied these hashes to a file and ran them through john the ripper.
 
 ![John](/assets/pbjar/meme3.png)
 <figcaption align=center><b>Figure 18-3: Cracking the Hashes with John the Ripper</b></figcaption>
 &nbsp;
 
 **Figure 18-3** shows the output of john the ripper. There is only 1 hash that john was able
-to crack and nicely enough, it is the admin hash. This seems like a good enough
-guess at the flag and sure enough, it works.
+to crack and nicely enough, it was the admin hash. This seemed like a good enough
+guess at the flag and sure enough, it worked.
 
 >flag{superman83}
 
@@ -1103,7 +1110,7 @@ unlike what the hint says, zsteg is able to provide an offset.
 
 I decided to start with a shift of 2 and the results were very hopeful. **Figure 20-3** shows
 that zsteg was able to find a large portion of the flag written backwards. Next I
-attempted a few bruteforce attempts on the shift to see if I could get more of the
+attempted a few brute-force attempts on the shift to see if I could get more of the
 flag printed.
 
 ![Zsteg shift 6](/assets/pbjar/secret3.png)
@@ -1111,7 +1118,7 @@ flag printed.
 &nbsp;
 
 A shift of 6 ended up providing next important result. In fact, the shift was just
-the right amound to print out the flag that was hiding in the LSBs.
+the right amount to print out the flag that was hiding in the LSBs.
 
 >flag{dont_do_drugs_solve_column_based_lsbeeeeee}
 
