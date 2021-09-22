@@ -183,9 +183,7 @@ The few extra sections provide more details on the contract code and execution. 
 inside "Constructor Arguments" there are encoded and decoded function arguments. One of which,
 is the flag.
 
-```
-flag{s3t_by_c0nstructor}
-```
+>flag{s3t_by_c0nstructor}
 
 &nbsp;
 
@@ -438,7 +436,8 @@ flag<?php<?php system("cat flag.php"); ?>?>
 
 And there it is, the really long and informative flag we were looking for.
 
->flag{server_side_php_xss_is_less_known_but_considering_almost_80%_of_websites_use_php_it_is_good_to_know_thank_me_later_i_dont_want_to_stop_typing_this_flagg_is_getting_long_but_i_feel_like_we're_developing_a_really_meaningful_connection}
+>flag{server_side_php_xss_is_less_known_but_considering_almost_80%_of_websites_use_php_it_is_good_to_know_thank_me_later_i_dont_want_to_stop_typing_this_flagg_is
+>_getting_long_but_i_feel_like_we're_developing_a_really_meaningful_connection}
 
 ### **ProgrammersHateProgramming 2**
 
