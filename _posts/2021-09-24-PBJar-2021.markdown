@@ -299,7 +299,7 @@ It turns out, I could access whichever version I wanted by changing the URL. So 
 this direct object reference "vulnerability" to see what happens when I input an insanely
 large version number.
 
-![Large Version Fail](/assets/pbjar/version3.png)
+![Large Version Fail](/assets/pbjar/version3.png){: .align-center}
 <figcaption align=center><b>Figure 8-3: Inputting a Large Version Number</b></figcaption>
 &nbsp;
 
