@@ -53,21 +53,21 @@ ready for some block investigation. For Techlead we are asked to find the highes
 ETH balance of Techlead's wallet. To start, I began with a quick google search
 to see if their wallet address popped up.
 
-![Google](/assets/pbjar/tech1.png)
+[![Google](/assets/pbjar/tech1.png)](/assets/pbjar/tech1.png)
 <figcaption align=center><b>Figure 1-1: Google Search Results for "Techlead Wallet Address"</b></figcaption>
 &nbsp;
 
 Sure enough, the third link down had an etherscan link to a wallet. On the etherscan
 page there is confirmation that this is probably the right address.
 
-![Mod Comment](/assets/pbjar/tech2.png)
+[![Mod Comment](/assets/pbjar/tech2.png)](/assets/pbjar/tech2.png)
 <figcaption align=center><b>Figure 1-2: Etherscan.io Comment Section</b></figcaption>
 &nbsp;
 
 Now we just needed to find the highest balance. Luckily, etherscan has an analytics tab
 that displays things like highest and lowest values.
 
-![Analytics](/assets/pbjar/tech3.png)
+[![Analytics](/assets/pbjar/tech3.png)](/assets/pbjar/tech3.png)
 <figcaption align=center><b>Figure 1-3: Etherscan.io Analytics Tab</b></figcaption>
 &nbsp;
 
@@ -92,14 +92,14 @@ The goal of this next challenge is to retrieve the flag from a smart contract on
 Ropsten test net. The first step was to look up 0xf0674CD7D1C0c616063a786E7d1434340E09BadD
 on ropsten etherscan.
 
-![Contract](/assets/pbjar/reado1.png)
+[![Contract](/assets/pbjar/reado1.png)](/assets/pbjar/reado1.png)
 <figcaption align=center><b>Figure 2-1: Etherscan.io Smart Contract Page</b></figcaption>
 &nbsp;
 
 Next, I examined the contract further in the "Contract" tab to see if there were any
 more details.
 
-![Tab](/assets/pbjar/reado2.png)
+[![Tab](/assets/pbjar/reado2.png)](/assets/pbjar/reado1.png)
 <figcaption align=center><b>Figure 2-2: Contract Details and Source Code</b></figcaption>
 &nbsp;
 
@@ -132,7 +132,7 @@ I found 2 ways to proceed, 1) create a script using web3.js and call get() from 
 Use a site like https://justsmartcontracts.dev/#/ to do the call for me. I had no idea
 how to make a script for this one so I chose option 2.
 
-![Smart Contracts](/assets/pbjar/readt1.png)
+[![Smart Contracts](/assets/pbjar/readt1.png)](/assets/pbjar/readt1.png)
 <figcaption align=center><b>Figure 3-1: JustSmartContracts Website</b></figcaption>
 &nbsp;
 
@@ -140,13 +140,13 @@ The smart contracts site requires 2 pieces of information to work: an address an
 which is exactly what we have. From here it was as simple as adding a contract and
 inputting the details, remembering to set the network id to Ropsten.
 
-![Details](/assets/pbjar/readt2.png)
+[![Details](/assets/pbjar/readt2.png)](/assets/pbjar/readt2.png)
 <figcaption align=center><b>Figure 3-2: Inserting Information into JustSmartContracts</b></figcaption>
 &nbsp;
 
 Next to look at the fruits of our labour.
 
-![Contract Details](/assets/pbjar/readt3.png)
+[![Contract Details](/assets/pbjar/readt3.png)](/assets/pbjar/readt3.png)
 <figcaption align=center><b>Figure 3-3: JustSmartContracts Reveals the get() Method</b></figcaption>
 &nbsp;
 
@@ -168,14 +168,14 @@ This is the final challenge in this set of readFlag challenges and the goal of t
 is a bit ambiguous compared to the last. We are given another smart contract address and
 need to find the flag somewhere in it. I began by checking it out on the Ropsten etherscan.
 
-![Contract](/assets/pbjar/readr1.png)
+[![Contract](/assets/pbjar/readr1.png)](/assets/pbjar/readr1.png)
 <figcaption align=center><b>Figure 4-1: Etherscan.io Smart Contract Page</b></figcaption>
 &nbsp;
 
 The contract is fairly similar to readFlag1 in terms of details. However, there are
 a few more sections.
 
-![Sections](/assets/pbjar/readr2.png)
+[![Sections](/assets/pbjar/readr2.png)](/assets/pbjar/readr2.png)
 <figcaption align=center><b>Figure 4-2: Smart Contract Details - Constructor Arguments</b></figcaption>
 &nbsp;
 
@@ -210,14 +210,14 @@ With MEV the miner has control over what is/isn't allowed on the block and the o
 transactions. This means the miner could order a transaction first if they were "inclined" to.
 With this in mind, I went on to examine the block.
 
-![Block](/assets/pbjar/mev1.png)
+[![Block](/assets/pbjar/mev1.png)](/assets/pbjar/mev1.png)
 <figcaption align=center><b>Figure 5-1: Etherscan.io ETH Block Details</b></figcaption>
 &nbsp;
 
 Since there didn't appear to be anything referring to an obvious "bribe" on the
 main page, I moved on to check the transactions on the block.
 
-![Transactions](/assets/pbjar/mev2.png)
+[![Transactions](/assets/pbjar/mev2.png)](/assets/pbjar/mev2.png)
 <figcaption align=center><b>Figure 5-2: Transaction List for the Block</b></figcaption>
 &nbsp;
 
@@ -225,7 +225,7 @@ main page, I moved on to check the transactions on the block.
 Now assuming that this transaction order is sorted by latest completion, the first
 transaction on the block should be at the end of this list.
 
-![Last Transaction](/assets/pbjar/mev3.png)
+[![Last Transaction](/assets/pbjar/mev3.png)](/assets/pbjar/mev3.png)
 <figcaption align=center><b>Figure 5-3: The First Transactions on the Block</b></figcaption>
 &nbsp;
 
@@ -233,7 +233,7 @@ transaction on the block should be at the end of this list.
 There was a conspicuous entry mentioning MEV Bot at the end of the list. Which seemed like
 a good place to start.
 
-![MEV Bot](/assets/pbjar/mev4.png)
+[![MEV Bot](/assets/pbjar/mev4.png)](/assets/pbjar/mev4.png)
 <figcaption align=center><b>Figure 5-4: Transaction Details</b></figcaption>
 &nbsp;
 
@@ -291,7 +291,7 @@ The problem is, who knows how many versions behind the program is. It could take
 manually update to the latest version. Next, I tried to skip ahead some versions by manipulating
 the URL.
 
-![URL Manipulation](/assets/pbjar/version2.png)
+[![URL Manipulation](/assets/pbjar/version2.png)](/assets/pbjar/version2.png)
 <figcaption align=center><b>Figure 8-2: Query Parameter to Download V3</b></figcaption>
 &nbsp;
 
@@ -362,7 +362,7 @@ The final step was to download this version and run it to get the flag.
 >
 >Created By: ZeroDayTea
 
-![Site](/assets/pbjar/prog1.png)
+[![Site](/assets/pbjar/prog1.png)](/assets/pbjar/prog1.png)
 <figcaption align=center><b>Figure 9-1: ProgrammersHateProgramming Website</b></figcaption>
 &nbsp;
 
@@ -406,7 +406,7 @@ to avoid it. To test this out I tried this POC:
 
 And this was the resulting note:
 
-![Phpinfo Note](/assets/pbjar/prog5.png)
+[![Phpinfo Note](/assets/pbjar/prog5.png)](/assets/pbjar/prog5.png)
 <figcaption align=center><b>Figure 9-2: phpinfo() Displayed by User Note</b></figcaption>
 &nbsp;
 
@@ -432,7 +432,7 @@ bypass that as well as the PHP tags.
 ```php
 flag<?php<?php system("cat flag.php"); ?>?>
 ```
-![Flag.php](/assets/pbjar/prog3.png)
+[![Flag.php](/assets/pbjar/prog3.png)](/assets/pbjar/prog3.png)
 <figcaption align=center><b>Figure 9-3: ProgrammersHateProgramming Flag</b></figcaption>
 &nbsp;
 
@@ -506,7 +506,7 @@ All I needed to do was slightly adjust the payload from the previous challenge.
 flag<?php<?<?php system("ccatat /flag.php") ?>?>
 ```
 
-![Result of Payload](/assets/pbjar/progrevenge1.png)
+[![Result of Payload](/assets/pbjar/progrevenge1.png)](/assets/pbjar/progreveng1.png)
 <figcaption align=center><b>Figure 10-1: ProgrammersHateProgramming 2 Flag</b></figcaption>
 &nbsp;
 
@@ -522,7 +522,7 @@ Again, the flag is printed out nicely in the note we created.
 
 c0rL is a source-less web challenge that gives us a simple website.
 
-![Login Page](/assets/pbjar/corl1.png)
+[![Login Page](/assets/pbjar/corl1.png)](/assets/pbjar/corl1.png)
 <figcaption align=center><b>Figure 11-1: c0rL Website Login Page</b></figcaption>
 &nbsp;
 
@@ -531,7 +531,7 @@ offer too many hints. Supposedly, the goal here is to break in through this logi
 The first thing to try with most of these is to try some common weak username-password
 combinations.
 
-![admin](/assets/pbjar/corl2.png)
+[![admin](/assets/pbjar/corl2.png)](/assets/pbjar/corl2.png)
 <figcaption align=center><b>Figure 11-2: Results from Inputting Common Username and Password</b></figcaption>
 &nbsp;
 
@@ -540,7 +540,7 @@ provided a huge hint on what to do next. The keyword of the sentence "put" immed
 me of the HTTP PUT method. The next step seemed to be to try sending the login as a PUT request
 instead of the default POST.
 
-![PUT Request CURL](/assets/pbjar/corl3.png)
+[![PUT Request CURL](/assets/pbjar/corl3.png)](/assets/pbjar/corl3.png)
 <figcaption align=center><b>Figure 11-3: cURL Command and Response From Server</b></figcaption>
 &nbsp;
 
@@ -567,7 +567,7 @@ the HTML code, style sheets, JavaScript, images, cookies, etc. It is important t
 and/or use tools to assist with this. I ended up finding the parts of the flag in reverse
 order but here were their locations.
 
-![Flag Part 3](/assets/pbjar/sherlock1.png)
+[![Flag Part 3](/assets/pbjar/sherlock1.png)](/assets/pbjar/sherlock1.png)
 <figcaption align=center><b>Figure 12-1: Flag Part 3</b></figcaption>
 &nbsp;
 
@@ -576,7 +576,7 @@ order but here were their locations.
 The third part of the flag was hidden inside the HTML of the index page. Within this __
 block and in a rendered view would be seen quickly scrolling across the page.
 
-![Flag Part 2](/assets/pbjar/sherlock2.png)
+[![Flag Part 2](/assets/pbjar/sherlock2.png)](/assets/pbjar/sherlock2.png)
 <figcaption align=center><b>Figure 12-2: Flag Part 2</b></figcaption>
 &nbsp;
 
@@ -584,7 +584,7 @@ block and in a rendered view would be seen quickly scrolling across the page.
 
 The second part of the flag was hidden in plain sight on the about-styled page.
 
-![Flag Part 1](/assets/pbjar/sherlock3.png)
+[![Flag Part 1](/assets/pbjar/sherlock3.png)](/assets/pbjar/sherlock3.png)
 <figcaption align=center><b>Figure 12-3: Flag Part 1</b></figcaption>
 &nbsp;
 
@@ -609,7 +609,7 @@ a single complete flag.
 To start the forensics category we have Stegosaurus stenops, a steganography challenge.
 Supposedly, inside the given .jpg file there is a hidden flag.
 
-![Stego](/assets/pbjar/stegosaurus.jpg)
+[![Stego](/assets/pbjar/stegosaurus.jpg)](/assets/pbjar/stegosaurus.jpg)
 <figcaption align=center><b>Figure 13-1: Given Challenge Image</b></figcaption>
 &nbsp;
 
@@ -619,7 +619,7 @@ However, nothing worked out or gave any important details. Eventually, I looked 
 some jpg steganography tools and tried out stegseek. My goal with stegseek was to attempt
 to brute-force a password and extract anything hidden in the image.
 
-![Stegseek](/assets/pbjar/stegoflag.png)
+[![Stegseek](/assets/pbjar/stegoflag.png)](/assets/pbjar/stegoflag.png)
 <figcaption align=center><b>Figure 13-2: Stegseek Execution and Output</b></figcaption>
 &nbsp;
 
@@ -641,7 +641,7 @@ The hidden text was the flag we were looking for.
 
 Art Mystery starts with us investigating a png file. Let's take a look at the image.
 
-![Art](/assets/pbjar/art2.png)
+[![Art](/assets/pbjar/art2.png)](/assets/pbjar/art2.png)
 <figcaption align=center><b>Figure 14-1: Broken art.png Image</b></figcaption>
 &nbsp;
 
@@ -715,14 +715,14 @@ for x in range(1,2000):
 The script will attempt all dimensions within a range and check the CRC value, printing out
 every valid set of dimensions. Here is the script in action:
 
-![Script](/assets/pbjar/art4.png)
+[![Script](/assets/pbjar/art4.png)](/assets/pbjar/art4.png)
 <figcaption align=center><b>Figure 14-5: Python Script Finds Proper Image Dimensions</b></figcaption>
 &nbsp;
 
 So for art.png we just need to edit into the IHDR "02b0" for both width and height and the picture
 should be fixed. After a quick edit, I had a new, working picture and the flag.
 
-![Real Art](/assets/pbjar/art.png)
+[![Real Art](/assets/pbjar/art.png)](/assets/pbjar/art.png)
 <figcaption align=center><b>Figure 14-6: The Fixed art.png</b></figcaption>
 &nbsp;
 
@@ -741,7 +741,7 @@ For this challenge, we are given a single text file containing lyrics to Moskau 
 Dschinghis Khan. Supposedly, somewhere hidden in this message, there is a flag we
 need to find. I started by examining the file in a notepad.
 
-![notepad](/assets/pbjar/german1.png)
+[![notepad](/assets/pbjar/german1.png)](/assets/pbjar/german1.png)
 <figcaption align=center><b>Figure 15-1: message.txt Inside Notepad</b></figcaption>
 &nbsp;
 
@@ -758,7 +758,7 @@ revealed a tool called stegsnow which uses this same set of characters to encode
 Stegsnow appends tabs and spaces to the end of lines of text to hide the message.
 Next, I tried running stegsnow against the message to see what was hiding there.
 
-![Stegsnow Round 1](/assets/pbjar/german3.png)
+[![Stegsnow Round 1](/assets/pbjar/german3.png)](/assets/pbjar/german3.png)
 <figcaption align=center><b>Figure 15-3: Stegsnow Results - No Password</b></figcaption>
 &nbsp;
 
@@ -795,7 +795,7 @@ To start, let's look at the capture in Wireshark.
 The majority of the frames in the capture are USB protocol "URB_INTERRUPT in" frames.
 Given how many of them there are, I felt it was a decent place to start my examination.
 
-![Interrupt in Frame](/assets/pbjar/tippy2.png)
+[![Interrupt in Frame](/assets/pbjar/tippy2.png)](/assets/pbjar/tippy2.png)
 <figcaption align=center><b>Figure 16-2: URB_INTERRUPT Frame Examination</b></figcaption>
 &nbsp;
 
@@ -805,7 +805,7 @@ we can see there are two varieties of interrupt in frames - input and confirmati
 we can see the exact key inputs that are sent from the device. For example, in **Figure 16-2** the user pressed
 the "Enter" key. With this in mind, I narrowed down my search to just input frames using some filters.
 
-![Filter](/assets/pbjar/tippy3.png)
+[![Filter](/assets/pbjar/tippy3.png)](/assets/pbjar/tippy3.png)
 <figcaption align=center><b>Figure 16-3: Wireshark Capture With Filters Applied</b></figcaption>
 &nbsp;
 
@@ -872,7 +872,7 @@ This is to avoid some repeating letters in the sequence. Finally using a diction
 mentioned earlier, the script decodes the code values into ASCII characters. You can find a full
 set of scancodes [here](https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2).
 
-![Script Output](/assets/pbjar/tippy4.png)
+[![Script Output](/assets/pbjar/tippy4.png)](/assets/pbjar/tippy4.png)
 <figcaption align=center><b>Figure 16-4: Python Script Results</b></figcaption>
 &nbsp;
 
@@ -903,7 +903,7 @@ Given the name of the challenge and the description, I banked on the idea that
 this sound had something to do with space or the moon. I searched for a while before
 stumbling upon some interesting results.
 
-![Luna Decode](/assets/pbjar/luna2.png)
+[![Luna Decode](/assets/pbjar/luna2.png)](/assets/pbjar/luna2.png)
 <figcaption align=center><b>Figure 17-1: Google Search For "Luna Signal Decode"</b></figcaption>
 &nbsp;
 
@@ -918,7 +918,7 @@ we just have to turn these sounds into a picture. There are a handful of tools a
 I ended up using QSSTV but really any single one should work well enough. Next, I [piped the
 audio into QSSTV](https://ourcodeworld.com/articles/read/956/how-to-convert-decode-a-slow-scan-television-transmissions-sstv-audio-file-to-images-using-qsstv-in-ubuntu-18-04) and tried to get a picture out of it.
 
-![QSSTV Gif](/assets/pbjar/luna123.gif)
+[![QSSTV Gif](/assets/pbjar/luna123.gif)](/assets/pbjar/luna123.gif)
 <figcaption align=center><b>Figure 17-2: QSSTV Translating LunaGuesser.wav</b></figcaption>
 &nbsp;
 
@@ -933,7 +933,7 @@ The output is a picture from the 1969 Moon Landing. So supposedly, the
 location we are looking for is somewhere on the moon. Specifically, the moon landing site or somewhere near it.
 A quick search turns up all we should need to solve this.
 
-![Moon landing search](/assets/pbjar/luna7.png)
+[![Moon landing search](/assets/pbjar/luna7.png)](/assets/pbjar/luna7.png)
 <figcaption align=center><b>Figure 17-4: Google Search Results for "Moon Landing Site"</b></figcaption>
 &nbsp;
 
@@ -959,14 +959,14 @@ be option 3: Mare Tranquillitatis.
 This forensics challenge involves extracting a password from a memory dump. To begin
 I started up volatility to get an idea of what profile I should use for this analysis.
 
-![Vol.py](/assets/pbjar/meme1.png)
+[![Vol.py](/assets/pbjar/meme1.png)](/assets/pbjar/meme1.png)
 <figcaption align=center><b>Figure 18-1: Volatility - Finding Memory Profile</b></figcaption>
 &nbsp;
 
 Out of the 3 choices available I decided to go with the first one "WinXPSP2x86". Next, I tried
 to get a dump of all the hashes from the file. To do this I use the hashdump plugin.  
 
-![Hashdump](/assets/pbjar/meme2.png)
+[![Hashdump](/assets/pbjar/meme2.png)](/assets/pbjar/meme2.png)
 <figcaption align=center><b>Figure 18-2: Volatility - Hashdump Results</b></figcaption>
 &nbsp;
 
@@ -975,7 +975,7 @@ Unfortunately, the plugin broke on my machine. Anyway, after a few seconds, 3 ha
 Since this is a Windows capture we are working with, all the hashes should be in the NTLM format.
 To continue, I copied these hashes to a file and ran them through john the ripper.
 
-![John](/assets/pbjar/meme3.png)
+[![John](/assets/pbjar/meme3.png)](/assets/pbjar/meme3.png)
 <figcaption align=center><b>Figure 18-3: Cracking the Hashes with John the Ripper</b></figcaption>
 &nbsp;
 
@@ -1000,7 +1000,7 @@ This next memory forensics challenge revolves around finding a phishing email wi
 memory. The goal of this challenge is to find the name of someone who sent a phishing email.
 Like memedium, I first needed to get a profile name to use in volatility.
 
-![Profile](/assets/pbjar/robot1.png)
+[![Profile](/assets/pbjar/robot1.png)](/assets/pbjar/robot1.png)
 <figcaption align=center><b>Figure 19-1: Volatility - Finding Memory Profile</b></figcaption>
 &nbsp;
 
@@ -1008,7 +1008,7 @@ Again, there are a few choices but the first one is fine by me. Next, I wanted t
 to search for emails in the capture. First, I wanted to see if Outlook had a running process.
 To check the processes in the capture I used the pslist plugin.
 
-![pslist](/assets/pbjar/robot2.png)
+[![pslist](/assets/pbjar/robot2.png)](/assets/pbjar/robot2.png)
 <figcaption align=center><b>Figure 19-2: Volatility - Pslist Results</b></figcaption>
 &nbsp;
 
@@ -1016,7 +1016,7 @@ Luckily, Outlook was running so I could dump the memory specific to its process.
 Noting down the PID for outlook (3196), I used the memdump plugin to, well, dump the
 memory.
 
-![memdump 3196](/assets/pbjar/robot3.png)
+[![memdump 3196](/assets/pbjar/robot3.png)](/assets/pbjar/robot3.png)
 <figcaption align=center><b>Figure 19-3: Volatility - Executing Memdump</b></figcaption>
 &nbsp;
 
@@ -1024,7 +1024,7 @@ Now that all the outlook process memory was in 1 file I wanted to move on to see
 the capture had any .pst or .ost files in it. With these files, I might be able to get
 a look at some full emails.
 
-![Filescan](/assets/pbjar/robot4.png)
+[![Filescan](/assets/pbjar/robot4.png)](/assets/pbjar/robot4.png)
 <figcaption align=center><b>Figure 19-4: Volatility - Searching Scanfiles Output for Outlook Files</b></figcaption>
 &nbsp;
 
@@ -1032,7 +1032,7 @@ Combining the filescan plugin with a grep printed out some useful information. T
 a trio of potential .ost files. The ost files also reveal an account on the machine,
 FrontDesk. Next, dumping the ost data.
 
-![File dump](/assets/pbjar/robot5.png)
+[![File dump](/assets/pbjar/robot5.png)](/assets/pbjar/robot5.png)
 <figcaption align=center><b>Figure 19-5: Volatility - Dumping .ost File Data</b></figcaption>
 &nbsp;
 
@@ -1040,7 +1040,7 @@ Unfortunately, like in **Figure 19-5**, none of the .ost files had much data in 
 not enough to work with. I then worked back a few steps to the outlook process dump.
 I started examining it by trying to extract some email addresses from the process dump.
 
-![grep emails](/assets/pbjar/robots6.png)
+[![grep emails](/assets/pbjar/robots6.png)](/assets/pbjar/robots6.png)
 <figcaption align=center><b>Figure 19-6: Extracting Email Addresses from 3196.dmp</b></figcaption>
 &nbsp;
 
@@ -1049,7 +1049,7 @@ Looking through the list I noticed one fairly conspicuous email: th3wh1t3r0s3@gm
 The rest of the emails were fairly normal-looking so I decided to investigate the white rose
 first.
 
-![white rose](/assets/pbjar/robot_mayb_needed.png)
+[![white rose](/assets/pbjar/robot_mayb_needed.png)](/assets/pbjar/robot_mayb_needed.png)
 <figcaption align=center><b>Figure 19-7: Grep Command for "th3wh1t3r0s3@gmail.com"</b></figcaption>
 &nbsp;
 
@@ -1057,7 +1057,7 @@ Issuing a grep for the email shows a few results, most importantly, a "From: Th3
 There is an email from Th3 Wh1t3R0s3 in memory but the contents aren't available from this view.
 To investigate further I examined the process dump starting at the line where the "From" tag appears.
 
-![Tail command](/assets/pbjar/robot8.png)
+[![Tail command](/assets/pbjar/robot8.png)](/assets/pbjar/robot8.png)
 <figcaption align=center><b>Figure 19-8: Tail Command for Specific Line in File</b></figcaption>
 &nbsp;
 
@@ -1065,7 +1065,7 @@ A few lines following the From tag there is the "To:" tag which shows that front
 recipient of this email. However, still no readable email body. I figured with a bit more work,
 we might be able to figure out the contents of this email.
 
-![Grep hello](/assets/pbjar/robot10.png)
+[![Grep hello](/assets/pbjar/robot10.png)](/assets/pbjar/robot10.png)
 <figcaption align=center><b>Figure 19-9: Grep Command for "hello"</b></figcaption>
 &nbsp;
 
@@ -1098,7 +1098,7 @@ LSD is an image forensics challenge in which we must find a flag hidden in a .pn
 **Figure 20-1** shows the .png in question. There is nothing particularly noticeable from the
 image itself so I decided to move on and try some steganography tools on it.
 
-![Zsteg](/assets/pbjar/secret1.png)
+[![Zsteg](/assets/pbjar/secret1.png)](/assets/pbjar/secret1.png)
 <figcaption align=center><b>Figure 20-2: Zsteg Tool Output</b></figcaption>
 &nbsp;
 
@@ -1107,7 +1107,7 @@ results of zsteg reveal one of the hints the description was hinting at. The hin
 that the flag is hidden in the LSBs of the image but it has an offset. Fortunately,
 unlike what the hint says, zsteg can provide an offset.
 
-![Zsteg shifted](/assets/pbjar/secret2.png)
+[![Zsteg shifted](/assets/pbjar/secret2.png)](/assets/pbjar/secret2.png)
 <figcaption align=center><b>Figure 20-3: Zsteg Tool Output With Shift of 2</b></figcaption>
 &nbsp;
 
@@ -1116,7 +1116,7 @@ that zsteg was able to find a large portion of the flag written backward. Next, 
 attempted a few brute-force attempts on the shift to see if I could get more of the
 flag printed.
 
-![Zsteg shift 6](/assets/pbjar/secret3.png)
+[![Zsteg shift 6](/assets/pbjar/secret3.png)](/assets/pbjar/secret3.png)
 <figcaption align=center><b>Figure 20-4: Zsteg Tool Output With Shift of 6</b></figcaption>
 &nbsp;
 
