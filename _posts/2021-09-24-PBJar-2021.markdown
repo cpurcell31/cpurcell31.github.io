@@ -685,7 +685,7 @@ are what I edited to attempt to fix the file. I put in some random values and tr
 &nbsp;
 
 It's not a full fix, but it does reveal the CRC we need to get. So hopefully, all we need to do
-is find the right width and height to satisfy the CRC. I found an excellent script [here]() to
+is find the right width and height to satisfy the CRC. I found an excellent script [here](https://github.com/ARESxCyber/Writeups/blob/master/DarkCTF2020/crcket/readme.md) to
 do the brute-forcing for me.
 
 ```python
