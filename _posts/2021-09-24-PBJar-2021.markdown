@@ -342,8 +342,8 @@ def solve():
 solve()
 ```
 
-The script examines the webserver responses to see if the version is available or not
-and narrows down the search field. Running it results in the latest version number.
+Based on the webserver's response, the script uses narrows down the search area.
+Eventually, the script will narrow the field down to the last available version number.
 The final step was to download this version and run it to get the flag.
 
 ![Run final version](/assets/pbjar/version5.png)
@@ -858,7 +858,7 @@ The script is created with the format of these specific frames in mind. Each fra
 of 72 bytes with the first 8 being a constant header of "c0 cc 0d 66 c5 98 ff ff".
 Using regex the script finds all blocks matching these specific requirements.
 
-The extracted blocks are then trimmed down to the key input code. Aside some special keys like
+The extracted blocks are then trimmed down to the keyboard input code. Aside some special keys like
 shift and ctrl, the data for key strokes are located in the last 6 bytes. When a key is pressed
 its corresponding HID scancode is placed in the first byte of the final 6 bytes. However,
 if another key is pressed or held at the same time, its code will be placed in the second byte.
