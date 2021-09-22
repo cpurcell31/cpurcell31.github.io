@@ -282,7 +282,7 @@ web is a Rev challenge... web is a Rev challenge where we are given a website li
 that downloads an executable "v1" and are tasked with finding the most recent update for it. When
 v1 is invoked it will "update" and download the next version of the program.
 
-![V1 to V2](/assets/pbjar/version1.png)
+<div align="center">![V1 to V2](/assets/pbjar/version1.png)</div>
 <figcaption align=center><b>Figure 8-1: Executing V1</b></figcaption>
 &nbsp;
 
