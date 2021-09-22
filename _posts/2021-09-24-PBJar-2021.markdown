@@ -658,7 +658,7 @@ Unfortunately, pngcheck didn't reveal any potential fixes or values that would w
 So naturally, I just tried editing in a random one.
 
 To preface this operation, I should explain a bit about the IHDR chunk. According to
-[this resource]() the IHDR chunk will have the following qualities:
+[this resource](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html) the IHDR chunk will have the following qualities:
 
 >The IHDR chunk must appear FIRST. It contains:
 >
