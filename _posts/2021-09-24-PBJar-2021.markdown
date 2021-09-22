@@ -784,7 +784,7 @@ the flag.
 Tippy tappies is a forensics challenge where we are given a capture of some USB input.
 To start off, let's look at the capture in Wireshark.
 
-![USB Captures](/assets/pbjar/tippy1.png)
+[![USB Captures](/assets/pbjar/tippy1.png)](/assets/pbjar/tippy1.png)
 <figcaption align=center><b>Figure 16-1: Wireshark View of tippytappies.pcapng</b></figcaption>
 &nbsp;
 
