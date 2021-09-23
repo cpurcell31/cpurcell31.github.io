@@ -907,7 +907,7 @@ we can see the exact key inputs that are sent from the device. For example, in *
 the "Enter" key. With this in mind, I narrowed down my search to just input frames using some filters.
 
 [![Filter](/assets/pbjar/tippy3.png)](/assets/pbjar/tippy3.png)
-<figcaption align=center><b>Figure 16-3: Wireshark Capture With Filters Applied</b></figcaption>
+<figcaption align=center><b>Figure 16-3: The Previous Wireshark Capture With Filters Applied</b></figcaption>
 &nbsp;
 
 I used a combination of filters to view frames with valid key input. Looking through
@@ -977,7 +977,7 @@ set of scancodes [here](https://gist.github.com/MightyPork/6da26e382a7ad91b5496e
 <figcaption align=center><b>Figure 16-4: Python Script Results</b></figcaption>
 &nbsp;
 
-Figure **16-4** shows the output of the script when run against the new .pcapng file. Among
+**Figure 16-4** shows the output of the script when run against the new .pcapng file. Among
 the output is the flag (which requires a tiny bit of formatting before submitting).
 
 >flag{wowgoodusbdetectivework}
