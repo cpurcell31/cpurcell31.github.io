@@ -289,7 +289,7 @@ v1 is invoked it will "update" and download the next version of the program.
 
 The problem is, who knows how many versions behind the program is. It could take a while to
 manually update to the latest version. Next, I tried to skip ahead some versions by manipulating
-the URL.
+the URL to download v3.
 
 [![URL Manipulation](/assets/pbjar/version2.png)](/assets/pbjar/version2.png)
 <figcaption align=center><b>Figure 8-2: Query Parameter to Download V3</b></figcaption>
@@ -303,8 +303,8 @@ large version number.
 <figcaption align=center><b>Figure 8-3: Inputting a Large Version Number</b></figcaption>
 &nbsp;
 
-The site returns a "failed to find version message" meaning there is a limit to the
-version numbers. All that I needed to do was find the last version number that works.
+The site returns a "failed to find version message" meaning there is an actual limit to the
+version numbers. All that I needed to do was find the last version number that downloads.
 This boils down to a pass or fail condition, meaning, it should be able to be tested
 with a binary search of sorts. The next step was to create a script to do this work for me.
 
@@ -342,9 +342,10 @@ def solve():
 solve()
 ```
 
-Based on the webserver's response, the script uses narrows down the search area.
-Eventually, the script will narrow the field down to the last available version number.
-The final step was to download this version and run it to get the flag.
+Based on the webserver's response, the script narrows down the search area, splitting the
+search area in half each time. Eventually, the script will narrow the field down to the last
+downloadable version number. The final step was to download this version and run it to get the
+flag.
 
 <div align="center"><a href="/assets/pbjar/version5.png"><img src="/assets/pbjar/version5.png"></a></div>
 <figcaption align=center><b>Figure 8-4: Executing the Latest Version</b></figcaption>
@@ -801,7 +802,7 @@ Given how many of them there are, I felt it was a decent place to start my exami
 
 The "interrupt in" frames contain a bunch of Human Interface Device (HID) data that shows the USB device
 was a keyboard. Meaning this capture must be some sort of keylogging session. In **Figure 16-2**
-we can see there are two varieties of interrupt in frames - input and confirmation. Within the input frames,
+there are two varieties of interrupt in frames - input and confirmation. Within the input frames,
 we can see the exact key inputs that are sent from the device. For example, in **Figure 16-2** the user pressed
 the "Enter" key. With this in mind, I narrowed down my search to just input frames using some filters.
 
@@ -809,17 +810,17 @@ the "Enter" key. With this in mind, I narrowed down my search to just input fram
 <figcaption align=center><b>Figure 16-3: Wireshark Capture With Filters Applied</b></figcaption>
 &nbsp;
 
-I used a combination of filters to find only frames with valid key input. Looking through
+I used a combination of filters to view frames with valid key input. Looking through
 some of the input, it was highly likely that I was on the right track. By scrolling
 through some of the frames you can make out phrases like "sudo apt-get" and "wechat".
 From here there are two possible ways to move forward:
 
 - Scroll through the input frames until the flag is found
-- Create a script to output the keys pressed in order
+- Create a script to output all the keys pressed
 
-Both are completely valid ways to solve this problem but for the small "wow factor" and to save some eye strain I'll demo
-a script for reading and decoding the frames. However, first, I needed to export only the keyboard
-input frames into a new .pcapng file using "File -> Export Specified Packets".
+Both are completely valid ways to solve this problem but for a small "wow factor" and to save some eye strain I'll demo
+a script for reading and decoding the frames. However, to simplify things, I needed to export only
+the keyboard input frames into a new .pcapng file using "File -> Export Specified Packets".
 
 ```python
 import re
@@ -857,19 +858,19 @@ for key in key_codes:
 print(result)
 ```
 
-The script is created with the format of these specific frames in mind. Each frame consists
-of 72 bytes with the first 8 being a constant header of "c0 cc 0d 66 c5 98 ff ff".
+The script functions with the format of these specific frames in mind. Each frame consists
+of 72 bytes with the first 8 bytes being a constant header of "c0 cc 0d 66 c5 98 ff ff".
 Using regex the script finds all blocks matching these specific requirements.
 
 The extracted blocks are then trimmed down to the keyboard input code. Aside from some special keys like
 shift and ctrl, the data for keystrokes are located in the last 6 bytes. When a key is pressed
 its corresponding HID scancode is placed in the first byte of the final 6 bytes. However,
 if another key is pressed or held at the same time, its code will be placed in the second byte.
-Since there are 6 bytes, for most keyboards a maximum of 6 keys can be pressed at a time.
+Since there are 6 bytes, for most keyboards a maximum of 6 keys can be pressed at the same time.
 
 For this script specifically, we get the first key pressed and skip frames with double presses.
 This is to avoid some repeating letters in the sequence. Finally using a dictionary of the HID scancodes
-mentioned earlier, the script decodes the code values into ASCII characters. You can find a full
+mentioned earlier, the script decodes the HID values into ASCII characters. You can find a full
 set of scancodes [here](https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2).
 
 [![Script Output](/assets/pbjar/tippy4.png)](/assets/pbjar/tippy4.png)
@@ -893,8 +894,8 @@ ex: flag{new_york_city}
 >Created By: ZeroDayTea
 
 Luna Guesser is an audio forensics challenge where we are given a single .wav file
-and need to find the location it was sent from. The audio sounds pretty crazy, it
-almost sounds like connecting to dial-up internet.   
+and need to find the location it was sent from. The audio sounds pretty bizarre, parts of it
+almost sound like connecting to dial-up internet.   
 
 [Click Here to Listen to the Audio](/assets/pbjar/LunaGuesser.wav)
 
@@ -908,8 +909,9 @@ stumbling upon some interesting results.
 &nbsp;
 
 My search "luna decode signal" mentioned slow-scan television (SSTV). SSTV is a method for
-radio operators to send pictures. But on a more interesting note, it has been used quite a bit for
-transmitting images from space. Here is an example of what SSTV sounds like.
+radio operators to send pictures to each other. But on a more interesting note, it has been used
+quite a bit for transmitting images from space. Here is an example of what a usual SSTV
+transmission sounds like.
 
 [Click Here to Listen to an SSTV Signal Example](/assets/pbjar/sstv_example.wav)
 
@@ -957,22 +959,23 @@ be option 3: Mare Tranquillitatis.
 >Created By: ZeroDayTea
 
 This forensics challenge involves extracting a password from a memory dump. To begin
-I started up volatility to get an idea of what profile I should use for this analysis.
+I started up volatility to get an idea of what operating system profile I should use for this
+analysis.
 
 [![Vol.py](/assets/pbjar/meme1.png)](/assets/pbjar/meme1.png)
 <figcaption align=center><b>Figure 18-1: Volatility - Finding Memory Profile</b></figcaption>
 &nbsp;
 
 Out of the 3 choices available I decided to go with the first one "WinXPSP2x86". Next, I tried
-to get a dump of all the hashes from the file. To do this I use the hashdump plugin.  
+to get a dump of all the hashes from the file. To do this I used the hashdump plugin.  
 
 [![Hashdump](/assets/pbjar/meme2.png)](/assets/pbjar/meme2.png)
 <figcaption align=center><b>Figure 18-2: Volatility - Hashdump Results</b></figcaption>
 &nbsp;
 
-The Mimikatz plugin also works even better for this task and skips a bit of work cracking the hashes.
+The Mimikatz plugin works even better for this task and skips a bit of work cracking the hashes.
 Unfortunately, the plugin broke on my machine. Anyway, after a few seconds, 3 hashes popped out.
-Since this is a Windows capture we are working with, all the hashes should be in the NTLM format.
+Since we are working with a Windows memory capture, all the hashes should be in the NTLM format.
 To continue, I copied these hashes to a file and ran them through john the ripper.
 
 [![John](/assets/pbjar/meme3.png)](/assets/pbjar/meme3.png)
@@ -996,8 +999,8 @@ guess at the flag and sure enough, it worked.
 >
 >Created By: ZeroDayTea
 
-This next memory forensics challenge revolves around finding a phishing email within the
-memory. The goal of this challenge is to find the name of someone who sent a phishing email.
+This next memory forensics challenge revolves around finding a phishing email within memory.
+The goal of this challenge is to find the name of the one who sent the phishing email.
 Like memedium, I first needed to get a profile name to use in volatility.
 
 [![Profile](/assets/pbjar/robot1.png)](/assets/pbjar/robot1.png)
@@ -1012,7 +1015,7 @@ To check the processes in the capture I used the pslist plugin.
 <figcaption align=center><b>Figure 19-2: Volatility - Pslist Results</b></figcaption>
 &nbsp;
 
-Luckily, Outlook was running so I could dump the memory specific to its process.
+Luckily, Outlook was in memory so I could dump the memory specific to its process id.
 Noting down the PID for outlook (3196), I used the memdump plugin to, well, dump the
 memory.
 
@@ -1029,7 +1032,7 @@ a look at some full emails.
 &nbsp;
 
 Combining the filescan plugin with a grep printed out some useful information. There is
-a trio of potential .ost files. The ost files also reveal an account on the machine,
+a trio of potential .ost files. The ost file paths also reveal an account on the machine,
 FrontDesk. Next, dumping the ost data.
 
 [![File dump](/assets/pbjar/robot5.png)](/assets/pbjar/robot5.png)
@@ -1037,14 +1040,14 @@ FrontDesk. Next, dumping the ost data.
 &nbsp;
 
 Unfortunately, like in **Figure 19-5**, none of the .ost files had much data in them, definitely
-not enough to work with. I then worked back a few steps to the outlook process dump.
-I started examining it by trying to extract some email addresses from the process dump.
+not enough to work with. I then moved back a few steps to the outlook process dump.
+I started by trying to extract some email addresses from the process dump.
 
 [![grep emails](/assets/pbjar/robots6.png)](/assets/pbjar/robots6.png)
 <figcaption align=center><b>Figure 19-6: Extracting Email Addresses from 3196.dmp</b></figcaption>
 &nbsp;
 
-I managed to grep a bunch of email addresses from the file, a few of which were mangled a bit.
+I managed to grep a bunch of email addresses from the file, a few of which were a bit mangled.
 Looking through the list I noticed one fairly conspicuous email: th3wh1t3r0s3@gmail.com.
 The rest of the emails were fairly normal-looking so I decided to investigate the white rose
 first.
@@ -1055,7 +1058,8 @@ first.
 
 Issuing a grep for the email shows a few results, most importantly, a "From: Th3 Wh1t3R0s3" tag.
 There is an email from Th3 Wh1t3R0s3 in memory but the contents aren't available from this view.
-To investigate further I examined the process dump starting at the line where the "From" tag appears.
+To investigate further I examined the process dump starting at the line where the "From" tag
+appears.
 
 [![Tail command](/assets/pbjar/robot8.png)](/assets/pbjar/robot8.png)
 <figcaption align=center><b>Figure 19-8: Tail Command for Specific Line in File</b></figcaption>
@@ -1069,15 +1073,16 @@ we might be able to figure out the contents of this email.
 <figcaption align=center><b>Figure 19-9: Grep Command for "hello"</b></figcaption>
 &nbsp;
 
-Grepping for "hello" reveals a single email body with a few suspicious details. The email is targeted
+Grepping for "hello" reveals a single email body with a few curious details. The email is targeted
 at a Mr. Wellick with the headline "VPN Update". The email also offers a link to some software named
 AnyConnectInstaller. The message ends with a send-off from "AllSafe IT Support Desk" which directly
-correlates to the frontdesk@allsafecybersec.com email address and the previous email tags.
+correlates to the frontdesk@allsafecybersec.com email address we found earlier.
 
-Given the lack of other emails or correspondence, it seemed like a good bet that this was an
-email in response to the phishing email in question. Connecting the dots further, this email
-is a response to the one sent by Th3 Wh1t3R0s3. This means Th3_Wh1t3R0s3 should be the flag.
-Submitting this flag resulted in a victory and the challenge was complete.
+Given the lack of other emails or correspondence, it seemed like a good bet that this was either
+the phishing email or a response to it. The final line of the email points to this being
+connected to the "From" and "To" tags we saw earlier. If this is the case, then Th3_Wh1t3R0s3
+is the phisher. This means Th3_Wh1t3R0s3 should be the flag. Submitting this flag resulted in a 
+victory and the challenge was complete.
 
 >flag{Th3_Wh1t3R0s3}
 
