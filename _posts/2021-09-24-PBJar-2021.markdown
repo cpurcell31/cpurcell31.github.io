@@ -310,8 +310,10 @@ We usually end up invoking something like "system('/bin/sh')" in order to read t
 Here are the results of my solution and the resulting flag.
 
 ![Ret2libc Script Results](/assets/pbjar/ret1.png)
+<figcaption align=center><b>Figure 6-1: Pwnlib Script Execution</b></figcaption>
+&nbsp;
 
->flag{th3_wh0l3_us3l3r4nd_1s_my_pl4ygr0und} 
+>flag{th3_wh0l3_us3l3r4nd_1s_my_pl4ygr0und}
 
 &nbsp;
 
@@ -361,6 +363,8 @@ For part 2, we must use a format string vulnerability to print a previously rand
 generated number from the stack. Once we input the number the flag will print out.
 
 ![Code Execution](/assets/pbjar/walkthrough1.png)
+<figcaption align=center><b>Figure 7-1: Pwnlib Script Execution</b></figcaption>
+&nbsp;
 
 >flag{4nd_s0_th3_3xpl01ts_b3g1n}
 
