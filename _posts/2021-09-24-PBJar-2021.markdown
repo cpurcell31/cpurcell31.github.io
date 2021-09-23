@@ -309,7 +309,7 @@ here is to first leak libc addresses and then use them to invoke libc functions.
 We usually end up invoking something like "system('/bin/sh')" in order to read the flag.
 Here are the results of my solution and the resulting flag.
 
-![Ret2libc Script Results](/assets/pbjar/ret1.png)
+[![Ret2libc Script Results](/assets/pbjar/ret1.png)](/assets/pbjar/ret1.png)
 <figcaption align=center><b>Figure 6-1: Pwnlib Script Execution</b></figcaption>
 &nbsp;
 
@@ -362,7 +362,7 @@ experimentation with gdb.
 For part 2, we must use a format string vulnerability to print a previously randomly
 generated number from the stack. Once we input the number the flag will print out.
 
-![Code Execution](/assets/pbjar/walkthrough1.png)
+[![Code Execution](/assets/pbjar/walkthrough1.png)](/assets/pbjar/walkthrough1.png)
 <figcaption align=center><b>Figure 7-1: Pwnlib Script Execution</b></figcaption>
 &nbsp;
 
