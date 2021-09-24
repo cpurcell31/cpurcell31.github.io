@@ -958,7 +958,7 @@ for key in key_codes:
 print(result)
 ```
 
-The script functions with the format of these specific frames in mind. Each frame consists
+These frames have a specific format and this script operates with that in mind. Each frame consists
 of 72 bytes with the first 8 bytes being a constant header of "c0 cc 0d 66 c5 98 ff ff".
 Using regex the script finds all blocks matching these specific requirements.
 
