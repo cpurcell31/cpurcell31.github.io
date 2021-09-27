@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "DUCTF 2021 Writeup"
+title:  "DownUnder CTF 2021 Writeup"
 tags: CTF
 ---
 
@@ -42,7 +42,7 @@ This narrows down our search quite a bit but not enough to make this easy, Austr
 The image doesn't have the greatest resolution, but there should be enough details to figure out which station this is.
 Most notably, the station looks fairly beat down and some unique graffiti can be found decorating the building on the
 left of the image. Searching for rundown train stations in Australia seemed like a good next step. However before
-starting my search, I tried inputting the image into Google Lens to see if it could match the location.
+starting the search, we tried inputting the image into Google Lens to see if it could match the location.
 
 [![Google Lens](/assets/DUCTF/train2.jpg)](/assets/DUCTF/train2.jpg)
 <figcaption align=center><b>Figure 1-2: Results from Inputting the Challenge Picture into Google Lens</b></figcaption>
@@ -50,11 +50,11 @@ starting my search, I tried inputting the image into Google Lens to see if it co
 
 Google Lens quickly returns a result which is worth further investigation, General Motors Station in Melbourne.
 A quick search reveals that General Motors Station is likely to be the right station. The station is not only
-permanently closed, but is also covered in graffiti. The second link from the results in Figure # reveals some
+permanently closed, but is also covered in graffiti. The second link from the results in **Figure 1-2** reveals some
 interesting photographs of the station.
 
 [![Solution](/assets/DUCTF/train4.jpeg)](/assets/DUCTF/train4.jpeg)
-<figcaption align=center><b>Figure 1-3: An Image of General Motors Station from [Wongm's Rail Gallery](https://railgallery.wongm.com/melbourne-stations/F128_0283.jpg.html)</b></figcaption>
+<figcaption align=center><b>Figure 1-3: An Image of General Motors Station from https://railgallery.wongm.com/melbourne-stations/F128_0283.jpg.html</b></figcaption>
 &nbsp;
 
 This photo taken from [Wongm's Rail Gallery](https://railgallery.wongm.com/), shows the exact graffiti and
@@ -75,6 +75,75 @@ building as shown in the original image. There is no doubt about it, this is the
 >
 >Author: xXl33t_h@x0rXx
 
+For Heart of the nation we are given a single photo and need to find the location's coordinates. Once again, this location is
+restricted to Australia so that narrows the search down a little bit. Here is the image we start with.
+
+[![Challenge Image](/assets/DUCTF/aus.jpg)](/assets/DUCTF/aus.jpg)
+<figcaption align=center><b>Figure 2-1: The Original Challenge Image - A Meeting Place</b></figcaption>
+&nbsp;
+
+Given **Figure 2-1**, it must be almost impossible to find this location unless you had been there before. There are a few
+minor details in the image that seemed worth checking out.
+
+- The information sign located on the right side of the image
+- The specific trees throughout the area
+- A streetlight nearby the location
+- A stone semi-circle in the middle of the image
+
+Using some of these details we can narrow down the possible locations further. Since there is a streetlight close-by,
+this photo must have been taken in a city or near a road. The sign points to this location being a historical site,
+national park, etc.
+
+To start our search, we wasted a ton of time looking through various national parks, historic sites, and
+even tried correlating the specific type of tree to the location. Later on we found that the challenge
+description was the key to solving this challenge.
+
+>“Right at the heart of the nation, no piece of the bush inside the circle remains untouched by us".
+
+The caption from the description provides a riddle that describes the location in the photo.
+By breaking this riddle into parts we were able to figure out the exact location.
+
+First, "Right at the heart of the nation" could refer to a few things, the physical heart of the nation,
+the cultural heart of the nation, or the political heart. The physical heart was an easy starting place.
+We began our search right in the middle of Australia for places that fit our requirements.
+
+[![Alice Springs](/assets/DUCTF/aus2.png)](/assets/DUCTF/aus2.png)
+<figcaption align=center><b>Figure 2-2: The Location and Scenery of Alice Springs</b></figcaption>
+&nbsp;
+
+Alice Springs was the first and only area we checked. At first, Alice Springs seemed like
+a good fit. However as we searched Alice Springs and the surrounding area, there was a big problem.
+The foliage did not match at all, the Outback did not have the same amount of trees or greenery as the photo.
+Meaning the riddle was likely not pointing to the physical heart of Australia.
+
+For our next venture, we skipped ahead to the political heart. The cultural heart seemed a bit too
+subjective to investigate right away. Anyway, the political heart of Australia had to be the
+capital, Canberra. Canberra is home to Australia's parliament, senate, and a slew of embassies.
+Now if we were looking for the true political heart, starting at the parliament seems like the best bet.
+
+[![Parliament](/assets/DUCTF/aus3.png)](/assets/DUCTF/aus3.png)
+<figcaption align=center><b>Figure 2-3: A Google Maps View of Canberra's Parliament Building</b></figcaption>
+&nbsp;
+
+Weirdly enough, the parliament building is located in the middle of a giant circular road.
+This also matches the second half of the riddle, "no piece of the bush inside the circle remains untouched by us".
+Next, we looked through this surrounding area until we found the following location.
+
+[![Signage](/assets/DUCTF/aus4.png)](/assets/DUCTF/aus4.png)
+<figcaption align=center><b>Figure 2-4: A Similar Looking Location and Sign</b></figcaption>
+&nbsp;
+
+The sign was an exact match to the one from **Figure 2-1**. However, this location wasn't quite right.
+A few more seconds searching inside the circle revealed the solution.
+
+[![Solution](/assets/DUCTF/aus5.png)](/assets/DUCTF/aus5.png)
+<figcaption align=center><b>Figure 2-5: The Location of the Original Photo</b></figcaption>
+&nbsp;
+
+Finally, we had the right area, with the right sign and the right streetlight. The final step was to
+record the coordinates from Google Maps and submit the flag.
+
+>DUCTF{-35.306,149.120}
 
 &nbsp;
 
@@ -85,7 +154,31 @@ building as shown in the original image. There is no doubt about it, this is the
 >Do the loop doop doop...
 >
 >Flag format: The STRING you end up with after solving challenge, case insensitive.
->Author:
+>Author: QUT_WH
+
+For this forensics challenge we are given an audio file and need to find a string hidden in it.
+The given audio file sounds like a jingle for the Sydney Metro Monorail, but it has some strange
+beeping behind the main audio.
+
+[Click here to listen to the audio](/assets/DUCTF/monorail.wav)
+
+The beeping seems to be a Morse code sequence, we just need to separate it from the singing and
+decode it. To continue, we popped the audio file into Audacity and switched to the spectrogram view.
+
+[![Audacity](/assets/DUCTF/theloop2.png)](/assets/DUCTF/theloop2.png)
+
+The spectrogram view details the exact dots and dashes of the Morse code sequence.
+To get a better look at the sequence, we can "zoom in" by changing the frequency range
+in the spectrogram settings menu.
+
+[![Spectrogram Range Change](/assets/DUCTF/theloop3.png)](/assets/DUCTF/theloop3.png)
+
+Finally, all that's left is to record the sequence and decode it. The resulting
+text should be the flag. To decode, it is simplest to use a decoding site.
+
+>.. -.-. --- ..- .-.. -.. .-.. .. ... - . -. - --- - .... .. ... --- -. .-.. --- --- .--. .- .-.. .-.. -.. .- -.--
+>
+>ICOULDLISTENTOTHISONLOOPALLDAY  
 
 &nbsp;
 
