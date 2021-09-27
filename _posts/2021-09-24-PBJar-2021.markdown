@@ -968,6 +968,10 @@ its corresponding HID scancode is placed in the first byte of the final 6 bytes.
 if another key is pressed or held at the same time, its code will be placed in the second byte.
 Since there are 6 bytes, for most keyboards a maximum of 6 keys can be pressed at the same time.
 
+> 00 00
+>
+>
+
 For this script specifically, we get the first key pressed and skip frames with double presses.
 This is to avoid some repeating letters in the sequence. Finally using a dictionary of the HID scancodes
 mentioned earlier, the script decodes the HID values into ASCII characters. You can find a full
@@ -1234,4 +1238,18 @@ the right amount to print out the flag that was hiding in the LSBs.
 
 ## **Conclusion**
 
+
+
 ## **Lessons Learned**
+
+1. Accessing Smart Contract Information
+2. MEV-Based Transaction Arrangements
+3. Return to Libc Basics
+4. Format String Vulnerability Basics
+5. Basic PHP Remote Code Executions with Filter Bypasses
+6. HTTP PUT Request Usage and Weaknesses
+7. Steganography Dictionary Attacks with Stegseek
+8. USB Keyboard Human Interface Device Codes
+9. Recovering Hashes with Volatility
+10. Data Extraction with Volatility
+11. Column Based LSB Steganography 

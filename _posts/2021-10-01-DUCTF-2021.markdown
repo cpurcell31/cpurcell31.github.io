@@ -1,0 +1,119 @@
+---
+layout: post
+title:  "DUCTF 2021 Writeup"
+tags: CTF
+---
+
+- OSINT
+  - (back) On the rails
+  - Heart of the nation
+- Forensics
+  - Do the loop!
+  - That's Not My Name!
+  - Want to Play a Game?
+{:toc}
+
+&nbsp;
+
+## OSINT
+
+### (back) On the rails
+
+>We intercepted further communications between the two. This text was sent shortly before we lost track of one of the suspects, with an image attached. Can you
+>work out what they're talking about?
+>
+>Okay, please promise not to judge me, but I might have ended up catching the wrong train again. Though I think I'm still in Australia this time (at least it
+>isn't like that time in Norway LOL). I managed to snap a picture before we went past this station… you have any ideas where I might be?
+>
+>Please tell us the name of the station, with any spaces replaced by underscores.
+>
+>Flag format: DUCTF{station_name}
+>
+>Author: xXl33t_h@x0rXx
+
+For this OSINT challenge we are given a single image and are tasked with finding the name of the train station where the photo was taken.
+Before looking at the image, I should preface that all OSINT challenges are restricted to locations in Australia.
+This narrows down our search quite a bit but not enough to make this easy, Australia is still massive. Now then, let's look at the image.
+
+[![Train Station](/assets/DUCTF/rails.png)](/assets/DUCTF/rails.png)
+<figcaption align=center><b>Figure 1-1: The Original Challenge Image - A Rundown Train Station</b></figcaption>
+&nbsp;
+
+The image doesn't have the greatest resolution, but there should be enough details to figure out which station this is.
+Most notably, the station looks fairly beat down and some unique graffiti can be found decorating the building on the
+left of the image. Searching for rundown train stations in Australia seemed like a good next step. However before
+starting my search, I tried inputting the image into Google Lens to see if it could match the location.
+
+[![Google Lens](/assets/DUCTF/train2.jpg)](/assets/DUCTF/train2.jpg)
+<figcaption align=center><b>Figure 1-2: Results from Inputting the Challenge Picture into Google Lens</b></figcaption>
+&nbsp;
+
+Google Lens quickly returns a result which is worth further investigation, General Motors Station in Melbourne.
+A quick search reveals that General Motors Station is likely to be the right station. The station is not only
+permanently closed, but is also covered in graffiti. The second link from the results in Figure # reveals some
+interesting photographs of the station.
+
+[![Solution](/assets/DUCTF/train4.jpeg)](/assets/DUCTF/train4.jpeg)
+<figcaption align=center><b>Figure 1-3: An Image of General Motors Station from [Wongm's Rail Gallery](https://railgallery.wongm.com/melbourne-stations/F128_0283.jpg.html)</b></figcaption>
+&nbsp;
+
+This photo taken from [Wongm's Rail Gallery](https://railgallery.wongm.com/), shows the exact graffiti and
+building as shown in the original image. There is no doubt about it, this is the correct train station.
+
+>DUCTF{general_motors_station}
+
+&nbsp;
+
+### Heart of the nation
+
+>We found some files on the website (not really), the caption was
+>“Right at the heart of the nation, no piece of the bush inside the circle remains untouched by us".
+>
+>We believe this is one of their meeting places, can you help us find the location of the photo truncated (not rounded) to three decimal places?
+>
+>Flag format is DUCTF{lon,lat}
+>
+>Author: xXl33t_h@x0rXx
+
+
+&nbsp;
+
+## Forensics
+
+### Do the loop!
+
+>Do the loop doop doop...
+>
+>Flag format: The STRING you end up with after solving challenge, case insensitive.
+>Author:
+
+&nbsp;
+
+### That's Not My Name!
+
+>I think some of my data has been stolen, can you help me?
+>
+>Author: Conletz#5420
+
+&nbsp;
+
+### Want to Play a Game?
+
+>My PC has been infected! I need help finding out what happened. I managed to get a memory dump, not sure if that can help you?
+>
+>In order to recover from this infection, I need the following information:
+>
+>What is the name of the malware that infected my PC?
+>What is the name of the persistence mechanism?
+>What folder did the infection originate from?
+>Flag format: DUCTF{lowerCaseMalwareName_persistenceName_originatingFolderName}
+>
+>You can download the memory dump here.
+>
+>The file is password protected. The password is I83xOkTzeljDmpMmZWTi.
+>
+>Author: Conletz#5420
+
+
+
+&nbsp;
