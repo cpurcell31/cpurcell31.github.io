@@ -166,12 +166,16 @@ The beeping seems to be a Morse code sequence, we just need to separate it from 
 decode it. To continue, we popped the audio file into Audacity and switched to the spectrogram view.
 
 [![Audacity](/assets/DUCTF/theloop2.png)](/assets/DUCTF/theloop2.png)
+<figcaption align=center><b>Figure 3-1: An Audacity Spectrogram View of monorail.wav</b></figcaption>
+&nbsp;
 
 The spectrogram view details the exact dots and dashes of the Morse code sequence.
 To get a better look at the sequence, we can "zoom in" by changing the frequency range
 in the spectrogram settings menu.
 
 [![Spectrogram Range Change](/assets/DUCTF/theloop3.png)](/assets/DUCTF/theloop3.png)
+<figcaption align=center><b>Figure 3-2: The "Zoomed in" Spectrogram View of monorail.wav</b></figcaption>
+&nbsp;
 
 Finally, all that's left is to record the sequence and decode it. The resulting
 text should be the flag. To decode, it is simplest to use a decoding site.
@@ -187,6 +191,65 @@ text should be the flag. To decode, it is simplest to use a decoding site.
 >I think some of my data has been stolen, can you help me?
 >
 >Author: Conletz#5420
+
+That's Not My Name! is all about examining a packet capture for some hidden data.
+First off, let's load the capture into Wireshark and examine the protocol hierarchy.
+
+[![Protocols](/assets/DUCTF/name1.png)](/assets/DUCTF/name1.png)
+<figcaption align=center><b>Figure 4-1: The Initial Protocol Hierarchy of notmyname.pcapng</b></figcaption>
+&nbsp;
+
+This capture has a ton of packets in it so we need to filter down some of the chaff.
+Since we have no way of decrypting the TLS traffic yet, we decided to filter out TLS traffic first.
+
+[![Protocols After Filter](/assets/DUCTF/name2.png)](/assets/DUCTF/name2.png)
+<figcaption align=center><b>Figure 4-2: The Protocol Hierarchy After Filtering Out TLS Traffic</b></figcaption>
+&nbsp;
+
+**Figure 4-2** shows the results of the filter on the packet counts. Filtering out TLS essentially
+cut down the search area by half! From the remaining protocols, as highlighted in **Figure 4-2**,
+we can see that DNS has the next greatest amount of traffic at 45617 packets. We next applied a new
+filter to examine only DNS traffic.
+
+[![DNS Packets](/assets/DUCTF/name3.png)](/assets/DUCTF/name3.png)
+<figcaption align=center><b>Figure 4-3: A Weird DNS Query Among the Packets</b></figcaption>
+&nbsp;
+
+After a bit of scrolling through packets, we came across a suspicious looking entry. There is a DNS query for
+"77040023090da10021636f6d6d616e642028446f776e556e646572436f29.00.qawesrdtfgyhuj.xyz" among
+the several normal queries. The first section of the query looked like a sequence of hexadecimal, so
+we tried decoding it to see what popped out.
+
+>w..#
+>¡.!command (DownUnderCo)
+
+Weirdly enough, some intelligible text popped out. We then tried to see if there were any more weird DNS queries like this one.
+By following the UDP stream of this query packet, Wireshark detailed about 24000 similar packets.
+
+[![UDP Stream](/assets/DUCTF/name4.png)](/assets/DUCTF/name4.png)
+<figcaption align=center><b>Figure 4-4: The UDP Stream View of the Weird DNS Query</b></figcaption>
+&nbsp;
+
+As **Figure 4-4** shows, we also filtered the stream down to only client packets to keep only the DNS requests.
+Next using the "Save as..." option in the stream window, we exported the query data to attempt to decode all the hex.
+We used [CyberChef](https://gchq.github.io/CyberChef/) to quickly strip some unnecessary text and decode the hex.
+
+[![CyberChef](/assets/DUCTF/name5.png)](/assets/DUCTF/name5.png)
+<figcaption align=center><b>Figure 4-5: Using CyberChef to Filter and Decode the DNS Query Data</b></figcaption>
+&nbsp;
+
+Using regular expressions, we filtered out all the non-hex characters and then applied the "From Hex"
+tool to translate the remaining data. The results were a mix of nonsense and some moments of clarity.
+Scrolling through the output, we could see several instances of Lorem Ipsum. From here we tried a
+Hail Mary and searched the translated text for the DUCTF flag format.
+
+[![Solution](/assets/DUCTF/namesol.png)](/assets/DUCTF/namesol.png)
+<figcaption align=center><b>Figure 4-6: Finding the Flag Using Regular Expressions in CyberChef</b></figcaption>
+&nbsp;
+
+With the "Regular Expression" tool, we found that the flag was hidden within the decoded output.
+
+>DUCTF{c4t_g07_y0ur_n4m3}
 
 &nbsp;
 
