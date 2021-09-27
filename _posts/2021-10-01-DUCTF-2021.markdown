@@ -15,9 +15,9 @@ tags: CTF
 
 &nbsp;
 
-## OSINT
+## **OSINT**
 
-### (back) On the rails
+### **(back) On the rails**
 
 >We intercepted further communications between the two. This text was sent shortly before we lost track of one of the suspects, with an image attached. Can you
 >work out what they're talking about?
@@ -64,7 +64,7 @@ building as shown in the original image. There is no doubt about it, this is the
 
 &nbsp;
 
-### Heart of the nation
+### **Heart of the nation**
 
 >We found some files on the website (not really), the caption was
 >“Right at the heart of the nation, no piece of the bush inside the circle remains untouched by us".
@@ -147,9 +147,9 @@ record the coordinates from Google Maps and submit the flag.
 
 &nbsp;
 
-## Forensics
+## **Forensics**
 
-### Do the loop!
+### **Do the loop!**
 
 >Do the loop doop doop...
 >
@@ -186,7 +186,7 @@ text should be the flag. To decode, it is simplest to use a decoding site.
 
 &nbsp;
 
-### That's Not My Name!
+### **That's Not My Name!**
 
 >I think some of my data has been stolen, can you help me?
 >
@@ -253,7 +253,7 @@ With the "Regular Expression" tool, we found that the flag was hidden within the
 
 &nbsp;
 
-### Want to Play a Game?
+### **Want to Play a Game?**
 
 >My PC has been infected! I need help finding out what happened. I managed to get a memory dump, not sure if that can help you?
 >
