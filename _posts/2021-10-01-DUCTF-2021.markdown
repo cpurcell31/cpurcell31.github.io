@@ -46,7 +46,7 @@ Most notably, the station looks fairly beat down and some unique graffiti can be
 left of the image. Searching for rundown train stations in Australia seemed like a good next step. However, before
 starting the search, we tried inputting the image into Google Lens to see if it could match the location.
 
-[![Google Lens](/assets/DUCTF/train2.jpg)](/assets/DUCTF/train2.jpg)
+[![Google Lens](/assets/DUCTF/train2.jpg)](/assets/DUCTF/train2.png)
 <figcaption align=center><b>Figure 1-2: Results from Inputting the Challenge Picture into Google Lens</b></figcaption>
 &nbsp;
 
@@ -305,7 +305,7 @@ pretty suspicious so we decided to try to dump the file to see what was going on
 With windows.filescan we were able to find the physical address of the file in memory
 and then use windows.dumpfiles to get a copy of the data.
 
-[![Strings](/assets/DUCTF/game7.png)](/assets/DUCTF/game7.png)
+<div align="center"><a href="/assets/DUCTF/game7.png"><img src="/assets/DUCTF/game7.png"></a></div>
 <figcaption align=center><b>Figure 5-4: Using Strings to Reveal the Malware's Name</b></figcaption>
 &nbsp;
 
@@ -314,7 +314,7 @@ As **Figure 5-4** shows, there was a highly suspicious line with "BitcoinBlackma
 in it. So we found our malware and quite possibly its originating folder. To continue,
 we did a little research into BitcoinBlackmailer.
 
-[![Google Search](/assets/DUCTF/game9.png)](/assets/DUCTF/game9.png)
+<div align="center"><a href="/assets/DUCTF/game9.png"><img src="/assets/DUCTF/game9.png"></a></div>
 <figcaption align=center><b>Figure 5-5: Google Search Results for "bitcoinblackmailer"</b></figcaption>
 &nbsp;
 
@@ -355,7 +355,7 @@ and with a bit of trial and error, we can complete the flag.
 Inside Out is an introductory source-less web challenge where we must find a flag hidden
 on the provided website. Let's explore the website a bit.
 
-[![Source Code](/assets/DUCTF/insideout.png)](/assets/DUCTF/insideout.png)
+<div align="center"><a href="/assets/DUCTF/insideout.png"><img src="/assets/DUCTF/insideout.png"></a></div>
 <figcaption align=center><b>Figure 6-1: The Source Code View for the Index Page</b></figcaption>
 &nbsp;
 
@@ -378,7 +378,7 @@ inputs another site into the URL parameter and then the server gets and returns 
 happens when we try to query the localhost? Perhaps we can use this page to perform a Server Side Request Forgery
 (SSRF) and access that admin panel.
 
-[![Blacklisted](/assets/DUCTF/inside3.png)](/assets/DUCTF/inside3.png)
+<div align="center"><a href="/assets/DUCTF/inside3.png"><img src="/assets/DUCTF/inside3.png"></a></div>
 <figcaption align=center><b>Figure 6-4: Attempting to Proxy Localhost - Blacklisted</b></figcaption>
 &nbsp;
 
