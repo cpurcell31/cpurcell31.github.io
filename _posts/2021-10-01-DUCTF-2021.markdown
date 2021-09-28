@@ -46,7 +46,7 @@ Most notably, the station looks fairly beat down and some unique graffiti can be
 left of the image. Searching for rundown train stations in Australia seemed like a good next step. However, before
 starting the search, we tried inputting the image into Google Lens to see if it could match the location.
 
-[![Google Lens](/assets/DUCTF/train2.jpg)](/assets/DUCTF/train2.png)
+[![Google Lens](/assets/DUCTF/train2.png)](/assets/DUCTF/train2.png)
 <figcaption align=center><b>Figure 1-2: Results from Inputting the Challenge Picture into Google Lens</b></figcaption>
 &nbsp;
 
@@ -378,7 +378,7 @@ inputs another site into the URL parameter and then the server gets and returns 
 happens when we try to query the localhost? Perhaps we can use this page to perform a Server Side Request Forgery
 (SSRF) and access that admin panel.
 
-<div align="center"><a href="/assets/DUCTF/inside3.png"><img src="/assets/DUCTF/inside3.png"></a></div>
+[![Blacklisted](/assets/DUCTF/inside3.png)](/assets/DUCTF/inside3.png)
 <figcaption align=center><b>Figure 6-4: Attempting to Proxy Localhost - Blacklisted</b></figcaption>
 &nbsp;
 
