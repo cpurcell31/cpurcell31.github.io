@@ -282,7 +282,7 @@ within a memory capture. We must find out 3 things about the malware to create t
 To start out, we decided to look at the running processes. To examine the memory capture
 we used Volatility 3.
 
-[![Pslist](/assets/DUCTF/game1.png)](/assets/DUCTF/game3.png)
+[![Pslist](/assets/DUCTF/game3.png)](/assets/DUCTF/game3.png)
 <figcaption align=center><b>Figure 5-1: The Bottom Half of the pslist Plugin Results</b></figcaption>
 &nbsp;
 
@@ -290,7 +290,7 @@ In **Figure 5-1** we can see some of the results of the windows.pslist plugin. T
 a number of normal looking processes and a single odd looking one, "drpbx.exe". To continue,
 we looked at the recent command line history using the windows.cmdline plugin.
 
-[![Commands](/assets/DUCTF/game2.png)](/assets/DUCTF/game5.png)
+[![Commands](/assets/DUCTF/game5.png)](/assets/DUCTF/game5.png)
 <figcaption align=center><b>Figure 5-2: The Bottom Half of the cmdline Plugin Results</b></figcaption>
 &nbsp;
 
@@ -298,14 +298,14 @@ Near the bottom of the plugin results, the drpbx executable makes a return, this
 invoking a file called "notsuspicious.exe". Contrary to its name, notsuspicious.exe is
 pretty suspicious so we decided to try to dump the file to see what was going on.
 
-[![Dump Files](/assets/DUCTF/game3.png)](/assets/DUCTF/game6.png)
+[![Dump Files](/assets/DUCTF/game6.png)](/assets/DUCTF/game6.png)
 <figcaption align=center><b>Figure 5-3: Results from Grepping filescan Ouput for notsuspicious.exe and Using the dumpfiles Plugin</b></figcaption>
 &nbsp;
 
 With windows.filescan we were able to find the physical address of the file in memory
 and then use windows.dumpfiles to get a copy of the data.
 
-[![Strings](/assets/DUCTF/game4.png)](/assets/DUCTF/game7.png)
+[![Strings](/assets/DUCTF/game7.png)](/assets/DUCTF/game7.png)
 <figcaption align=center><b>Figure 5-4: Using Strings to Reveal the Malware's Name</b></figcaption>
 &nbsp;
 
@@ -314,7 +314,7 @@ As **Figure 5-4** shows, there was a highly suspicious line with "BitcoinBlackma
 in it. So we found our malware and quite possibly its originating folder. To continue,
 we did a little research into BitcoinBlackmailer.
 
-[![Google Search](/assets/DUCTF/game5.png)](/assets/DUCTF/game9.png)
+[![Google Search](/assets/DUCTF/game9.png)](/assets/DUCTF/game9.png)
 <figcaption align=center><b>Figure 5-5: Google Search Results for "bitcoinblackmailer"</b></figcaption>
 &nbsp;
 
@@ -324,7 +324,7 @@ the Saw movie series. Jigsaw masquerades as legitimate processes with both the n
 "drpbx.exe" and "firefox.exe". The malware creates new folders for both processes and even
 edits some registry keys to ensure persistence at startup.
 
-[![Firefox](/assets/DUCTF/game6.png)](/assets/DUCTF/game8.png)
+[![Firefox](/assets/DUCTF/game8.png)](/assets/DUCTF/game8.png)
 <figcaption align=center><b>Figure 5-6: Grep Results for "firefox.exe" from filescan Plugin Output</b></figcaption>
 &nbsp;
 
@@ -355,21 +355,21 @@ and with a bit of trial and error we can complete the flag.
 Inside Out is an introductory source-less web challenge where we must find a flag hidden
 on the provided website. Let's explore the website a bit.
 
-[![Source Code](/assets/DUCTF/inside1.png)](/assets/DUCTF/insideout.png)
+[![Source Code](/assets/DUCTF/insideout.png)](/assets/DUCTF/insideout.png)
 <figcaption align=center><b>Figure 6-1: The Source Code View for the Index Page</b></figcaption>
 &nbsp;
 
 The index does not feature much at first glance, only a link to another page.
 However, the source code reveals the presence of an admin panel. Let's try accessing it.
 
-[![Forbidden](/assets/DUCTF/inside2.png)](/assets/DUCTF/inside1.png)
+[![Forbidden](/assets/DUCTF/inside1.png)](/assets/DUCTF/inside1.png)
 <figcaption align=center><b>Figure 6-2: Attempting to Access the Admin Panel - Forbidden</b></figcaption>
 &nbsp;
 
 The server responds with a "Forbidden" warning and informs us that we need to be on the local network to
 access the admin panel. Next, we decided to backtrack a bit and check out the link from earlier.
 
-[![Proxy](/assets/DUCTF/inside3.png)](/assets/DUCTF/inside2.png)
+[![Proxy](/assets/DUCTF/inside2.png)](/assets/DUCTF/inside2.png)
 <figcaption align=center><b>Figure 6-3: The Proxy Application Page</b></figcaption>
 &nbsp;
 
@@ -378,7 +378,7 @@ inputs another site into the URL parameter and then the server gets and returns 
 happens when we try to query the localhost? Perhaps we can use this page to perform a Server Side Request Forgery
 (SSRF) and access that admin panel.
 
-[![Blacklisted](/assets/DUCTF/inside4.png)](/assets/DUCTF/inside3.png)
+[![Blacklisted](/assets/DUCTF/inside3.png)](/assets/DUCTF/inside3.png)
 <figcaption align=center><b>Figure 6-4: Attempting to Proxy Localhost - Blacklisted</b></figcaption>
 &nbsp;
 
@@ -387,7 +387,7 @@ To continue, we tested just how thorough the blacklist was.
 On [hacktrickz](https://book.hacktricks.xyz/pentesting-web/ssrf-server-side-request-forgery#basic-bypass-localhost)
 we found a huge list of potential bypasses to try.
 
-[![Bypassed](/assets/DUCTF/inside5.png)](/assets/DUCTF/inside.png)
+[![Bypassed](/assets/DUCTF/inside.png)](/assets/DUCTF/inside.png)
 <figcaption align=center><b>Figure 6-5: http://0 Bypasses the Blacklist</b></figcaption>
 &nbsp;
 
@@ -395,7 +395,7 @@ After a bit of trial and error, we found that using "http://0" would bypass the 
 details. Just like the source code on the index page, we see the reference to the admin panel at /admin. Let's try
 accessing it now.
 
-[![The Flag](/assets/DUCTF/inside6.png)](/assets/DUCTF/inside4.png)
+[![The Flag](/assets/DUCTF/inside4.png)](/assets/DUCTF/inside4.png)
 <figcaption align=center><b>Figure 6-6: Using SSRF to Access the Admin Panel Page</b></figcaption>
 &nbsp;
 
