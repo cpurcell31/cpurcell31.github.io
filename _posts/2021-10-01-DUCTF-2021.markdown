@@ -33,7 +33,7 @@ tags: CTF
 >
 >Author: xXl33t_h@x0rXx
 
-For this OSINT challenge we are given a single image and are tasked with finding the name of the train station where the photo was taken.
+For this OSINT challenge, we are given a single image and are tasked with finding the name of the train station where the photo was taken.
 Before looking at the image, I should preface that all OSINT challenges are restricted to locations in Australia.
 This narrows down our search quite a bit but not enough to make this easy, Australia is still massive. Now then, let's look at the image.
 
@@ -43,16 +43,16 @@ This narrows down our search quite a bit but not enough to make this easy, Austr
 
 The image doesn't have the greatest resolution, but there should be enough details to figure out which station this is.
 Most notably, the station looks fairly beat down and some unique graffiti can be found decorating the building on the
-left of the image. Searching for rundown train stations in Australia seemed like a good next step. However before
+left of the image. Searching for rundown train stations in Australia seemed like a good next step. However, before
 starting the search, we tried inputting the image into Google Lens to see if it could match the location.
 
 [![Google Lens](/assets/DUCTF/train2.jpg)](/assets/DUCTF/train2.jpg)
 <figcaption align=center><b>Figure 1-2: Results from Inputting the Challenge Picture into Google Lens</b></figcaption>
 &nbsp;
 
-Google Lens quickly returns a result which is worth further investigation, General Motors Station in Melbourne.
+Google Lens quickly returns a result that is worth further investigation, General Motors Station in Melbourne.
 A quick search reveals that General Motors Station is likely to be the right station. The station is not only
-permanently closed, but is also covered in graffiti. The second link from the results in **Figure 1-2** reveals some
+permanently closed but is also covered in graffiti. The second link from the results in **Figure 1-2** reveals some
 interesting photographs of the station.
 
 [![Solution](/assets/DUCTF/train4.jpeg)](/assets/DUCTF/train4.jpeg)
@@ -77,7 +77,7 @@ building as shown in the original image. There is no doubt about it, this is the
 >
 >Author: xXl33t_h@x0rXx
 
-For Heart of the nation we are given a single photo and need to find the location's coordinates. Once again, this location is
+For Heart of the nation, we are given a single photo and need to find the location's coordinates. Once again, this location is
 restricted to Australia so that narrows the search down a little bit. Here is the image we start with.
 
 [![Challenge Image](/assets/DUCTF/aus.jpg)](/assets/DUCTF/aus.jpg)
@@ -92,12 +92,12 @@ minor details in the image that seemed worth checking out.
 - A streetlight nearby the location
 - A stone semi-circle in the middle of the image
 
-Using some of these details we can narrow down the possible locations further. Since there is a streetlight close-by,
+Using some of these details we can narrow down the possible locations further. Since there is a streetlight close by,
 this photo must have been taken in a city or near a road. The sign points to this location being a historical site,
 national park, etc.
 
 To start our search, we wasted a ton of time looking through various national parks, historic sites, and
-even tried correlating the specific type of tree to the location. Later on we found that the challenge
+even tried correlating the specific type of tree to the location. Later on, we found that the challenge
 description was the key to solving this challenge.
 
 >“Right at the heart of the nation, no piece of the bush inside the circle remains untouched by us".
@@ -114,7 +114,7 @@ We began our search right in the middle of Australia for places that fit our req
 &nbsp;
 
 Alice Springs was the first and only area we checked. At first, Alice Springs seemed like
-a good fit. However as we searched Alice Springs and the surrounding area, there was a big problem.
+a good fit. However, as we searched Alice Springs and the surrounding area, there was a big problem.
 The foliage did not match at all, the Outback did not have the same amount of trees or greenery as the photo.
 Meaning the riddle was likely not pointing to the physical heart of Australia.
 
@@ -136,7 +136,7 @@ Next, we looked through this surrounding area until we found the following locat
 &nbsp;
 
 The sign was an exact match to the one from **Figure 2-1**. However, this location wasn't quite right.
-A few more seconds searching inside the circle revealed the solution.
+A few more seconds of searching inside the circle revealed the solution.
 
 [![Solution](/assets/DUCTF/aus5.png)](/assets/DUCTF/aus5.png)
 <figcaption align=center><b>Figure 2-5: The Location of the Original Photo</b></figcaption>
@@ -158,7 +158,7 @@ record the coordinates from Google Maps and submit the flag.
 >Flag format: The STRING you end up with after solving challenge, case insensitive.
 >Author: QUT_WH
 
-For this forensics challenge we are given an audio file and need to find a string hidden in it.
+For this forensics challenge, we are given an audio file and need to find a string hidden in it.
 The given audio file sounds like a jingle for the Sydney Metro Monorail, but it has some strange
 beeping behind the main audio.
 
@@ -217,7 +217,7 @@ filter to examine only DNS traffic.
 <figcaption align=center><b>Figure 4-3: A Weird DNS Query Among the Packets</b></figcaption>
 &nbsp;
 
-After a bit of scrolling through packets, we came across a suspicious looking entry. There is a DNS query for
+After a bit of scrolling through packets, we came across a suspicious-looking entry. There is a DNS query for
 "77040023090da10021636f6d6d616e642028446f776e556e646572436f29.00.qawesrdtfgyhuj.xyz" among
 the several normal queries. The first section of the query looked like a sequence of hexadecimal, so
 we tried decoding it to see what popped out.
@@ -272,11 +272,11 @@ With the "Regular Expression" tool, we found that the flag was hidden within the
 >
 >Author: Conletz#5420
 
-For this forensics challenge we are tasked with finding some traces of malware
+For this forensics challenge, we are tasked with finding some traces of malware
 within a memory capture. We must find out 3 things about the malware to create the flag.
 
 - The name of the malware
-- What persistence mechanism the malware uses
+- Which persistence mechanism the malware uses
 - The folder where the infection originated
 
 To start out, we decided to look at the running processes. To examine the memory capture
@@ -287,7 +287,7 @@ we used Volatility 3.
 &nbsp;
 
 In **Figure 5-1** we can see some of the results of the windows.pslist plugin. The results show
-a number of normal looking processes and a single odd looking one, "drpbx.exe". To continue,
+a number of normal-looking processes and a single odd-looking one, "drpbx.exe". To continue,
 we looked at the recent command line history using the windows.cmdline plugin.
 
 [![Commands](/assets/DUCTF/game5.png)](/assets/DUCTF/game5.png)
@@ -331,7 +331,7 @@ edits some registry keys to ensure persistence at startup.
 Looking back at the memory capture, we can see the presence of firefox.exe in an atypical
 directory named "FrFx". Typically, the Jigsaw ransomware will edit this executable into a Run
 registry key to enable persistence. This means we have our persistence mechanism as well
-and with a bit of trial and error we can complete the flag.
+and with a bit of trial and error, we can complete the flag.
 
 >DUCTF{jigsaw_firefox.exe_}
 
