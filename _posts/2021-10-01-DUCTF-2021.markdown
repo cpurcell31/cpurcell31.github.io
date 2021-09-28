@@ -46,7 +46,7 @@ Most notably, the station looks fairly beat down and some unique graffiti can be
 left of the image. Searching for rundown train stations in Australia seemed like a good next step. However, before
 starting the search, we tried inputting the image into Google Lens to see if it could match the location.
 
-[![Google Lens](/assets/DUCTF/train2.png)](/assets/DUCTF/train2.png)
+<div align="center"><a href="/assets/DUCTF/train2.png"><img src="/assets/DUCTF/train2.png"></a></div>
 <figcaption align=center><b>Figure 1-2: Results from Inputting the Challenge Picture into Google Lens</b></figcaption>
 &nbsp;
 
