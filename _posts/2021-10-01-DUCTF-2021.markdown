@@ -323,6 +323,12 @@ While threatening the user, the ransomware displays the iconic puppet from the S
 Jigsaw masquerades as legitimate processes with both the names "drpbx.exe" and "firefox.exe".
 The malware creates new folders for both processes and even edits some registry keys to ensure persistence at startup.
 
+[![]()]()
+
+Uploading notsuspicious.exe to VirusTotal instantly results in a match and confirms the
+details we saw earlier. VirusTotal even provides a similar execution path to the one we saw in
+**Figure 5-2**. You can find the full VirusTotal report [here](https://www.virustotal.com/gui/file/c33c93932577ad9d9b97859f8130d05ccb65def76c5f8b793b685bfc462ce559/detection).
+
 [![Firefox](/assets/DUCTF/game8.png)](/assets/DUCTF/game8.png)
 <figcaption align=center><b>Figure 5-6: Grep Results for "firefox.exe" from filescan Plugin Output</b></figcaption>
 &nbsp;
