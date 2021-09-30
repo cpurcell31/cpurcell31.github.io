@@ -97,7 +97,7 @@ this photo must have been taken in a city or near a road. The sign points to thi
 national park, etc.
 
 To start our search, we wasted a ton of time looking through various national parks, historic sites, and
-even tried correlating the specific type of tree to the location. Later on, we found that the challenge
+even tried correlating the specific type of tree to a single location. Later on, we found that the challenge
 description was the key to solving this challenge.
 
 >“Right at the heart of the nation, no piece of the bush inside the circle remains untouched by us".
@@ -105,9 +105,9 @@ description was the key to solving this challenge.
 The caption from the description provides a riddle that describes the location in the photo.
 By breaking this riddle into parts we were able to figure out the exact location.
 
-First, "Right at the heart of the nation" could refer to a few things, the physical heart of the nation,
-the cultural heart of the nation, or the political heart. The physical heart was an easy starting place.
-We began our search right in the middle of Australia for places that fit our requirements.
+First, "Right at the heart of the nation" could refer to a number of things, the physical heart of the nation,
+or maybe some sort of spiritual heart. The physical heart was an easy starting place.
+We began our search right in the middle of Australia for places that fit the bill.
 
 [![Alice Springs](/assets/DUCTF/aus2.png)](/assets/DUCTF/aus2.png)
 <figcaption align=center><b>Figure 2-2: The Location and Scenery of Alice Springs</b></figcaption>
@@ -118,9 +118,8 @@ a good fit. However, as we searched Alice Springs and the surrounding area, ther
 The foliage did not match at all, the Outback did not have the same amount of trees or greenery as the photo.
 Meaning the riddle was likely not pointing to the physical heart of Australia.
 
-For our next venture, we skipped ahead to the political heart. The cultural heart seemed a bit too
-subjective to investigate right away. Anyway, the political heart of Australia had to be the
-capital, Canberra. Canberra is home to Australia's parliament, senate, and a slew of embassies.
+For our next venture, we looked at the political heart of Australia, which had to be the
+capital city, Canberra. Canberra is home to Australia's parliament, senate, and a slew of embassies.
 Now if we were looking for the true political heart, starting at the parliament seems like the best bet.
 
 [![Parliament](/assets/DUCTF/aus3.png)](/assets/DUCTF/aus3.png)
@@ -128,15 +127,15 @@ Now if we were looking for the true political heart, starting at the parliament 
 &nbsp;
 
 Weirdly enough, the parliament building is located in the middle of a giant circular road.
-This also matches the second half of the riddle, "no piece of the bush inside the circle remains untouched by us".
-Next, we looked through this surrounding area until we found the following location.
+This matches the second half of the riddle, "no piece of the bush inside the *circle* remains untouched by us".
+Next, while looking through the area surrounding Parliament, we found an interesting spot.
 
 [![Signage](/assets/DUCTF/aus4.png)](/assets/DUCTF/aus4.png)
 <figcaption align=center><b>Figure 2-4: A Similar Looking Location and Sign</b></figcaption>
 &nbsp;
 
-The sign was an exact match to the one from **Figure 2-1**. However, this location wasn't quite right.
-A few more seconds of searching inside the circle revealed the solution.
+The sign was an exact match to the one from **Figure 2-1**. However, a glance around revealed that this
+wasn't the right spot. It was close but not quite right. A few more seconds of searching inside the circle revealed the solution.
 
 [![Solution](/assets/DUCTF/aus5.png)](/assets/DUCTF/aus5.png)
 <figcaption align=center><b>Figure 2-5: The Location of the Original Photo</b></figcaption>
