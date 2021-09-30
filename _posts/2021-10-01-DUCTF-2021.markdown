@@ -295,7 +295,7 @@ we looked at the recent command line history using the windows.cmdline plugin.
 
 Near the bottom of the plugin results, the drpbx executable makes a return, this time
 invoking a file called "notsuspicious.exe". Contrary to its name, notsuspicious.exe is
-pretty suspicious so we decided to try to dump the file to see what was going on.
+pretty suspicious. To investigate further, we tried to retrieve the file and see if there were any red flags.
 
 [![Dump Files](/assets/DUCTF/game6.png)](/assets/DUCTF/game6.png)
 <figcaption align=center><b>Figure 5-3: Results from Grepping filescan Ouput for notsuspicious.exe and Using the dumpfiles Plugin</b></figcaption>
@@ -310,18 +310,18 @@ and then use windows.dumpfiles to get a copy of the data.
 
 Finally, we used strings to see if there were any weird lines of text in the file data.
 As **Figure 5-4** shows, there was a highly suspicious line with "BitcoinBlackmailer.exe"
-in it. So we found our malware and quite possibly its originating folder. To continue,
-we did a little research into BitcoinBlackmailer.
+in it. At this point, we had found the malware. We could also source this malware to the folder "PJxhJQ9yUDoBF1188y".
+To continue, we needed to do a little research into BitcoinBlackmailer.
 
 <div align="center"><a href="/assets/DUCTF/game9.png"><img src="/assets/DUCTF/game9.png"></a></div>
 <figcaption align=center><b>Figure 5-5: Google Search Results for "bitcoinblackmailer"</b></figcaption>
 &nbsp;
 
 Our initial google search revealed that the proper name for this malware is Jigsaw.
-The Jigsaw malware is a piece of ransomware that displays the jigsaw puppet from
-the Saw movie series. Jigsaw masquerades as legitimate processes with both the names
-"drpbx.exe" and "firefox.exe". The malware creates new folders for both processes and even
-edits some registry keys to ensure persistence at startup.
+Jigsaw is a piece of ransomware that encrypts and gradually deletes files on the infected machine.
+While threatening the user, the ransomware displays the iconic puppet from the Saw movie series, hence the name, Jigsaw.
+Jigsaw masquerades as legitimate processes with both the names "drpbx.exe" and "firefox.exe".
+The malware creates new folders for both processes and even edits some registry keys to ensure persistence at startup.
 
 [![Firefox](/assets/DUCTF/game8.png)](/assets/DUCTF/game8.png)
 <figcaption align=center><b>Figure 5-6: Grep Results for "firefox.exe" from filescan Plugin Output</b></figcaption>
@@ -332,7 +332,7 @@ directory named "FrFx". Typically, the Jigsaw ransomware will edit this executab
 registry key to enable persistence. This means we have our persistence mechanism as well
 and with a bit of trial and error, we can complete the flag.
 
->DUCTF{jigsaw_firefox.exe_}
+>DUCTF{jigsaw_firefox.exe_PJxhJQ9yUDoBF1188y}
 
 &nbsp;
 
