@@ -35,7 +35,7 @@ tags: CTF
 
 For this OSINT challenge, we are given a single image and are tasked with finding the name of the train station where the photo was taken.
 Before looking at the image, I should preface that all OSINT challenges are restricted to locations in Australia.
-This narrows down our search quite a bit but not enough to make this easy, Australia is still massive. Now then, let's look at the image.
+This narrows down our search quite a bit but not enough to make this easy--Australia is still massive. Now then, let's look at the image.
 
 [![Train Station](/assets/DUCTF/rails.png)](/assets/DUCTF/rails.png)
 <figcaption align=center><b>Figure 1-1: The Original Challenge Image - A Rundown Train Station</b></figcaption>
@@ -200,7 +200,7 @@ First off, let's load the capture into Wireshark and examine the protocol hierar
 <figcaption align=center><b>Figure 4-1: The Initial Protocol Hierarchy of notmyname.pcapng</b></figcaption>
 &nbsp;
 
-This capture has a ton of packets in it so we need to filter down some of the chaff.
+This capture has a ton of packets in it, so we need to filter down some of the chaff.
 Since we have no way of decrypting the TLS traffic yet, we decided to filter out TLS traffic first.
 
 [![Protocols After Filter](/assets/DUCTF/name2.png)](/assets/DUCTF/name2.png)
@@ -240,7 +240,7 @@ We used [CyberChef](https://gchq.github.io/CyberChef/) to quickly strip some unn
 &nbsp;
 
 Using regular expressions, we filtered out all the non-hex characters and then applied the "From Hex"
-tool to translate the remaining data. The results were a mix of nonsense and some moments of clarity.
+tool to translate the remaining data. The results were mostly nonsense, with some moments of clarity.
 Scrolling through the output, we could see several instances of Lorem Ipsum. From here we tried a
 Hail Mary and searched the translated text for the DUCTF flag format.
 
@@ -381,7 +381,7 @@ access the admin panel. Next, we decided to backtrack a bit and check out the li
 &nbsp;
 
 After following the link, we can see that the main function of the site is to act as a proxy of sorts. The user first
-inputs another site into the URL parameter and then the server gets and returns the data from that URL. However, what
+inputs another site into the URL parameter and then the server retrieves the data from that URL. However, what
 happens when we try to query the localhost? Perhaps we can use this page to perform a Server Side Request Forgery
 (SSRF) and access that admin panel.
 
