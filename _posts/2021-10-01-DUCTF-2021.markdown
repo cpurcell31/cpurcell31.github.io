@@ -59,7 +59,7 @@ interesting photographs of the station.
 <figcaption align=center><b>Figure 1-3: An Image of General Motors Station from https://railgallery.wongm.com/melbourne-stations/F128_0283.jpg.html</b></figcaption>
 &nbsp;
 
-This photo taken from [Wongm's Rail Gallery](https://railgallery.wongm.com/), shows the exact graffiti and
+This photo taken from [Wongm's Rail Gallery](https://railgallery.wongm.com/) shows the exact graffiti and
 building as shown in the original image. There is no doubt about it, this is the correct train station.
 
 >DUCTF{general_motors_station}
@@ -105,7 +105,7 @@ description was the key to solving this challenge.
 The caption from the description provides a riddle that describes the location in the photo.
 By breaking this riddle into parts we were able to figure out the exact location.
 
-First, "Right at the heart of the nation" could refer to a number of things, the physical heart of the nation,
+First, "Right at the heart of the nation" could refer to several things, the physical heart of the nation,
 or maybe some sort of spiritual heart. The physical heart was an easy starting place.
 We began our search right in the middle of Australia for places that fit the bill.
 
@@ -278,7 +278,7 @@ within a memory capture. We must find out 3 things about the malware to create t
 - Which persistence mechanism the malware uses
 - The folder where the infection originated
 
-To start out, we decided to look at the running processes. To examine the memory capture
+To start, we decided to look at the running processes. To examine the memory capture
 we used Volatility 3.
 
 [![Pslist](/assets/DUCTF/game3.png)](/assets/DUCTF/game3.png)
@@ -298,7 +298,7 @@ invoking a file called "notsuspicious.exe". Contrary to its name, notsuspicious.
 pretty suspicious. To investigate further, we tried to retrieve the file and see if there were any red flags.
 
 [![Dump Files](/assets/DUCTF/game6.png)](/assets/DUCTF/game6.png)
-<figcaption align=center><b>Figure 5-3: Results from Grepping filescan Ouput for notsuspicious.exe and Using the dumpfiles Plugin</b></figcaption>
+<figcaption align=center><b>Figure 5-3: Results from Grepping filescan Output for notsuspicious.exe and Using the dumpfiles Plugin</b></figcaption>
 &nbsp;
 
 With windows.filescan we were able to find the physical address of the file in memory
