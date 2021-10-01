@@ -336,7 +336,7 @@ details we saw earlier. VirusTotal even provides a similar execution path to the
 &nbsp;
 
 Looking back at the memory capture, we can see the presence of firefox.exe in an atypical
-directory named "FrFx". Typically, the Jigsaw ransomware will edit this executable into a Run
+directory named "FrFx". Typically, the Jigsaw ransomware will edit this malicious executable into a Run
 registry key to enable persistence. This means we have our persistence mechanism as well
 and with a bit of trial and error, we can complete the flag.
 
