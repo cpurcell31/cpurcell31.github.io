@@ -331,8 +331,8 @@ Uploading notsuspicious.exe to VirusTotal instantly results in a match and confi
 details we saw earlier. VirusTotal even provides a similar execution path to the one we saw in
 **Figure 5-2**. You can find the full VirusTotal report [here](https://www.virustotal.com/gui/file/c33c93932577ad9d9b97859f8130d05ccb65def76c5f8b793b685bfc462ce559/detection).
 
-[![Firefox](/assets/DUCTF/game8.png)](/assets/DUCTF/game8.png)
-<figcaption align=center><b>Figure 5-7: Grep Results for "firefox.exe" from filescan Plugin Output</b></figcaption>
+<div align="center"><a href="/assets/DUCTF/gamefrfx.png"><img src="/assets/DUCTF/gamefrfx.png"></a></div>
+<figcaption align=center><b>Figure 5-7: Grep Results for "firefox.exe" and "drpbx.exe" from filescan Plugin Output</b></figcaption>
 &nbsp;
 
 Looking back at the memory capture, we can see the presence of firefox.exe in an atypical
