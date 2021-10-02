@@ -1238,7 +1238,12 @@ the right amount to print out the flag that was hiding in the LSBs.
 
 ## **Conclusion**
 
+PBJar CTF 2021 was an interesting event with some great introductory pwn challenges.
+The challenge difficulty was a bit towards the easy side sometimes but overall it had a decent
+difficulty curve. The infra was stable throughout with only a few minor shutdowns.
+Definitely an event to look forward to in 2022 if they plan on running it again.
 
+Once again, thank you to all the challenge creators, admins, and organizers.
 
 ## **Lessons Learned**
 
@@ -1252,4 +1257,4 @@ the right amount to print out the flag that was hiding in the LSBs.
 8. USB Keyboard Human Interface Device Codes
 9. Recovering Hashes with Volatility
 10. Data Extraction with Volatility
-11. Column Based LSB Steganography 
+11. Column Based LSB Steganography
