@@ -1,0 +1,122 @@
+---
+layout: post
+title:  "Perfect Blue CTF 2021 BTLE Writeup"
+tags: CTF
+---
+
+
+## Misc - BTLE
+
+>I stored my flag inside a remote database, but when I tried to read it back it had been redacted! Can you recover what I wrote?
+>
+>Author: UnblvR
+
+For this challenge, we are given a .pcap file and must find a flag hidden within
+the Bluetooth traffic. To start off, I began by examining the variety of packets
+in the capture.
+
+[![Capture](/assets/pbctf/ble1.png)](/assets/pbctf/ble1.png)
+<figcaption align=center><b>Figure 1: An Initial Look at btle.pcap</b></figcaption>
+&nbsp;
+
+As **Figure 1** shows, there are a couple of protocols at work here, LL LE and ATT.
+Both protocols belong to Bluetooth Low Energy communications. Judging by an initial
+look at the capture, LL LE seems to handle all the connection details, while, ATT handles the data
+transferring processes.
+
+[![More Capture](/assets/pbctf/ble2.png)](/assets/pbctf/ble2.png)
+<figcaption align=center><b>Figure 2: A Sequence of Empty PDUs with a Single Write Request</b></figcaption>
+&nbsp;
+
+After the initial Bluetooth handshakes, the frames begin to alternate between a long
+sequence of "Empty PDU"s and a single "Prepare Write Request". The "Empty PDU" frames
+serve only as a keep-alive mechanic so filtering them out helps clean up the capture.
+
+[![Redacted](/assets/pbctf/ble3.png)](/assets/pbctf/ble3.png)
+<figcaption align=center><b>Figure 3: A Read Request Resulting in the Redacted Flag</b></figcaption>
+&nbsp;
+
+Near the bottom of the capture, there is a single read request which reveals exactly what
+the description noted, the flag has been redacted. Reading the flag directly doesn't seem to be an
+option. However, the description did also allude to storing the flag at some point. So, it seems
+reasonable that the prepare write requests might hold the secret to revealing the flag.
+
+[![Write Request](/assets/pbctf/ble4.png)](/assets/pbctf/ble4.png)
+<figcaption align=center><b>Figure 4: Write Request Frame - A Closer Look</b></figcaption>
+&nbsp;
+
+Each write request holds some text data, but they seem to just be gibberish. Other than
+the text, each write also has an offset value. After looking into the ATT protocol,  
+I learned that each write request will ask to write its data starting at this offset value.
+This means that it is possible the data from one write request to be overwritten by
+another request. For example,
+
+>Request #1: Write abcdefg starting at OFfset 1
+>Database After Request #1: abcdefg
+>
+>Request #2: Write xyz starting at Offset 2
+>Database After Request #2: axyzefg
+
+With any luck, we can recreate the flag by performing all the write requests in order.
+To test this theory I performed a handful of requests by hand.
+
+```
+
+```
+
+I did cheat a bit by ordering the writes by offset, but the test still confirmed the theory.
+As a follow-up, I filtered the capture in Wireshark to display only the "Prepare Write Request"
+frames.
+
+[![Only Write](/assets/pbctf/ble5.png)](/assets/pbctf/ble5.png)
+<figcaption align=center><b>Figure 5: The Filtered Capture with Only Write Requests</b></figcaption>
+&nbsp;
+
+Next, to simplify things, I exported these specific frames to a new .pcap using "File -> Export Specified Packets".
+This makes creating a solver script easier since we don't have to consider any unnecessary frames.
+Finally, here is a small Python script to mimic the write requests.
+
+```python
+import re
+
+def get_data(filename):
+
+    # Get data from capture
+    data = ""
+    with open(filename, 'rb') as f:
+        data = f.read()
+
+    # Add a segment on to the end so we don't miss a single character
+    data += b'\x00\xd5'
+
+    # Separate ble frames from each other
+    key_frames = re.findall(b'\x26\x60.+?(?=[\xd6|\xd5|])', data, re.DOTALL)
+    result = [""] * 100
+
+    # For each ble frame: trim unnecessary data and put it in the list at the correct offset
+    for frame in key_frames:
+        offset = frame[37]
+        text = list(frame[39:-4].decode())
+        for i in range(len(text)):
+            result[i+offset-1] = text[i]
+    return result
+
+flag_parts = get_data("onlywrites.pcap")
+print("".join(flag_parts))
+```
+
+The script begins by gathering data from the new .pcap file and using a regular expression
+to find each frame. A bit of investigating was required figure out how Wireshark formats
+and separates each PDU in the .pcap hex. With the frames separated and in a list, the script
+proceeds by snipping the unnecessary bytes, leaving only the offset and the text data.
+Finally, the write request process is mimicked by inserting the characters into a list at
+the right indices.
+
+[![Script Results](/assets/pbctf/ble6.png)](/assets/pbctf/ble6.png)
+<figcaption align=center><b>Figure 6: Results of the Script - Recreating the Flag</b></figcaption>
+&nbsp;
+
+**Figure 6** shows the results of the script. Some extra output was added to show the writing and overwriting process in action.
+Nonetheless, the flag is printed out and the challenge is solved.
+
+>pctf{b1Ue_te3Th_is_ba4d_4_y0u_jUs7_4sk_HAr0lD_b1U3tO07h}
