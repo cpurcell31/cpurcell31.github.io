@@ -123,7 +123,7 @@ it is a fairly smooth process from there.
 &nbsp;
 
 **Figure 6** shows the results of the script. Some extra output was added to show the writing and
-overwriting process in action. For some reason the flag format is missing a "b" and that I couldn't
+overwriting process in action. For some reason the flag format is missing a "b" that I couldn't
 even find inside the capture. Nonetheless, with a minor adjustment to the flag, the challenge is
 solved.
 
