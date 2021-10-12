@@ -52,9 +52,11 @@ This means that it is possible the data from one write request to be overwritten
 another request. For example,
 
 >Request #1: Write abcdefg starting at OFfset 1
+>
 >Database After Request #1: abcdefg
 >
 >Request #2: Write xyz starting at Offset 2
+>
 >Database After Request #2: axyzefg
 
 With any luck, we can recreate the flag by performing all the write requests in order.
@@ -97,26 +99,32 @@ def get_data(filename):
     for frame in key_frames:
         offset = frame[37]
         text = list(frame[39:-4].decode())
-        for i in range(len(text)):
-            result[i+offset-1] = text[i]
+        result[offset:offset+len(text)] = text
+        print("".join(result))
     return result
 
 flag_parts = get_data("onlywrites.pcap")
 print("".join(flag_parts))
 ```
 
-The script begins by gathering data from the new .pcap file and using a regular expression
-to find each frame. A bit of investigating was required figure out how Wireshark formats
-and separates each PDU in the .pcap hex. With the frames separated and in a list, the script
-proceeds by snipping the unnecessary bytes, leaving only the offset and the text data.
-Finally, the write request process is mimicked by inserting the characters into a list at
-the right indices.
+The script follows this process:
+
+1. Get data from the new .pcap file
+2. Use regular expressions to find each individual frame
+3. Snip unnecessary bytes from the frames, leaving only the offset and text data
+4. Insert characters from the text data into a list starting at an index specified by the offset
+
+A bit of investigating was required figure out how Wireshark formats
+and separates each PDU in the .pcap hex. But once the specific byte sequence was found,
+it is a fairly smooth process from there.
 
 [![Script Results](/assets/pbctf/ble6.png)](/assets/pbctf/ble6.png)
 <figcaption align=center><b>Figure 6: Results of the Script - Recreating the Flag</b></figcaption>
 &nbsp;
 
-**Figure 6** shows the results of the script. Some extra output was added to show the writing and overwriting process in action.
-Nonetheless, the flag is printed out and the challenge is solved.
+**Figure 6** shows the results of the script. Some extra output was added to show the writing and
+overwriting process in action. For some reason the flag format is missing a "b" and that I couldn't
+even find inside the capture. Nonetheless, with a minor adjustment to the flag, the challenge is
+solved.
 
->pctf{b1Ue_te3Th_is_ba4d_4_y0u_jUs7_4sk_HAr0lD_b1U3tO07h}
+>pbctf{b1Ue_te3Th_is_ba4d_4_y0u_jUs7_4sk_HAr0lD_b1U3tO07h}
