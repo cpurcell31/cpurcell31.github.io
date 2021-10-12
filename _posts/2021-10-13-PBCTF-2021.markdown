@@ -39,7 +39,7 @@ serve only as a keep-alive mechanic so filtering them out helps clean up the cap
 Near the bottom of the capture, there is a single read request which reveals exactly what
 the description noted, the flag has been redacted. Reading the flag directly doesn't seem to be an
 option. However, the description did also allude to storing the flag at some point. So, it seems
-reasonable that the prepare write requests might hold the secret to revealing the flag.
+reasonable that the write requests might hold the secret to revealing the flag.
 
 [![Write Request](/assets/pbctf/ble4.png)](/assets/pbctf/ble4.png)
 <figcaption align=center><b>Figure 4: Write Request Frame - A Closer Look</b></figcaption>
@@ -114,7 +114,7 @@ The script follows this process:
 3. Snip unnecessary bytes from the frames, leaving only the offset and text data
 4. Insert characters from the text data into a list starting at an index specified by the offset
 
-A bit of investigating was required figure out how Wireshark formats
+A bit of investigating was required to figure out how Wireshark formats
 and separates each PDU in the .pcap hex. But once the specific byte sequence was found,
 it is a fairly smooth process from there.
 
