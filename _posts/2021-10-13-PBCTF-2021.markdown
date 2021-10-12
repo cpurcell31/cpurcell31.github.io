@@ -13,7 +13,7 @@ tags: CTF
 >Author: UnblvR
 
 For this challenge, we are given a .pcap file and must find a flag hidden within
-the Bluetooth traffic. To start off, I began by examining the variety of packets
+the Bluetooth traffic. To start off, I began by taking a look at the packets
 in the capture.
 
 [![Capture](/assets/pbctf/ble1.png)](/assets/pbctf/ble1.png)
@@ -22,7 +22,7 @@ in the capture.
 
 As **Figure 1** shows, there are a couple of protocols at work here, LL LE and ATT.
 Both protocols belong to Bluetooth Low Energy communications. Judging by an initial
-look at the capture, LL LE seems to handle all the connection details, while, ATT handles the data
+glance at the capture, LL LE seems to handle all the connection details, while, ATT handles the data
 transferring processes.
 
 [![More Capture](/assets/pbctf/ble2.png)](/assets/pbctf/ble2.png)
@@ -31,7 +31,7 @@ transferring processes.
 
 After the initial Bluetooth handshakes, the frames begin to alternate between a long
 sequence of "Empty PDU"s and a single "Prepare Write Request". The "Empty PDU" frames
-serve only as a keep-alive mechanic so filtering them out helps clean up the capture.
+serve only as a "keep-alive" mechanic for the Bluetooth connection. So filtering these frames out helps clean up the capture.
 
 [![Redacted](/assets/pbctf/ble3.png)](/assets/pbctf/ble3.png)
 <figcaption align=center><b>Figure 3: A Read Request Resulting in the Redacted Flag</b></figcaption>
@@ -39,17 +39,17 @@ serve only as a keep-alive mechanic so filtering them out helps clean up the cap
 
 Near the bottom of the capture, there is a single read request which reveals exactly what
 the description noted, the flag has been redacted. Reading the flag directly doesn't seem to be an
-option. However, the description did also allude to storing the flag at some point. So, it seems
+option. However, the description also alluded to storing the flag at some point. So it seems
 reasonable that the write requests might hold the secret to revealing the flag.
 
 [![Write Request](/assets/pbctf/ble4.png)](/assets/pbctf/ble4.png)
 <figcaption align=center><b>Figure 4: Write Request Frame - A Closer Look</b></figcaption>
 &nbsp;
 
-Each write request holds some text data, but they seem to just be gibberish. Other than
+Each write request holds some text data, but they seem to just be strings of gibberish. Other than
 the text, each write also has an offset value. After looking into the ATT protocol,  
 I learned that each write request will ask to write its data starting at this offset value.
-This means that it is possible the data from one write request to be overwritten by
+This means that it is possible that the data from one write request will be overwritten by
 another request. For example,
 
 >Request #1: Write abcdefg starting at OFfset 1
@@ -77,7 +77,7 @@ pctf{jtEe_VJzEU_DNnsSv5xj8QUOWtdL3fjd_lLJCLUbcMc4CQHyAlFH
 ```
 
 I did cheat a bit by ordering the writes by offset, but the test still confirmed the theory.
-Within a few steps, the flag format was starting to reveal itself. As a follow-up,
+Within a few steps, the flag was starting to reveal itself. As a follow-up,
 I filtered the capture in Wireshark to display only the "Prepare Write Request" frames.
 
 [![Only Write](/assets/pbctf/ble5.png)](/assets/pbctf/ble5.png)
@@ -86,7 +86,7 @@ I filtered the capture in Wireshark to display only the "Prepare Write Request" 
 
 Next, to simplify things, I exported these specific frames to a new .pcap using "File -> Export Specified Packets".
 This makes creating a solver script easier since we don't have to consider any unnecessary frames.
-Finally, here is a small Python script to mimic the write requests.
+Finally, here is the small Python script to mimic the write requests and extract the flag.
 
 ```python
 import re
