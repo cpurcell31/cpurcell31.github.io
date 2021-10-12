@@ -9,6 +9,7 @@ tags: CTF
 
 >I stored my flag inside a remote database, but when I tried to read it back it had been redacted! Can you recover what I wrote?
 >
+>Flag Format: pbctf{flag+here}
 >Author: UnblvR
 
 For this challenge, we are given a .pcap file and must find a flag hidden within
@@ -63,12 +64,21 @@ With any luck, we can recreate the flag by performing all the write requests in 
 To test this theory I performed a handful of requests by hand.
 
 ```
-
+1koZPp9re_VJzEU_DNnsSv5xj8QUOWtdL3fjd_lLJCLUbcMc4CQHyAlFH
+pcTNrWo
+----------------------------------------------------------
+pcTNrWore_VJzEU_DNnsSv5xj8QUOWtdL3fjd_lLJCLUbcMc4CQHyAlFH
+  t1zUgV
+----------------------------------------------------------
+pct1zUgVe_VJzEU_DNnsSv5xj8QUOWtdL3fjd_lLJCLUbcMc4CQHyAlFH
+   f{jtE
+----------------------------------------------------------
+pctf{jtEe_VJzEU_DNnsSv5xj8QUOWtdL3fjd_lLJCLUbcMc4CQHyAlFH
 ```
 
 I did cheat a bit by ordering the writes by offset, but the test still confirmed the theory.
-As a follow-up, I filtered the capture in Wireshark to display only the "Prepare Write Request"
-frames.
+Within a few steps, the flag format was starting to reveal itself. As a follow-up,
+I filtered the capture in Wireshark to display only the "Prepare Write Request" frames.
 
 [![Only Write](/assets/pbctf/ble5.png)](/assets/pbctf/ble5.png)
 <figcaption align=center><b>Figure 5: The Filtered Capture with Only Write Requests</b></figcaption>
