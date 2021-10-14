@@ -126,7 +126,7 @@ The script follows this process:
 
 A bit of investigating was required to figure out how Wireshark formats
 and separates each PDU in the .pcap hex. But once the specific byte sequence was found,
-it is a fairly smooth process from there.
+it was a fairly smooth process from there.
 
 <div align="center"><a href="/assets/pbctf/ble6.png"><img src="/assets/pbctf/ble6.png"></a></div>
 <figcaption align=center><b>Figure 6: Results of the Script - Recreating the Flag</b></figcaption>
