@@ -10,7 +10,7 @@ tags: CTF
 
 >Knock knock? Who's there? Another pastebin!!
 >
->Flag Format: dice{[!-z|~]+}
+>Flag Format: dice{[!-z\|~]+}
 >
 >Author: BrownieInMotion
 
