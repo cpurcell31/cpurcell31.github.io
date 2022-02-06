@@ -1,0 +1,147 @@
+---
+layout: post
+title:  "DiceCTF 2022 Knock-Knock Writeup"
+tags: CTF
+---
+
+
+## Web - knock-knock
+
+
+>Knock knock? Who's there? Another pastebin!!
+>
+>Flag Format: dice{[!-z|~]+}
+>Author: BrownieInMotion
+
+[![Capture](/assets/dice/d1.png)](/assets/dice/d1.png)
+<figcaption align=center><b>Figure 1: A First Look at the Target Site</b></figcaption>
+&nbsp;
+
+In this Web challenge we are tasked with finding a flag on this simple pastebin-like site.
+We are given some source code so naturally let's take a look at that first.
+
+``` javascript
+const crypto = require('crypto');
+
+class Database {
+  constructor() {
+    this.notes = [];
+    this.secret = `secret-${crypto.randomUUID}`;
+  }
+
+  createNote({ data }) {
+    const id = this.notes.length;
+    this.notes.push(data);
+    return {
+      id,
+      token: this.generateToken(id),
+    };
+  }
+
+  getNote({ id, token }) {
+    if (token !== this.generateToken(id)) return { error: 'invalid token' };
+    if (id >= this.notes.length) return { error: 'note not found' };
+    return { data: this.notes[id] };
+  }
+
+  generateToken(id) {
+    return crypto
+      .createHmac('sha256', this.secret)
+      .update(id.toString())
+      .digest('hex');
+  }
+}
+
+const db = new Database();
+db.createNote({ data: process.env.FLAG });
+
+const express = require('express');
+const app = express();
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public'));
+
+app.post('/create', (req, res) => {
+  const data = req.body.data ?? 'no data provided.';
+  const { id, token } = db.createNote({ data: data.toString() });
+  res.redirect(`/note?id=${id}&token=${token}`);
+});
+
+app.get('/note', (req, res) => {
+  const { id, token } = req.query;
+  const note = db.getNote({
+    id: parseInt(id ?? '-1'),
+    token: (token ?? '').toString(),
+  });
+  if (note.error) {
+    res.send(note.error);
+  } else {
+    res.send(note.data);
+  }
+});
+
+app.listen(3000, () => {
+  console.log('listening on port 3000');
+});
+```
+
+From an initial glance we can see a few main things about the app. First, it creates a database
+to store all the user created notes. The database has a few functions for creating notes, getting a
+specified note, and creating tokens to attempt to secure the notes. One big thing we can see is
+that anyone can access any note if they can provide the matching id, token pair.
+
+```javascript
+const db = new Database();
+db.createNote({ data: process.env.FLAG });
+```
+
+With this in mind, we can see our goal is to access the very first note that is created
+by the app itself. We just need to find out how to get the matching token for the 0th note
+in the database. Let's look at how the tokens are generated to see if there are any hints.
+
+```javascript
+const crypto = require('crypto');
+
+class Database {
+  constructor() {
+    this.notes = [];
+    this.secret = `secret-${crypto.randomUUID}`;
+  }
+
+...
+
+generateToken(id) {
+  return crypto
+    .createHmac('sha256', this.secret)
+    .update(id.toString())
+    .digest('hex');
+}
+```
+
+Tokens are created using a SHA-256 hashed (and HMAC'd) version of the id. The HMAC
+relies on a secret key which was specified earlier in the code as the value of `secret-${crypto.randomUUID}`.
+At a first glance, it seems like this key should be impossible to guess or brute-force.
+However, there is something off about the statement. `crypto.randomUUID` should be a function
+but it's missing its iconic double parentheses. What does this mean? Well, that `crypto.randomUUID`
+is not being called as a function. Instead, the source code for the function is taking the place of
+some random UUID value.
+
+[![Output of Test](/assets/dice/d2.png)](/assets/dice/d2.png)
+<figcaption align=center><b>Figure 2: Resulting Key from crypto.randomUUID</b></figcaption>
+&nbsp;
+
+In *Figure 2*, we can see the resulting secret key from this mistake. This means we can read any note
+we want from the database by just plugging the id in to SHA256-HMAC. Using an id of 0 and our secret key,
+we get the following result.   
+
+```
+7bd881fe5b4dcc6cdafc3e86b4a70e07cfd12b821e09a81b976d451282f6e264
+```
+
+Finally, we need to plug in the id and token as query parameters to the site and claim the flag.
+
+[![Flag Get!](/assets/dice/d3.png)](/assets/dice/d3.png)
+<figcaption align=center><b>Figure 3: The Flag Revealed by Accessing the First Note</b></figcaption>
+&nbsp;
+
+>dice{1_d00r_y0u_d00r_w3_a11_d00r_f0r_1_d00r}
