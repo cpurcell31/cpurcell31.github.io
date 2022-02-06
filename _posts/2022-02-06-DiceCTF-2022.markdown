@@ -126,11 +126,11 @@ but it's missing its iconic double parentheses. What does this mean? Well, that 
 is not being called as a function. Instead, the source code for the function is taking the place of
 some random UUID value.
 
-[![Output of Test](/assets/dice/d2.png)](/assets/dice/d2.png)
+<div align="center"><a href="/assets/dice/d2.png"><img src="/assets/dice/d2.png"></a></div>
 <figcaption align=center><b>Figure 2: Resulting Key from crypto.randomUUID</b></figcaption>
 &nbsp;
 
-In *Figure 2*, we can see the resulting secret key from this mistake. This means we can read any note
+In **Figure 2**, we can see the resulting secret key from this mistake. This means we can read any note
 we want from the database by just plugging the id in to SHA256-HMAC. Using an id of 0 and our secret key,
 we get the following result.   
 
