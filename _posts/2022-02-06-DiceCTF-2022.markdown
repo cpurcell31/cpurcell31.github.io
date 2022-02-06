@@ -11,6 +11,7 @@ tags: CTF
 >Knock knock? Who's there? Another pastebin!!
 >
 >Flag Format: dice{[!-z|~]+}
+>
 >Author: BrownieInMotion
 
 [![Capture](/assets/dice/d1.png)](/assets/dice/d1.png)
