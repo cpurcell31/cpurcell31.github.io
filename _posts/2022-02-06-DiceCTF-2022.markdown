@@ -18,8 +18,8 @@ tags: CTF
 <figcaption align=center><b>Figure 1: A First Look at the Target Site</b></figcaption>
 &nbsp;
 
-In this Web challenge we are tasked with finding a flag on this simple pastebin-like site.
-We are given some source code so naturally let's take a look at that first.
+In this Web challenge, we are tasked with finding a flag on this simple note storing site.
+We are given some source code so naturally, let's take a look at that first.
 
 ``` javascript
 const crypto = require('crypto');
@@ -87,7 +87,7 @@ app.listen(3000, () => {
 ```
 
 From an initial glance we can see a few main things about the app. First, it creates a database
-to store all the user created notes. The database has a few functions for creating notes, getting a
+to store all the user-created notes. The database has a few functions for creating notes, getting a
 specified note, and creating tokens to attempt to secure the notes. One big thing we can see is
 that anyone can access any note if they can provide the matching id, token pair.
 
@@ -132,7 +132,7 @@ some random UUID value.
 &nbsp;
 
 In **Figure 2**, we can see the resulting secret key from this mistake. This means we can read any note
-we want from the database by just plugging the id in to SHA256-HMAC. Using an id of 0 and our secret key,
+we want from the database by just plugging the id into SHA256-HMAC. Using an id of 0 and our secret key,
 we get the following result.   
 
 ```
