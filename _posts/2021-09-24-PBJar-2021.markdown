@@ -968,10 +968,6 @@ its corresponding HID scancode is placed in the first byte of the final 6 bytes.
 if another key is pressed or held at the same time, its code will be placed in the second byte.
 Since there are 6 bytes, for most keyboards a maximum of 6 keys can be pressed at the same time.
 
-> 00 00
->
->
-
 For this script specifically, we get the first key pressed and skip frames with double presses.
 This is to avoid some repeating letters in the sequence. Finally using a dictionary of the HID scancodes
 mentioned earlier, the script decodes the HID values into ASCII characters. You can find a full
