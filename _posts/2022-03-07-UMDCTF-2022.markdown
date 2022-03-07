@@ -640,6 +640,8 @@ The script is a bit long to include in text but you can find it
 [here](/assets/UMDCTF/vigenere.py). Instead, I will go over the
 steps that it performs to decrypt the cipher.
 
+&nbsp;
+
 #### **Step 1: Finding the Key Size**
 
 To start, we have to find the key size that the cipher is using.
@@ -663,6 +665,8 @@ then iterated and we repeat the byte comparing process.
 From the set of all these normalized results, the key_size with
 the lowest score wins and is *most-likely* the actual key size.
 
+&nbsp;
+
 #### **Step 2: Split and Transpose**
 
 For the second step, we begin by splitting up the ciphertext up into
@@ -670,6 +674,8 @@ key size sized chunks. Next, we "line-up" each block and separate
 it into columns. This means we will have a column containing
 the first byte of every block, a column containing the second
 byte of every block, etc. And that's it for step 2!
+
+&nbsp;
 
 #### **Step 3: Single-Byte XOR Each Column**
 
@@ -700,6 +706,8 @@ step 2 as though it were a single-byte XOR problem. When that is
 done we can create the Vigenère key by concatenating all the results
 together.
 
+&nbsp;
+
 #### **Step 4: Decrypting**
 
 Now that we have the key, we can decrypt the original ciphertext.
@@ -720,6 +728,15 @@ flag.
 &nbsp;
 
 ## **Conclusion**
+
+UMDCTF 2022 was a great event hosted by the team at University of
+Maryland and had a good difficulty range of challenges. There were 
+some crazy good OSINT challenges as well (I didn't solve too many of
+them though). The only things I would comment negatively about it
+were the lack of solid web challenges.
+
+Thank you to the organizers and challenge creators, I look forward to
+the next year of UMDCTF.
 
 ## **Lessons Learned**
 
