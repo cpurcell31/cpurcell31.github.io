@@ -184,7 +184,7 @@ header is wrong.
 &nbsp;
 
 Fixing the header seems like a good idea but doesn't reward us much.
-We only get 4464 copies of the image in *Figure 2*. This led me to
+We only get 4464 copies of the image in *Figure 3.2*. This led me to
 looking more closely at the incorrect header byte. Each byte seems to
 be an ascii character, maybe when they are put together they spell
 out something!
@@ -230,7 +230,7 @@ to learn about Hashcash. To summarize Hashcash is
 <figcaption align=center><b>Figure 4.1: Wikipedia Excerpt Detailing Hashcash Header Format</b></figcaption>
 &nbsp;
 
-As shown in *Figure X*, the header contains a handful of attributes
+As shown in *Figure 4.1*, the header contains a handful of attributes
 to help confirm the proof of work calculation. To perform this
 calculation the counter part of the header is set to a random value
 and then the header is hashed using SHA1. If the resulting hash
@@ -245,7 +245,7 @@ Now that that's out of the way, let's look at the challenge.
 &nbsp;
 
 When we netcat into the challenge server, we are greeted with the
-message in *Figure X2*. We are given the option to send an email to
+message in *Figure 4.2*. We are given the option to send an email to
 someone in the list but must calculate a valid Hashcash header to
 send it.  
 
