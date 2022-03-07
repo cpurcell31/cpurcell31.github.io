@@ -650,6 +650,7 @@ Hamming Distance is simply the total difference in bits of two
 binary strings. For example
 
 >ab = 01100001 01100010
+>
 >de = 01100100 01100101
 >
 >Hamming Distance = 5
@@ -730,7 +731,7 @@ flag.
 ## **Conclusion**
 
 UMDCTF 2022 was a great event hosted by the team at University of
-Maryland and had a good difficulty range of challenges. There were 
+Maryland and had a good difficulty range of challenges. There were
 some crazy good OSINT challenges as well (I didn't solve too many of
 them though). The only things I would comment negatively about it
 were the lack of solid web challenges.
