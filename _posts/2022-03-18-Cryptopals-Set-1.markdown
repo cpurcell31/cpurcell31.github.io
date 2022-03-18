@@ -32,14 +32,16 @@ these challenges.
 
 To begin, I would like to start with a few challenges in set 1 of Cryptopals.
 I will be skipping over the first couple of challenges because they don't really need a lot of intense explaining
-and start off at challenge 3.
+and start off with challenge 3.
 
 &nbsp;
 
 ### **Challenge 3: Single Byte XOR**
 
 >The hex encoded string: 1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736
->... has been XOR'd against a single character. Find the key, decrypt the message.
+>...
+>
+>has been XOR'd against a single character. Find the key, decrypt the message.
 >You can do this by hand. But don't: write code to do it for you.
 >How? Devise some method for "scoring" a piece of English plaintext.
 >Character frequency is a good metric. Evaluate each output and choose the one with the best score.
@@ -170,6 +172,7 @@ simple example to visualize this:
 >Key = ICE
 >
 >Y E L L O W S U B M A R I N E
+>
 >I C E I C E I C E I C E I C E      XOR
 
 This system is also known as a type of Vigenere cipher and as we can see, the key will
@@ -193,8 +196,11 @@ interested.
 >2. Write a function to compute the edit distance/Hamming distance between two strings. The Hamming distance is just the number of differing bits.
 >The distance between:
 >>this is a test
+>
 >and
+>
 >>wokka wokka!!!
+>
 >is 37. Make sure your code agrees before you proceed.
 >3. For each KEYSIZE, take the first KEYSIZE worth of bytes, and the second KEYSIZE worth of bytes, and find the edit distance between them.
 >Normalize this result by dividing by KEYSIZE.
@@ -308,7 +314,7 @@ that solution into this step. Each column we solve this way will give us the cor
 byte from the key. So by the end of solving all of the columns we will have the full key.
 Which, in this case is
 
->b'Terminator X: Bring the noise'
+>Terminator X: Bring the noise
 
 &nbsp;
 
@@ -341,7 +347,7 @@ and will hopefully fill in some of the gaps (in terms of implementation).
 This challenge is purely to set up the next one and is a little boring. But, nonetheless,
 here's an overview.
 
-[![AES ECB](/assets/Cryptopals/Set1/ecb.png)](/assets/Cryptopals/Set1/ecb.png)
+<div align="center"><a href="/assets/Cryptopals/Set1/ecb.png"><img src="/assets/Cryptopals/Set1/ecb.png"></a></div>
 <figcaption align=center><b>Figure 3: ECB Encryption and Decryption Diagrams</b></figcaption>
 &nbsp;
 
@@ -391,7 +397,7 @@ In ECB, whenever we encrypt a specific block of plaintext under a specific key, 
 get the same ciphertext result. Therefore, if there are any repeating blocks in our plaintext
 we will have a similar repetition in the ciphertext.
 
-[![Penguins](/assets/Cryptopals/Set1/ecb2.png)](/assets/Cryptopals/Set1/ecb2.png)
+<div align="center"><a href="/assets/Cryptopals/Set1/ecb2.png"><img src="/assets/Cryptopals/Set1/ecb2.png"></a></div>
 <figcaption align=center><b>Figure 4: Tux Original Image and Encrypted with AES ECB</b></figcaption>
 &nbsp;
 
