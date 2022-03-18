@@ -169,12 +169,12 @@ I won't go too in-depth with this one as the concept is fairly straightforward.
 Basically, we need to encrypt our plaintext with a key that repeats itself. Here is a
 simple example to visualize this:
 
->Key = ICE
->
->Y E L L O W S U B M A R I N E
->
->I C E I C E I C E I C E I C E      XOR
+```
+Key = ICE
 
+Y E L L O W S U B M A R I N E
+I C E I C E I C E I C E I C E      XOR
+```
 This system is also known as a type of Vigenere cipher and as we can see, the key will
 cycle until the end of the input plaintext. It can also be thought of
 almost like single byte XOR, except, our XOR byte changes by going through a small sequence.
@@ -196,12 +196,12 @@ interested.
 >2. Write a function to compute the edit distance/Hamming distance between two strings. The Hamming distance is just the number of differing bits.
 >The distance between:
 >>this is a test
->
->and
->
+>>
+>>and
+>>
 >>wokka wokka!!!
->
->is 37. Make sure your code agrees before you proceed.
+>>
+>>is 37. Make sure your code agrees before you proceed.
 >3. For each KEYSIZE, take the first KEYSIZE worth of bytes, and the second KEYSIZE worth of bytes, and find the edit distance between them.
 >Normalize this result by dividing by KEYSIZE.
 >4. The KEYSIZE with the smallest normalized edit distance is probably the key. You could proceed perhaps with the smallest 2-3 KEYSIZE values. Or
