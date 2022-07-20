@@ -255,8 +255,8 @@ Now the question becomes how to decrypt a substitution cipher.
 
 Normally, using a combination of letter frequencies, bigram frequencies, word
 frequencies, etc. would all play a part in figuring out the substitution alphabet.
-Since we are using hex, it makes it a bit more wacky. I decided on using bigrams
-would help figure out what exactly I'm looking at.
+Since we are using hex, it makes it a bit wackier. I decided on using bigrams
+would help me figure out what exactly I'm looking at.
 
 [![Ascii Table](/assets/ICTF-2022/asciifull.gif)](/assets/ICTF-2022/asciifull.gif)
 <figcaption align=center><b>Figure 3.1: An Ascii Table</b></figcaption>
@@ -308,10 +308,10 @@ print(byte_str)
 ```
 
 Unfortunately, I'm not nearly good enough of a programmer to make this interactive
-so I had to sub in values manually. In the script you can see some of the values
+so I had to sub in values manually. In the script, you can see some of the values
 I sniffed out through trial and error. At the end of the day, that's what solving
 the rest of this problem comes down to (at least with a simple approach). Anyway,
-after a lot of trial and error I had found the right combinations to decrypt the
+after a lot of trial and error, I found the right combinations to decrypt the
 flag.
 
 >ictf{military_grade_encoding_ftw}
@@ -354,7 +354,7 @@ print(f"{e = }")
 print(f"{c = }")
 ```
 
-The script itself is a bit funky. It has this function to create **megaprimes**.
+The script itself is a bit funky. It has a function to create **megaprimes**.
 However, these **megaprimes** are just a product of a bunch of smaller primes.
 With that in mind, I thought I would give factoring n a shot.
 
@@ -363,7 +363,7 @@ With that in mind, I thought I would give factoring n a shot.
 &nbsp;
 
 Using a program like the one [here](https://www.alpertron.com.ar/ECM.HTM) results in a list of factors popping
-out really quick. This specific site is really nice because it also calculates
+out real quick. This specific site is really nice because it also calculates
 Euler's totient using the factors, saving me time when I create the decryption
 exponent.
 
@@ -459,7 +459,7 @@ print(result)
 
 Here is the quick solver script I made. It basically uses the previous block of
 ciphertext as the key to decrypt the next block. Luckily, the flag is also repeated
-in the ciphertext so we don't miss out on a portion of it. After a running the
+in the ciphertext so we don't miss out on a portion of it. After running the
 solver, we get the following output.
 
 >b'mplemented_cbc_wrong_02b413a9}\nictf{i_guess_i_implemented_cbc_wrong_02b413a9}\nictf{i_guess_i_implemented_cbc_wrong_02b413a9}\n\x03\x03\x03'
@@ -480,7 +480,7 @@ solver, we get the following output.
 
 The first Web challenge I want to look at is an interesting one. The basic idea of
 this challenge is to somehow trick other CTF players into voting for you. There
-were a handful of ways to solve this, the main vulnerability however, is XSS within
+were a handful of ways to solve this, the main vulnerability, however, is XSS within
 usernames. But first I thought I'd try just asking nicely for votes.
 
 <div align="center"><a href="/assets/ICTF-2022/democ3.png"><img src="/assets/ICTF-2022/democ3.png"></a></div>
@@ -514,7 +514,7 @@ pls();
 ```
 
 Okay, this time I tried to be a bit more aggressive. I set up an account with
-the XSS payload above as its name. This payload should target logged in users
+the XSS payload above as its name. This payload should target logged-in users
 and redirect them to the page to vote for my other account. Once all the accounts
 are registered and the XSS payload is on the voting page, it's just a matter of
 waiting for the votes to come rolling in.
@@ -529,7 +529,7 @@ Eventually, Greg won the vote and the flag was revealed.
 
 Here is a quick aside just to take a moment to list the other solutions. It turns
 out you could just make a ton of accounts and vote since IP validation did not work.
-Also, after a while the challenge was shut down due to player-player attacks. So if
+Also, after a while, the challenge was shut down due to player-player attacks. So if
 you waited long enough, you could get the flag that way.
 
 &nbsp;
@@ -675,7 +675,7 @@ txt = html.escape(request.args["txt"])
 ```
 
 Before we get to the next step, I wanted to point out this line of code.
-The script esacpes our input making it a tiny bit more difficult to add commands to
+The script escapes our input making it a tiny bit more difficult to add commands to
 popen. It essentially means we cannot use single quotes or double quotes in
 commands without causing an error. So, we also have to add our commands to the
 config to avoid this.
@@ -714,7 +714,7 @@ Finally, we have our flag and the challenge is complete!
 >
 >Created By: Max49
 
-Ah, a classic location finding challenge, one of my favorites. For this challenge
+Ah, a classic location-finding challenge, one of my favorites. For this challenge,
 we have a picture of some alley and we need to find the latitude and longitude of
 the location.
 
@@ -752,7 +752,7 @@ And with that, the challenge was solved.
 >
 >Created By: iCiaran
 
-For the next forensics challenge, we are command to pull a docker image from a repository.
+For the next forensics challenge, we are given a command to pull a docker image from a repository.
 So to being, let's run the command.
 
 [![Docker command](/assets/ICTF-2022/ogressss.png)](/assets/ICTF-2022/ogressss.png)
@@ -791,7 +791,7 @@ after the competition was over.
 
 #### Unintended Solution
 
-So, for this challenge we are given a png file that seems to be corrupt. It doesn't
+So, for this challenge, we are given a png file that seems to be corrupt. It doesn't
 load by normal software and pngcheck has no idea what it even is.
 
 <div align="center"><a href="/assets/ICTF-2022/imp.png"><img src="/assets/ICTF-2022/imp.png"></a></div>
@@ -811,7 +811,7 @@ Cyberchef
 And Cyberchef just straight-up printed the flag for me. I guess Cyberchef is just
 too powerful.
 
->ictf{fixd!_3f5ce751}
+>ictf{fixed!_3f5ce751}
 
 &nbsp;
 
@@ -819,7 +819,7 @@ too powerful.
 
 Next, I want to quickly go over the intended solution for anyone who is curious.
 As it turns out, the png bytes are changed to the Latin 1 encoding, hence the Caesar
-hint. So, if we put the decode the png back to UTF-8 it should become a readable image.
+hint. So, if we decode the png back to UTF-8 it should become a readable image.
 
 ```python
 from string import printable
@@ -849,8 +849,8 @@ definitely a lot more slick.
 
 ## **Conclusion**
 
-This years ImaginaryCTF was another hit for me. There were so many unique challenges
-from the ones I tried. There was even one on System Hardening that was particularly
+This year ImaginaryCTF was another hit for me. There were so many unique challenges
+from the long list of challenges. There was even one on System Hardening that was particularly
 interesting to me (I just wish I had solved it). Overall, the event had a great range
 of difficulty and consistent infrastructure that made the event very smooth to play.
 Definitely lived up to the hype I had for it since last year.
