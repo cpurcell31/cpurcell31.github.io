@@ -126,7 +126,7 @@ forms.py
 def save(self, commit=True):
     instance = super(NoteCreateForm, self).save(commit=False)
     instance.author = self.user
-    instance.body = instance.body.replace("{{", "").replace("}}", "").replace("..", "")
+    instance.body = instance.body.replace("\{\{", "").replace("\}\}", "").replace("..", "")
 
     with open("emoji.json") as emoji_file:
         emojis = json.load(emoji_file)
@@ -145,7 +145,7 @@ views.py
 def view_note(request: HttpRequest, pk: int) -> HttpResponse:
     note = get_object_or_404(Note, pk=pk)
     text = note.body
-    for include in re.findall("({{.*?}})", text):
+    for include in re.findall("(\{\{.\*?\}\})", text):
         print(include)
         file_name = os.path.join("emoji", re.sub("[{}]", "", include))
         with open(file_name, "rb") as file:
