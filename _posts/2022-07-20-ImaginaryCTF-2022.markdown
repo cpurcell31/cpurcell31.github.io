@@ -63,14 +63,14 @@ use `exec(input())` as our initial command to essentially escape the restriction
 This statement fits the restrictions easily. Plus, using `input()` lets us
 supply any code we want to `exec()`.
 
-[![Using exec input](/assets/ICTF-2022/prisonsss.png)](/assets/ICTF-2022/prisonsss.png)
-<figcaption align=center><b>Figure 1.1: Using exec(input()) to Print a Message in pyprsion</b></figcaption>
+<div align="center"><a href="/assets/ICTF-2022/prisonsss.png"><img src="/assets/ICTF-2022/prisonsss.png"></a></div>
+<figcaption align=center><b>Figure 1.1: A Segment From the Decompiled Program</b></figcaption>
 &nbsp;
 
 So, I could basically jump right ahead to listing directory contents and
 print out any flags I found. And just like that, the flag is ours.
 
-[![pyprison flag](/assets/ICTF-2022/prison.png)](/assets/ICTF-2022/prison.png)
+<div align="center"><a href="/assets/ICTF-2022/prison.png"><img src="/assets/ICTF-2022/prison.png"></a></div>
 <figcaption align=center><b>Figure 1.2: Printing Out the Flag in pyprison</b></figcaption>
 &nbsp;
 
@@ -192,7 +192,7 @@ server and utilizes the key days to win most games. After a quick run (with
 hopefully not bad luck) the server spits out the flag and the challenge is
 complete.
 
-[![Calendar Game Flag](/assets/ICTF-2022/neo2.png)](/assets/ICTF-2022/neo2.png)
+<div align="center"><a href="/assets/ICTF-2022/neo2.png"><img src="/assets/ICTF-2022/neo2.png"></a></div>
 <figcaption align=center><b>Figure 2.3: Neoannophobia's Flag</b></figcaption>
 &nbsp;
 
@@ -270,6 +270,7 @@ values and the last one as well as what they turned into. I could finally start
 building a translation.
 
 >0 1 2 3 4 5 6 7 8 9 A B C D E F - Original Hex Alphabet
+>
 >? ? ? B 8 ? 0 1 ? D ? E ? 6 ? ? - New Scrambled Hex Alphabet
 
 Just from those few characters we already have half an alphabet. The next step
@@ -357,7 +358,7 @@ The script itself is a bit funky. It has this function to create **megaprimes**.
 However, these **megaprimes** are just a product of a bunch of smaller primes.
 With that in mind, I thought I would give factoring n a shot.
 
-[![Aperton](/assets/ICTF-2022/factor.png)](/assets/ICTF-2022/factor.png)
+[![Aperton](/assets/ICTF-2022/factor.PNG)](/assets/ICTF-2022/factor.PNG)
 <figcaption align=center><b>Figure 4.1: Alpertron's Factor Calculator Facotring N</b></figcaption>
 &nbsp;
 
@@ -724,7 +725,7 @@ the location.
 Luckily, there are lots of details in this picture. If we zoom in on some parts we
 can find some identifying details.
 
-[![Directions Sign](/assets/ICTF-2022/via1.jpg)](/assets/ICTF-2022/via1.jpg)
+<div align="center"><a href="/assets/ICTF-2022/via1.jpg"><img src="/assets/ICTF-2022/via1.jpg"></a></div>
 <figcaption align=center><b>Figure 9.2: A Zoomed-in View of a Sign in the Photo</b></figcaption>
 &nbsp;
 
@@ -793,7 +794,7 @@ after the competition was over.
 So, for this challenge we are given a png file that seems to be corrupt. It doesn't
 load by normal software and pngcheck has no idea what it even is.
 
-[![Hex File](/assets/ICTF-2022/imp.png)](/assets/ICTF-2022/imp.png)
+<div align="center"><a href="/assets/ICTF-2022/imp.png"><img src="/assets/ICTF-2022/imp.png"></a></div>
 <figcaption align=center><b>Figure 11.1: A Hex Dump of the Challenge PNG</b></figcaption>
 &nbsp;
 
