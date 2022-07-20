@@ -132,12 +132,12 @@ def save(self, commit=True):
         emojis = json.load(emoji_file)
 
         for emoji in re.findall("(:[a-z_]*?:)", instance.body):
-            instance.body = instance.body.replace(emoji, "{{" + emojis[emoji.replace(":", "")] + ".png}}")
+            instance.body = instance.body.replace(emoji, "\{\{" + emojis[emoji.replace(":", "")] + ".png\}\}")
 ```
 
 This snippet shows how the emojis are inserted into notes. First the user types something like :grinning_face: and then the script searches
-through emoji.json to find the matching .png. Finally, the script replaces the :grinning_face: with the something like "{{1F600.png}}". This
-segment also does a bit of input sanitization by replacing user supplied "{{", "}}", and "..".
+through emoji.json to find the matching .png. Finally, the script replaces the :grinning_face: with the something like "\{\{1F600.png\}\}". This
+segment also does a bit of input sanitization by replacing user supplied "\{\{", "\}\}", and "..".
 
 ```
 views.py
