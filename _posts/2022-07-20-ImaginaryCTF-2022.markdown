@@ -106,14 +106,14 @@ about to lose. Anyway, here's my solution:
 <figcaption align=center><b>Figure 2.2: All Important Dates in the Calendar Game</b></figcaption>
 &nbsp;
 
-First, how do we win the game every time? Figure 2.2 is a little flow chart of the
+First, how do we win the game every time? Figure 2.2 is a little calendar of the
 basic logic my solution script follows. The idea behind it is that every month has
 a specific day that leads to a win. If we can use any of these days for our turn,
 we can weasel our way to a guaranteed win.
 
 Forcing our opponent to pick any day in December or the 31st of any month is a win.
 So, naturally, November 30th is a key day that forces our opponent into picking one
-of those options. The same goes for October 29th; it forces the opponent to gives us
+of those options. The same goes for October 29th; it forces the opponent to give us
 a chance to pick November 30th. This chain continues until the first key day:
 January 20th.
 
@@ -483,7 +483,7 @@ this challenge is to somehow trick other CTF players into voting for you. There
 were a handful of ways to solve this, the main vulnerability however, is XSS within
 usernames. But first I thought I'd try just asking nicely for votes.
 
-[![Asking nicely for votes](/assets/ICTF-2022/)](/assets/ICTF-2022/)
+<div align="center"><a href="/assets/ICTF-2022/democ3.png"><img src="/assets/ICTF-2022/democ3.png"></a></div>
 <figcaption align=center><b>Figure 6.1: Using XSS to Ask Nicely for Votes</b></figcaption>
 &nbsp;
 
