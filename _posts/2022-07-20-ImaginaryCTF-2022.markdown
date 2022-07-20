@@ -74,7 +74,7 @@ print out any flags I found. And just like that, the flag is ours.
 <figcaption align=center><b>Figure 1.2: Printing Out the Flag in pyprison</b></figcaption>
 &nbsp;
 
->
+>ictf{pyprison_more_like_python_as_a_service_12b19a09}
 
 &nbsp;
 
@@ -313,8 +313,7 @@ the rest of this problem comes down to (at least with a simple approach). Anyway
 after a lot of trial and error I had found the right combinations to decrypt the
 flag.
 
->
-
+>ictf{military_grade_encoding_ftw}
 
 &nbsp;
 
@@ -373,7 +372,7 @@ the following flag:
 
 [![Math](/assets/ICTF-2022/math.png)](/assets/ICTF-2022/math.png)
 
->
+>ictf{sm4ll_pr1mes_are_n0_n0_9b129443}
 
 &nbsp;
 
@@ -525,7 +524,7 @@ waiting for the votes to come rolling in.
 
 Eventually, Greg won the vote and the flag was revealed.
 
->
+>ictf{i'm_sure_you_0btained_this_flag_with0ut_any_sort_of_trickery...}
 
 Here is a quick aside just to take a moment to list the other solutions. It turns
 out you could just make a ton of accounts and vote since IP validation did not work.
@@ -733,21 +732,21 @@ Ah, a classic location finding challenge, one of my favorites. For this challeng
 we have a picture of some alley and we need to find the latitude and longitude of
 the location.
 
-[![The Alley]()]()
+[![The Alley](/assets/ICTF-2022/challenge.jpg)](/assets/ICTF-2022/challenge.jpg)
 <figcaption align=center><b>Figure 9.1: The Original Challenge Image</b></figcaption>
 &nbsp;
 
 Luckily, there are lots of details in this picture. If we zoom in on some parts we
 can find some identifying details.
 
-[![Directions Sign]()]()
+[![Directions Sign](/assets/ICTF-2022/via1.jpg)](/assets/ICTF-2022/via1.jpg)
 <figcaption align=center><b>Figure 9.2: A Zoomed-in View of a Sign in the Photo</b></figcaption>
 &nbsp;
 
 The most identifying piece was this sign mentioning Via Pedota 9. A quick google
 search reveals it is a street in the Italian city of Orvieto.
 
-[![Via Pedota 9]()]()
+[![Via Pedota 9](/assets/ICTF-2022/via2.png)](/assets/ICTF-2022/via2.png)
 <figcaption align=center><b>Figure 9.3: A Google Maps View of Via Pedota 9</b></figcaption>
 &nbsp;
 
@@ -755,7 +754,7 @@ The accuracy of our guess can be a bit off because we are instructed to round up
 3 decimal places for our longitude and latitude. So, I tried just putting the immediate
 coordinates rounded up as the flag.
 
->
+>ictf{42.717_12.112}
 
 And with that, the challenge was solved.
 
@@ -786,7 +785,7 @@ Executing the history command on the image reveals the various changes to it ove
 One specific instruction from the list was particularly interesting, it seemed to have
 some Base64 text in it. So naturally, I tried a quick decode.
 
->
+>ictf{onions_have_layers_images_have_layers}
 
 The Base64 text was indeed important, in fact, it was the flag!
 
@@ -801,6 +800,8 @@ The Base64 text was indeed important, in fact, it was the flag!
 Before I begin with this one, I have to say that my solution was nowhere near
 intended. But, I will include some details on the intentional one that was mentioned
 after the competition was over.
+
+&nbsp;
 
 #### Unintended Solution
 
@@ -824,9 +825,39 @@ Cyberchef
 And Cyberchef just straight-up printed the flag for me. I guess Cyberchef is just
 too powerful.
 
->
+>ictf{fixd!_3f5ce751}
+
+&nbsp;
 
 #### Intended Solution
+
+Next, I want to quickly go over the intended solution for anyone who is curious.
+As it turns out, the png bytes are changed to the Latin 1 encoding, hence the Caesar
+hint. So, if we put the decode the png back to UTF-8 it should become a readable image.
+
+```python
+from string import printable
+printable = printable.encode()
+
+content = [b for b in open("corrupted.png", "rb").read()]
+out = []
+
+while content != []:
+  b = content.pop(0)
+  if b in (0xc2,0xc3) and content[0] not in printable:
+    if b == 0xc3:
+      out.append(content.pop(0) + 64)
+    if b == 0xc2:
+      out.append(content.pop(0))
+  else:
+    out.append(b)
+
+open("out.png", "wb").write(bytes(out))
+```
+
+Here is the solving script released by the challenge creator. It works to reverse the
+Latin 1 encoding and recreate the proper image file. All in all, the intended way is
+definitely a lot more slick.
 
 &nbsp;
 
