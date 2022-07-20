@@ -573,7 +573,7 @@ shorten the payload.
 I quickly found a [link to a great resource for short SSTI payloads](https://niebardzo.github.io/2020-11-23-exploiting-jinja-ssti/).
 First, I learned about a small way to get access to the os.popen function.
 
->\{\{lipsum.__globals__.os.popen('ls').read()\}\}
+>\{\{lipsum.\__globals\__.os.popen('ls').read()\}\}
 
 This is the shortest payload I had seen at that moment. It is just short enough to
 avoid the filter.
@@ -591,7 +591,7 @@ substitute in long strings.
 
 Now, I just needed to substitute this into the old payload and see the result.
 
->\{\{lipsum.__globals__.os.popen(config.y).read()\}\}
+>\{\{lipsum.\__globals\__.os.popen(config.y).read()\}\}
 
 [![Flag get!](/assets/ICTF-2022/sstig2.png)](/assets/ICTF-2022/sstig2.png)
 <figcaption align=center><b>Figure 7.2: Using SSTI to Print Out the Flag</b></figcaption>
@@ -658,12 +658,12 @@ Using this idea we can put any object we want into the config and refer to its
 children or attributes pretty easily. So, I went forward with trying to get the
 payload from SSTI Golf injected into this challenge.
 
->\{&#37;print(config.update(a=request.args.a))&#37;\}&a=__globals__
+>\{&#37;print(config.update(a=request.args.a))&#37;\}&a=\__globals\__
 
 First, I needed to get access to globals. However, with the blacklist restrictions
 underscores are blocked. So, to get access to it I added the string to the config.
 
->\{&#37;print(config.update(b=lipsum|attr(config.a)))&#37;\}
+>\{&#37;print(config.update(b=lipsum\|attr(config.a)))&#37;\}
 
 Next, I added the **lipsum.__globals__** object to the config so I could easily
 access the os module. So, at this point we can access popen with a payload
