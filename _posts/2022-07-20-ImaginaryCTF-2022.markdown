@@ -70,7 +70,7 @@ supply any code we want to `exec()`.
 So, I could basically jump right ahead to listing directory contents and
 print out any flags I found. And just like that, the flag is ours.
 
-[![pyprison flag](/assets/ICTF-2022/prison1.png)](/assets/ICTF-2022/prison1.png)
+[![pyprison flag](/assets/ICTF-2022/prison.png)](/assets/ICTF-2022/prison.png)
 <figcaption align=center><b>Figure 1.2: Printing Out the Flag in pyprison</b></figcaption>
 &nbsp;
 
@@ -482,7 +482,7 @@ this challenge is to somehow trick other CTF players into voting for you. There
 were a handful of ways to solve this, the main vulnerability however, is XSS within
 usernames. But first I thought I'd try just asking nicely for votes.
 
-[![Asking nicely for votes](/assets/ICTF-2022/demo1.png)](/assets/ICTF-2022/demo1.png)
+[![Asking nicely for votes](/assets/ICTF-2022/)](/assets/ICTF-2022/)
 <figcaption align=center><b>Figure 6.1: Using XSS to Ask Nicely for Votes</b></figcaption>
 &nbsp;
 
@@ -518,8 +518,8 @@ and redirect them to the page to vote for my other account. Once all the account
 are registered and the XSS payload is on the voting page, it's just a matter of
 waiting for the votes to come rolling in.
 
-[![Greg won!](/assets/ICTF-2022/demo2.png)](/assets/ICTF-2022/demo2.png)
-<figcaption align=center><b>Figure 6.2: Greg Winning the Vote</b></figcaption>
+[![Greg won!](/assets/ICTF-2022/democ.png)](/assets/ICTF-2022/democ.png)
+<figcaption align=center><b>Figure 6.2: Greg Won the Vote!</b></figcaption>
 &nbsp;
 
 Eventually, Greg won the vote and the flag was revealed.
@@ -754,7 +754,7 @@ And with that, the challenge was solved.
 For the next forensics challenge, we are command to pull a docker image from a repository.
 So to being, let's run the command.
 
-[![Docker command](/assets/ICTF-2022/ogresss.png)](/assets/ICTF-2022/ogresss.png)
+[![Docker command](/assets/ICTF-2022/ogressss.png)](/assets/ICTF-2022/ogressss.png)
 <figcaption align=center><b>Figure 10.1: Using Docker to Pull the Challenge Image</b></figcaption>
 &nbsp;
 
