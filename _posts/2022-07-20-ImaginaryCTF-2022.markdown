@@ -649,7 +649,7 @@ it's a quick solve. In flask templates curly braces are just an alias for `\{\% 
 So, we can do everything we normally do, only, it costs us a few extra characters.
 For example,
 
->\{\%print(config.items())\%\}
+>\{%print(config.items())%\}
 
 Now, we just need to somehow make a payload to read the flag with less than 69
 characters. I did a lot of thinking for this part, but eventually, learned a fun
