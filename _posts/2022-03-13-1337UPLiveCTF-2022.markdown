@@ -472,7 +472,7 @@ we can create any strange output.
 <figcaption align=center><b>Figure 3.1: Successful SSTI Shown in Burp Suite</b></figcaption>
 &nbsp;
 
-When we supply the classic `{{7*7}}` string to the app, it spits out a the tell-tale 49.
+When we supply the classic `\{\{7*7\}\}` string to the app, it spits out a the tell-tale 49.
 So this segment is definitely injectable, but looking closer at it's code, it has a small
 blacklist that complicates things. The app blocks the use of any of the following:
 

