@@ -258,7 +258,7 @@ frequencies, etc. would all play a part in figuring out the substitution alphabe
 Since we are using hex, it makes it a bit more wacky. I decided on using bigrams
 would help figure out what exactly I'm looking at.
 
-[![Ascii Table](/assets/ICTF-2022/ascii.png)](/assets/ICTF-2022/ascii.png)
+[![Ascii Table](/assets/ICTF-2022/asciifull.gif)](/assets/ICTF-2022/asciifull.gif)
 <figcaption align=center><b>Figure 3.1: An Ascii Table</b></figcaption>
 &nbsp;
 
@@ -420,8 +420,8 @@ The script seems to read the flag 3 times, pad it, make a random key, and encryp
 the flag. But, focusing in on the cbc_encrypt function, this script doesn't exactly
 look like CBC mode.
 
-[![CBC Diagram](/assets/ICTF-2022/cbc.png)](/assets/ICTF-2022/cbc.png)
-<figcaption align=center><b>Figure 5.1: AES CBC Mode Diagram</b></figcaption>
+<div align="center"><a href="/assets/ICTF-2022/cbc.png"><img src="/assets/ICTF-2022/cbc.png"></a></div>
+<figcaption align=center><b>Figure 5.1: AES CBC Mode Encryption Diagram</b></figcaption>
 &nbsp;
 
 Just looking at the CBC mode overview diagram, like the one in Figure 5.1, we are
@@ -588,7 +588,7 @@ long. Luckily, I learned another thing from the blog about short payloads. Turns
 we can use request arguments or set custom application configuration items to
 substitute in long strings.
 
->\{\{config.update(y=request.args.a)\}\}&y=cat%20truly_an_arbitrarily_named_file
+>\{\{config.update(y=request.args.a)\}\}&a=cat%20truly_an_arbitrarily_named_file
 
 Now, I just needed to substitute this into the old payload and see the result.
 
@@ -866,4 +866,4 @@ of my personal favorite events!
 2. RSA: Problems with Bad P and Q
 3. SSTI with Small Payloads
 4. Basic Docker Commands
-5. Latin Encodings
+5. Latin 1 Encoding
