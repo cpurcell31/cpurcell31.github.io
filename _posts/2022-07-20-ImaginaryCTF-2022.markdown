@@ -650,7 +650,7 @@ So, we can do everything we normally do, only, it costs us a few extra character
 For example,
 
 ```
-\{\%print(config.items())\%\}
+{%print(config.items())%}
 ```
 
 Now, we just need to somehow make a payload to read the flag with less than 69
