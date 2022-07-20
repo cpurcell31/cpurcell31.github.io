@@ -358,8 +358,8 @@ The script itself is a bit funky. It has a function to create **megaprimes**.
 However, these **megaprimes** are just a product of a bunch of smaller primes.
 With that in mind, I thought I would give factoring n a shot.
 
-[![Aperton](/assets/ICTF-2022/factor.PNG)](/assets/ICTF-2022/factor.PNG)
-<figcaption align=center><b>Figure 4.1: Alpertron's Factor Calculator Facotring N</b></figcaption>
+[![Alpertron](/assets/ICTF-2022/factor.PNG)](/assets/ICTF-2022/factor.PNG)
+<figcaption align=center><b>Figure 4.1: Alpertron's Factor Calculator Factoring N</b></figcaption>
 &nbsp;
 
 Using a program like the one [here](https://www.alpertron.com.ar/ECM.HTM) results in a list of factors popping
@@ -417,7 +417,7 @@ if __name__ == "__main__":
 ```
 
 The script seems to read the flag 3 times, pad it, make a random key, and encrypt
-the flag. But, focusing in on the cbc_encrypt function, this script doesn't exactly
+the flag. But, focusing on the cbc_encrypt function, this script doesn't exactly
 look like CBC mode.
 
 <div align="center"><a href="/assets/ICTF-2022/cbc.png"><img src="/assets/ICTF-2022/cbc.png"></a></div>
@@ -667,7 +667,7 @@ underscores are blocked. So, to get access to it I added the string to the confi
 >\{&#37;print(config.update(b=lipsum\|attr(config.a)))&#37;\}
 
 Next, I added the **lipsum.__globals__** object to the config so I could easily
-access the os module. So, at this point we can access popen with a payload
+access the os module. So, at this point, we can access popen with a payload
 containing **config.b.os.popen()**.
 
 ```python
