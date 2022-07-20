@@ -645,7 +645,7 @@ app.run('0.0.0.0', 1337)
 
 The blacklist is pretty strict given what payloads I have done in the past.
 The biggest new restriction for me was no double curly braces allowed. Luckily,
-it's a quick solve. In flask templates curly braces are just an alias for `\{% print() %\}`.
+it's a quick solve. In flask templates curly braces are just an alias for `\{\% print() \%\}`.
 So, we can do everything we normally do, only, it costs us a few extra characters.
 For example,
 
