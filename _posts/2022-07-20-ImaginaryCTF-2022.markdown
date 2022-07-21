@@ -92,7 +92,7 @@ win 100 times to get the flag.
 <figcaption align=center><b>Figure 2.1: The Introduction and Rules of the Calendar Game</b></figcaption>
 &nbsp;
 
-Figure 2.1 shows the full rules and how to play the game. If you're *really*
+**Figure 2.1** shows the full rules and how to play the game. If you're *really*
 patient and careful, you can probably just win 100 times manually. But, I'm neither
 patient nor careful. So, automating is the only way I had a chance at solving this.
 
@@ -106,7 +106,7 @@ about to lose. Anyway, here's my solution:
 <figcaption align=center><b>Figure 2.2: All Important Dates in the Calendar Game</b></figcaption>
 &nbsp;
 
-First, how do we win the game every time? Figure 2.2 is a little calendar of the
+First, how do we win the game every time? **Figure 2.2** is a little calendar of the
 basic logic my solution script follows. The idea behind it is that every month has
 a specific day that leads to a win. If we can use any of these days for our turn,
 we can weasel our way to a guaranteed win.
@@ -424,7 +424,7 @@ look like CBC mode.
 <figcaption align=center><b>Figure 5.1: AES CBC Mode Encryption Diagram</b></figcaption>
 &nbsp;
 
-Just looking at the CBC mode overview diagram, like the one in Figure 5.1, we are
+Just looking at the CBC mode overview diagram, like the one in **Figure 5.1**, we are
 missing the IV. But also, it seems like this implementation of CBC doesn't match
 the diagram at all.
 
@@ -489,7 +489,7 @@ usernames. But first I thought I'd try just asking nicely for votes.
 
 First I registered 2 accounts, one named Greg and another named
 `<script>alert('Vote for Greg! :)')</script>`. After voting for the second account, other users
-should receive the alert in Figure 6.1. Hopefully, that gets people to vote for
+should receive the alert in **Figure 6.1**. Hopefully, that gets people to vote for
 me!
 
 Okay, as you can probably guess, that didn't work. I guess there really is no
