@@ -488,7 +488,7 @@ usernames. But first I thought I'd try just asking nicely for votes.
 &nbsp;
 
 First I registered 2 accounts, one named Greg and another named
-`<script>alert('Vote for Greg! :)')</script>`. After voting for the second, other users
+`<script>alert('Vote for Greg! :)')</script>`. After voting for the second account, other users
 should receive the alert in Figure 6.1. Hopefully, that gets people to vote for
 me!
 
