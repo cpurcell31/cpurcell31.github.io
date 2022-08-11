@@ -106,7 +106,7 @@ where the origin (x = 0, y = 0) is in the top left. So if we just plot our graph
 the image will be upside down. As a funny little side note, I spent an embarassing amount of time
 trying to decipher an upside down drawing before I remembered I had to flip my graph.
 
-[![LILYXOX](/assets/corCTF2022/lilyxox.png)](/assets/corCTF2022/lilyxox.png)
+<div align="center"><a href="/assets/corCTF2022/lilyxox.png"><img src="/assets/corCTF2022/lilyxox.png"></a></div>
 <figcaption align=center><b>Figure 6: The Drawing Graphed by the Python Script</b></figcaption>
 &nbsp;
 
