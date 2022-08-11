@@ -4,7 +4,7 @@ title:  "corCTF 2022 Whack-a-frog Writeup"
 tags: CTF
 ---
 
-## Forensics - Whack-a-frog
+## **Forensics - Whack-a-frog**
 
 >Come play a game of Whack-a-Frog here and let all your anger out on the silly msfrogs. Due to
 ?lawsuits by Murdoch, we were forced to add DRM protection, which has allowed us to detect a player
@@ -33,8 +33,8 @@ reproduce media.
 
 Going along with this idea, we must be sending some sort of telemetry data to the server to
 stop us from recreating art with whack-a-frog. When I opened up the network tab of dev tools,
-I noticed just that. Like in *Figure 2*, the site sends GET requests to record my mouse coordinates
-and movements (with *event=mousemove*) and my clicks (with *event=mouseup* or *event=mousedown*).
+I noticed just that. Like in **Figure 2**, the site sends GET requests to record my mouse coordinates
+and movements (with **event=mousemove**) and my clicks (with **event=mouseup** or **event=mousedown**).
 
 Now let's check out that pcap and see if anything relates back to it.
 
@@ -89,7 +89,7 @@ if len(x_coords) > 0:
 
 I came up with a quick Python script to extract and plot the data. The first challenge of the
 script is getting all that HTTP data. Luckily, pcapkit makes that fairly easy and allowed me
-to narrow the packet list down to only HTTP and then those with the */anticheat* path.
+to narrow the packet list down to only HTTP and then those with the **/anticheat** path.
 From there it's as simple as extracting the x and y coordinates from the string.
 
 Next, all that is basically left is plotting all the data points. Now, at this point I wasn't
