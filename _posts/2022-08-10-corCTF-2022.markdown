@@ -1,0 +1,117 @@
+---
+layout: post
+title:  "corCTF 2022 Whack-a-frog Writeup"
+tags: CTF
+---
+
+## Forensics - Whack-a-frog
+
+>Come play a game of Whack-a-Frog here and let all your anger out on the silly msfrogs. Due to
+?lawsuits by Murdoch, we were forced to add DRM protection, which has allowed us to detect a player
+>distributing copyrighted media. Thankfully, we took a pcap: can you make out what he was sharing?
+>Make sure that anything you find is all typed in UPPERCASE and is wrapped like corctf{text}. Best
+>of luck and enjoy whacking some frogs!
+>
+>Created By: jammy + chop0
+
+In this unique forensics challenge we are given both a website and a pcap file to examine.
+From the description, we are supposed to find out what a copyrighted media was shared by a user.
+To begin, let's explore the site a bit before we get into any of the pcap analysis.
+
+[![Whack-a-frog](/assets/corCTF2022/site.png)](/assets/corCTF2022/site.png)
+<figcaption align=center><b>Figure 1: The Website for Whack-a-frog</b></figcaption>
+&nbsp;
+
+The site is laid out like a very big game of whack-a-mole. Except, the moles are replaced with
+ms-frog, the mascot for this competition. There isn't much game going on in this game.
+But, the site does mention the DRM from the description that stops us from using this app to
+reproduce media.
+
+[![Network Requests](/assets/corCTF2022/frog.png)](/assets/corCTF2022/frog.png)
+<figcaption align=center><b>Figure 2: A View of the Network Tab on Chrome</b></figcaption>
+&nbsp;
+
+Going along with this idea, we must be sending some sort of telemetry data to the server to
+stop us from recreating art with whack-a-frog. When I opened up the network tab of dev tools,
+I noticed just that. Like in *Figure 2*, the site sends GET requests to record my mouse coordinates
+and movements (with *event=mousemove*) and my clicks (with *event=mouseup* or *event=mousedown*).
+
+Now let's check out that pcap and see if anything relates back to it.
+
+[![pcap heirarchy](/assets/corCTF2022/pcap.png)](/assets/corCTF2022/pcap.png)
+<figcaption align=center><b>Figure 3: The Protocol Heirarchy View of whacking-the-froggers.pcap in Wireshark</b></figcaption>
+&nbsp;
+
+So, the pcap file contains not much besides HTTP packets. But, given that we have a site with this
+challenge, that seems pretty on target.
+
+[![HTTP Requests](/assets/corCTF2022/http.png)](/assets/corCTF2022/http.png)
+<figcaption align=center><b>Figure 4: HTTP Requests From whacking-the-froggers.pcap in Wireshark</b></figcaption>
+&nbsp;
+
+Sure enough, the same requests we saw on the site can be found all over the capture.
+Given all this, surely the goal here was to find out what the user "drew" on the whack-a-frog
+game. With the capture, we are given all the coordinates we need to follow along with the
+"pen strokes" of the user. The main challenge is just extracting it all and displaying it.
+
+```python
+from pcapkit import extract
+from matplotlib import pyplot as plt
+
+
+moves = list()
+extraction = extract(fin='whacking-the-froggers.pcap', nofile=True, tcp=True, strict=True)
+for datagram in extraction.reassembly.tcp:
+    if b'GET /anticheat' in datagram.payload:
+        x = datagram.payload.split()
+        y = x[1][11:]
+        moves.append(y.split(b'&'))
+
+x_coords = list()
+y_coords = list()
+record = False
+for move in moves:
+    if move[2] == b'event=mouseup':
+        record = False
+    elif move[2] == b'event=mousedown':
+        record = True
+    if record:
+        x_coords.append(int(move[0][2:]))
+        y_coords.append(int(move[1][2:]))
+if len(x_coords) > 0:
+    plt.xlim([0, 600])
+    plt.ylim([0, 400])
+    plt.gca().invert_yaxis()
+    plt.plot(x_coords, y_coords)
+    plt.show()
+
+```
+
+I came up with a quick Python script to extract and plot the data. The first challenge of the
+script is getting all that HTTP data. Luckily, pcapkit makes that fairly easy and allowed me
+to narrow the packet list down to only HTTP and then those with the */anticheat* path.
+From there it's as simple as extracting the x and y coordinates from the string.
+
+Next, all that is basically left is plotting all the data points. Now, at this point I wasn't
+too sure if there was any extra data between pen strokes. Like, when the user unclicks the mouse,
+do they jiggle it around a bunch. So to be safe, I removed all the data after a mouseup command
+was issued and recorded all the data after a mousedown command.  
+
+[![Graph Coordinates](/assets/corCTF2022/graph.png)](/assets/corCTF2022/graph.png)
+<figcaption align=center><b>Figure 5: An Example Diagram of the Coordinate System Used by whack-a-frog</b></figcaption>
+&nbsp;
+
+One important thing to notice is that the coordinate system the site uses a coordinate system
+where the origin (x = 0, y = 0) is in the top left. So if we just plot our graph normally,
+the image will be upside down. As a funny little side note, I spent an embarassing amount of time
+trying to decipher an upside down drawing before I remembered I had to flip my graph.
+
+[![LILYXOX](/assets/corCTF2022/lilyxox.png)](/assets/corCTF2022/lilyxox.png)
+<figcaption align=center><b>Figure 6: The Drawing Graphed by the Python Script</b></figcaption>
+&nbsp;
+
+Anyway, after a bit of work, the script will shoot out a graph of some letters the user wrote down.
+If we look carefully enough, it looks like it says LILYXOX. Which are the letters we need to fill
+in the flag and solve the challenge.
+
+>corctf{LILYXOX}
